@@ -1,0 +1,16 @@
+{
+  "environments": {
+    "test": {
+      "addons": ["heroku-redis:in-dyno", "heroku-postgresql:in-dyno"],
+      "env": {
+        "TOKEN_SECRET": "shhh1234",
+        "FRONTEND_HOST": "http://localhost:3000",
+        "MAIL_HOST": "smtp.mailtrap.io",
+        "MAIL_PORT": "2525",
+        "MAIL_USER": "b39de624ee1c67",
+        "MAIL_PASS": "fe46329d15eebc",
+        "EMAIL_SENDER": "noreply@test.com"
+      }
+    }
+  }
+}

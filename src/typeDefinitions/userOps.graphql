@@ -1,0 +1,88 @@
+type User {
+  id: ID!
+  name: String
+  email: String!
+  abbreviation: String
+  active: Boolean
+  globalPermissions: [GlobalPermissionsEnum]
+  clientPermissions: [OLUserPerms]
+  createdAt: GraphQLDateTime!
+  updatedAt: GraphQLDateTime!
+}
+
+input UsersInput {
+  where: UsersWhere
+  limit: Int
+  offset: Int
+  sort: UserSort
+}
+
+input UsersWhere {
+  OR: [UsersWhere]
+  AND: [UsersWhere]
+  id: StringWhere
+  name: StringWhere
+  email: StringWhere
+  active: BooleanWhere
+  abbreviation: StringWhere
+  createdAt: DateTimeWhere
+  updatedAt: DateTimeWhere
+}
+
+input ClientPermissionsWhere {
+  OR: [UsersWhere]
+  AND: [UsersWhere]
+  userId: StringWhere
+  clientId: StringWhere
+  permission: StringWhere
+}
+
+type RemoveUserResult {
+  code: MutationCodeEnum!
+  success: Boolean!
+  message: String!
+  item: User
+}
+
+input UpdateUserInput {
+  name: String
+  email: String
+  active: Boolean
+  abbreviation: String
+}
+
+type UpdateUserResult {
+  code: MutationCodeEnum!
+  success: Boolean!
+  message: String!
+  item: User
+}
+
+input CreateUserInput {
+  name: String!
+  email: String!
+  active: Boolean
+  abbreviation: String
+}
+
+type CreateUserResult {
+  code: MutationCodeEnum!
+  success: Boolean!
+  message: String!
+  item: User
+}
+
+type UsersResults {
+  hasMore: Boolean!
+  totalCount: Int!
+  items: [User]!
+}
+
+input UserSort {
+  id: SortDirection
+  name: SortDirection
+  email: SortDirection
+  abbreviation: SortDirection
+  createdAt: SortDirection
+  updatedAt: SortDirection
+}

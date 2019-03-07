@@ -1,0 +1,20 @@
+type Mutation {
+  createUser(input: CreateUserInput!): CreateUserResult!
+  createClient(input: CreateClientInput!): CreateClientResult!
+  updateUser(id: String!, input: UpdateUserInput!): UpdateUserResult!
+  updateClient(id: String!, input: UpdateClientInput!): UpdateClientResult!
+  removeUser(id: String!): RemoveUserResult!
+  removeClient(id: String!): RemoveClientResult!
+  requestLogin(email: String!, nextPage: String): RequestLoginResult!
+  register(email: String!, name: String!): RequestLoginResult!
+  confirmLogin(token: String!): ConfirmLoginResult!
+  logout: LogoutResult!
+  createCycle(input: CreateCycleInput!): CreateCycleResult!
+  createIO(input: CreateIOInput!): CreateIOResult!
+  updateIO(id: String!, input: UpdateIOInput!): UpdateIOResult!
+  createIOLineItem(input: CreateIOLineItemInput!): CreateIOLineItemResult!
+  updateIOLineItem(
+    id: String!
+    input: UpdateIOLineItemInput!
+  ): UpdateIOLineItemResult!
+}

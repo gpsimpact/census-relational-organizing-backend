@@ -1,0 +1,79 @@
+type Client {
+  id: ID!
+  name: String!
+  description: String
+  abbreviation: String!
+  active: Boolean
+  userPermissions: [OLClientPerms]
+  slug: String!
+  createdAt: GraphQLDateTime!
+  updatedAt: GraphQLDateTime!
+  cycles: [Cycle]
+}
+
+type RemoveClientResult {
+  code: MutationCodeEnum!
+  success: Boolean!
+  message: String!
+  item: User
+}
+
+input UpdateClientInput {
+  name: String
+  description: String
+  abbreviation: String
+}
+
+type UpdateClientResult {
+  code: MutationCodeEnum!
+  success: Boolean!
+  message: String!
+  item: Client
+}
+
+input CreateClientInput {
+  name: String!
+  description: String
+  abbreviation: String!
+}
+
+type CreateClientResult {
+  code: MutationCodeEnum!
+  success: Boolean!
+  message: String!
+  item: Client
+}
+
+input ClientsInput {
+  where: ClientsWhere
+  limit: Int
+  offset: Int
+  sort: ClientsSort
+}
+
+input ClientsSort {
+  id: SortDirection
+  name: SortDirection
+  createdAt: SortDirection
+  updatedAt: SortDirection
+}
+
+input ClientsWhere {
+  OR: [ClientsWhere]
+  AND: [ClientsWhere]
+  id: StringWhere
+  name: StringWhere
+  abbreviation: StringWhere
+  active: BooleanWhere
+  slug: StringWhere
+  clientPermissions: ClientPermissionsWhere
+  cycles: CyclesWhere
+  createdAt: DateTimeWhere
+  updatedAt: DateTimeWhere
+}
+
+type ClientsResults {
+  hasMore: Boolean!
+  totalCount: Int!
+  items: [Client]!
+}

@@ -1,0 +1,6 @@
+type ConfirmLoginResult {
+  code: MutationCodeEnum!
+  success: Boolean!
+  message: String!
+  item: User
+}

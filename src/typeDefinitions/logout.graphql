@@ -1,0 +1,6 @@
+type LogoutResult {
+  code: MutationCodeEnum!
+  success: Boolean!
+  message: String!
+  item: User
+}

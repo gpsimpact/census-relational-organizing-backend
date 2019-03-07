@@ -1,0 +1,24 @@
+enum GlobalPermissionsEnum {
+  ADMIN
+  ADMIN_CLIENTS
+  ADMIN_CLIENTS_CRUD
+  ADMIN_USERS
+  ADMIN_USERS_CRUD
+}
+
+enum SortDirection {
+  ASC
+  DESC
+}
+
+enum MutationCodeEnum {
+  DUPLICATE
+  DOES_NOT_EXIST
+  INPUT_ERROR
+  UNKNOWN_ERROR
+  OK
+}
+
+scalar GraphQLDateTime
+scalar GraphQLDate
+scalar GraphQLTime

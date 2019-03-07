@@ -1,0 +1,6 @@
+type RequestLoginResult {
+  code: MutationCodeEnum!
+  success: Boolean!
+  message: String!
+  securityCode: String
+}

@@ -1,0 +1,9 @@
+type OLUserPerms {
+  client: Client
+  permissions: [String]!
+}
+
+type OLClientPerms {
+  user: User
+  permissions: [String]!
+}
