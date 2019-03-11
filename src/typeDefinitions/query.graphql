@@ -3,8 +3,6 @@ type Query {
   me: User
   users(input: UsersInput): UsersResults!
   user(id: String, email: String): User
-  client(id: String, slug: String): Client
-  clients(input: ClientsInput): ClientsResults!
-  io(id: String!): io
-  ios(input: IOsInput): IOsResults!
+  team(id: String, slug: String): Team
+  teams(input: TeamsInput): TeamsResults!
 }

@@ -1,9 +1,9 @@
 type OLUserPerms {
-  client: Client
+  team: Team
   permissions: [String]!
 }
 
-type OLClientPerms {
+type OLTeamPerms {
   user: User
   permissions: [String]!
 }

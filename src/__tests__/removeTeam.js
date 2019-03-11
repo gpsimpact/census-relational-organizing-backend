@@ -2,15 +2,15 @@ import { graphqlTestCall } from "../utils/graphqlTestCall";
 import { dbUp, dbDown } from "../utils/testDbOps";
 import {
   createTestUser,
-  createTestClient,
+  createTestTeam,
   createTestOLPermission,
   createTestGlobalPerm
 } from "../utils/createTestEntities";
 import { sq } from "../db";
 
-const REMOVE_CLIENT_MUTATION = `
-  mutation removeClient($id: String!) {
-     removeClient(id: $id) {
+const REMOVE_TEAM_MUTATION = `
+  mutation removeTeam($id: String!) {
+     removeTeam(id: $id) {
       code
       success
       message
@@ -26,38 +26,38 @@ afterEach(async () => {
   await dbDown();
 });
 
-describe("Create Client", () => {
+describe("Remove Team", () => {
   test("Happy Path", async () => {
     const user = await createTestUser();
-    const client = await createTestClient();
-    await createTestGlobalPerm(user.id, "ADMIN_CLIENTS_CRUD");
-    await createTestOLPermission(user.id, client.id, "USER__READ__CLIENT");
+    const team = await createTestTeam();
+    await createTestGlobalPerm(user.id, "ADMIN_TEAMS_CRUD");
+    await createTestOLPermission(user.id, team.id, "USER__READ__TEAM");
 
     const response = await graphqlTestCall(
-      REMOVE_CLIENT_MUTATION,
+      REMOVE_TEAM_MUTATION,
       {
-        id: client.id
+        id: team.id
       },
       user.id
     );
-    expect(response.data.removeClient).not.toBeNull();
-    expect(response.data.removeClient.success).toEqual(true);
-    const dbClient = await sq.from`clients`;
-    expect(dbClient.length).toBe(0);
+    expect(response.data.removeTeam).not.toBeNull();
+    expect(response.data.removeTeam.success).toEqual(true);
+    const dbTeam = await sq.from`teams`;
+    expect(dbTeam.length).toBe(0);
 
     // verify it cascades delete on perms
-    const dbClientPerm = await sq.from`client_permissions`;
-    expect(dbClientPerm.length).toBe(0);
+    const dbTeamPerm = await sq.from`team_permissions`;
+    expect(dbTeamPerm.length).toBe(0);
   });
 
-  test("Fails without ADMIN_CLIENTS_CRUD global perm", async () => {
+  test("Fails without ADMIN_TEAMS_CRUD global perm", async () => {
     const user = await createTestUser();
-    const client = await createTestClient();
+    const team = await createTestTeam();
 
     const response = await graphqlTestCall(
-      REMOVE_CLIENT_MUTATION,
+      REMOVE_TEAM_MUTATION,
       {
-        id: client.id
+        id: team.id
       },
       user.id
     );

@@ -1,79 +1,73 @@
-type Client {
+type Team {
   id: ID!
   name: String!
   description: String
-  abbreviation: String!
   active: Boolean
-  userPermissions: [OLClientPerms]
+  userPermissions: [OLTeamPerms]
   slug: String!
   createdAt: GraphQLDateTime!
   updatedAt: GraphQLDateTime!
-  cycles: [Cycle]
 }
 
-type RemoveClientResult {
+type RemoveTeamResult {
   code: MutationCodeEnum!
   success: Boolean!
   message: String!
   item: User
 }
 
-input UpdateClientInput {
+input UpdateTeamInput {
   name: String
   description: String
-  abbreviation: String
 }
 
-type UpdateClientResult {
+type UpdateTeamResult {
   code: MutationCodeEnum!
   success: Boolean!
   message: String!
-  item: Client
+  item: Team
 }
 
-input CreateClientInput {
+input CreateTeamInput {
   name: String!
   description: String
-  abbreviation: String!
 }
 
-type CreateClientResult {
+type CreateTeamResult {
   code: MutationCodeEnum!
   success: Boolean!
   message: String!
-  item: Client
+  item: Team
 }
 
-input ClientsInput {
-  where: ClientsWhere
+input TeamsInput {
+  where: TeamsWhere
   limit: Int
   offset: Int
-  sort: ClientsSort
+  sort: TeamsWhere
 }
 
-input ClientsSort {
+input TeamsSort {
   id: SortDirection
   name: SortDirection
   createdAt: SortDirection
   updatedAt: SortDirection
 }
 
-input ClientsWhere {
-  OR: [ClientsWhere]
-  AND: [ClientsWhere]
+input TeamsWhere {
+  OR: [TeamsWhere]
+  AND: [TeamsWhere]
   id: StringWhere
   name: StringWhere
-  abbreviation: StringWhere
   active: BooleanWhere
   slug: StringWhere
-  clientPermissions: ClientPermissionsWhere
-  cycles: CyclesWhere
+  teamPermissions: TeamPermissionsWhere
   createdAt: DateTimeWhere
   updatedAt: DateTimeWhere
 }
 
-type ClientsResults {
+type TeamsResults {
   hasMore: Boolean!
   totalCount: Int!
-  items: [Client]!
+  items: [Team]!
 }

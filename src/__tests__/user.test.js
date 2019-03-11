@@ -4,7 +4,7 @@ import { dbUp, dbDown } from "../utils/testDbOps";
 import {
   createTestUser,
   createTestGlobalPerm,
-  createTestClient,
+  createTestTeam,
   createTestOLPermission
 } from "../utils/createTestEntities";
 
@@ -15,8 +15,8 @@ query User($id: String, $email: String) {
         name
         email
         globalPermissions
-        clientPermissions {
-          client {
+        teamPermissions {
+          team {
             id
           }
           permissions
@@ -37,6 +37,7 @@ describe("User", () => {
   test("Happy Path By Id", async () => {
     const user = await createTestUser();
     const response = await graphqlTestCall(GET_USER_QUERY, { id: user.id });
+    // console.log(response);
     expect(response.data.user.id).toEqual(user.id);
     expect(response.data.user.name).toEqual(user.name);
   });
@@ -69,12 +70,12 @@ describe("User", () => {
 
   test("Global Permissions NOT NULL", async () => {
     const user = await createTestUser();
-    await createTestGlobalPerm(user.id, "ADMIN_CLIENTS");
+    await createTestGlobalPerm(user.id, "ADMIN_TEAMS");
     await createTestGlobalPerm(user.id, "ADMIN");
     const response = await graphqlTestCall(GET_USER_QUERY, { id: user.id });
     // should return correct data
     expect(response.data.user.globalPermissions.sort()).toEqual(
-      ["ADMIN_CLIENTS", "ADMIN"].sort()
+      ["ADMIN_TEAMS", "ADMIN"].sort()
     );
   });
 
@@ -84,74 +85,73 @@ describe("User", () => {
     expect(response.data.user.globalPermissions).toEqual([]);
   });
 
-  test("Client Permissions NOT null", async () => {
+  test("Team Permissions NOT null", async () => {
     const user = await createTestUser();
-    const client = await createTestClient();
+    const team = await createTestTeam();
 
     const cp1 = await createTestOLPermission(
       user.id,
-      client.id,
-      "USER__READ__CLIENT"
+      team.id,
+      "USER__READ__TEAM"
     );
     const cp2 = await createTestOLPermission(
       user.id,
-      client.id,
-      "USER__READ__CLIENT_CONTACT_EMAIL"
+      team.id,
+      "USER__READ__TEAM_CONTACT_EMAIL"
     );
 
     const response = await graphqlTestCall(GET_USER_QUERY, { id: user.id });
-    expect(response.data.user.clientPermissions.length).toBe(1);
-    expect(response.data.user.clientPermissions[0].permissions.length).toBe(2);
-    expect(response.data.user.clientPermissions[0].permissions).toContain(
+    // console.log(response.data.user.teamPermissions);
+    expect(response.data.user.teamPermissions.length).toBe(1);
+    expect(response.data.user.teamPermissions[0].permissions.length).toBe(2);
+    expect(response.data.user.teamPermissions[0].permissions).toContain(
       cp1.permission
     );
-    expect(response.data.user.clientPermissions[0].permissions).toContain(
+    expect(response.data.user.teamPermissions[0].permissions).toContain(
       cp2.permission
     );
-    expect(response.data.user.clientPermissions[0].client.id).toEqual(
-      client.id
-    );
+    expect(response.data.user.teamPermissions[0].team.id).toEqual(team.id);
   });
 
-  test("Client Permissions null", async () => {
+  test("Team Permissions null", async () => {
     const user = await createTestUser();
 
     const response1 = await graphqlTestCall(GET_USER_QUERY, { id: user.id });
 
     // should return correct data
-    expect(response1.data.user.clientPermissions).toBeNull();
+    expect(response1.data.user.teamPermissions).toBeNull();
   });
 
-  test("Client Permissions NO LEAKS", async () => {
+  test("Team Permissions NO LEAKS", async () => {
     const user1 = await createTestUser();
     const user2 = await createTestUser();
-    const client = await createTestClient();
+    const team = await createTestTeam();
 
-    await createTestOLPermission(user1.id, client.id, "USER__READ__CLIENT");
+    await createTestOLPermission(user1.id, team.id, "USER__READ__TEAM");
 
     await createTestOLPermission(
       user1.id,
-      client.id,
-      "USER__READ__CLIENT_CONTACT_EMAIL"
+      team.id,
+      "USER__READ__TEAM_CONTACT_EMAIL"
     );
 
     const response1 = await graphqlTestCall(GET_USER_QUERY, { id: user2.id });
     // should return correct data
-    expect(response1.data.user.clientPermissions).toBeNull();
+    expect(response1.data.user.teamPermissions).toBeNull();
   });
 
-  test("Client Permissions NO inactive Clients", async () => {
+  test("Team Permissions NO inactive Teams", async () => {
     const user = await createTestUser();
-    const client = await createTestClient(false);
+    const team = await createTestTeam(false);
 
-    await createTestOLPermission(user.id, client.id, "USER__READ__CLIENT");
+    await createTestOLPermission(user.id, team.id, "USER__READ__TEAM");
     await createTestOLPermission(
       user.id,
-      client.id,
-      "USER__READ__CLIENT_CONTACT_EMAIL"
+      team.id,
+      "USER__READ__TEAM_CONTACT_EMAIL"
     );
 
     const response = await graphqlTestCall(GET_USER_QUERY, { id: user.id });
-    expect(response.data.user.clientPermissions).toBeNull();
+    expect(response.data.user.teamPermissions).toBeNull();
   });
 });

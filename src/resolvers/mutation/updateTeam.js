@@ -2,26 +2,26 @@ import { updateOneHOR } from "@jakelowen/sqorn-graphql-filters";
 
 export default async (root, args, context) => {
   // check if email already exists
-  const existing = await context.dataSource.client.byIdLoader.load(args.id);
+  const existing = await context.dataSource.team.byIdLoader.load(args.id);
   if (!existing) {
     return {
       success: false,
       code: "DOES_NOT_EXIST",
-      message: "No client with this id exists.",
+      message: "No team with this id exists.",
       item: null
     };
   }
 
-  const user = await updateOneHOR(
-    "dataSource.client.update",
+  const team = await updateOneHOR(
+    "dataSource.team.update",
     "input",
     "id",
-    "UPDATE_CLIENT"
+    "UPDATE_TEAM"
   )(root, args, context);
   return {
     success: true,
     code: "OK",
-    message: "Client updated.",
-    item: user
+    message: "Team updated.",
+    item: team
   };
 };
