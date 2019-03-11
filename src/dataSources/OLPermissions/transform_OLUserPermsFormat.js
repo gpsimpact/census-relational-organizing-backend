@@ -1,14 +1,14 @@
 import { map, groupBy } from "lodash";
 
-export default cpermsArray => {
-  const userGroupedPerms = groupBy(cpermsArray, "userId");
+export default tpermsArray => {
+  const userGroupedPerms = groupBy(tpermsArray, "userId");
   const userMap = {};
 
   map(userGroupedPerms, (value, uId) => {
-    const clientGroupedPerms = groupBy(value, "clientId");
+    const teamGroupedPerms = groupBy(value, "teamId");
 
-    userMap[uId] = map(clientGroupedPerms, (verboseCp, clientId) => {
-      return { clientId, permissions: map(verboseCp, cp => cp.permission) };
+    userMap[uId] = map(teamGroupedPerms, (verboseCp, teamId) => {
+      return { teamId, permissions: map(verboseCp, cp => cp.permission) };
     });
   });
   return userMap;

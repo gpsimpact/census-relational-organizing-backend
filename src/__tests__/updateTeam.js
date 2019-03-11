@@ -3,21 +3,20 @@ import { graphqlTestCall } from "../utils/graphqlTestCall";
 import { dbUp, dbDown } from "../utils/testDbOps";
 import {
   createTestUser,
-  createTestClient,
+  createTestTeam,
   createTestGlobalPerm
 } from "../utils/createTestEntities";
 import { sq } from "../db";
 
-const UPDATE_CLIENT_MUTATION = `
-  mutation updateClient($id: String!, $input: UpdateClientInput!){
-    updateClient(id:$id, input: $input) {
+const UPDATE_TEAM_MUTATION = `
+  mutation updateTeam($id: String!, $input: UpdateTeamInput!){
+    updateTeam(id:$id, input: $input) {
       code
       message
       success
       item {
         id
-        name
-        abbreviation
+        name 
       }
     }
   }
@@ -31,48 +30,48 @@ afterEach(async () => {
   await dbDown();
 });
 
-describe("Create Client", () => {
+describe("Create Team", () => {
   test("Happy Path", async () => {
     const user = await createTestUser();
-    const client = await createTestClient();
+    const team = await createTestTeam();
 
-    await createTestGlobalPerm(user.id, "ADMIN_CLIENTS_CRUD");
+    await createTestGlobalPerm(user.id, "ADMIN_TEAMS_CRUD");
 
     const newData = {
       name: faker.company.companyName()
     };
 
     const response = await graphqlTestCall(
-      UPDATE_CLIENT_MUTATION,
+      UPDATE_TEAM_MUTATION,
       {
-        id: client.id,
+        id: team.id,
         input: newData
       },
       user.id
     );
-    expect(response.data.updateClient).not.toBeNull();
-    expect(response.data.updateClient.item.name).toEqual(newData.name);
-    expect(response.data.updateClient.item.abbreviation).toEqual(
-      client.abbreviation
+    expect(response.data.updateTeam).not.toBeNull();
+    expect(response.data.updateTeam.item.name).toEqual(newData.name);
+    expect(response.data.updateTeam.item.abbreviation).toEqual(
+      team.abbreviation
     );
-    const [dbClient] = await sq.from`clients`.where({ id: client.id });
-    expect(dbClient).toBeDefined();
-    expect(dbClient.name).toEqual(newData.name);
-    expect(dbClient.abbreviation).toEqual(client.abbreviation);
+    const [dbTeam] = await sq.from`teams`.where({ id: team.id });
+    expect(dbTeam).toBeDefined();
+    expect(dbTeam.name).toEqual(newData.name);
+    expect(dbTeam.abbreviation).toEqual(team.abbreviation);
   });
 
-  test("Fails without ADMIN_CLIENTS_CRUD global perm", async () => {
+  test("Fails without ADMIN_TEAMS_CRUD global perm", async () => {
     const user = await createTestUser();
-    const client = await createTestClient();
+    const team = await createTestTeam();
 
     const newData = {
       name: faker.company.companyName()
     };
 
     const response = await graphqlTestCall(
-      UPDATE_CLIENT_MUTATION,
+      UPDATE_TEAM_MUTATION,
       {
-        id: client.id,
+        id: team.id,
         input: newData
       },
       user.id

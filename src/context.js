@@ -15,10 +15,9 @@ import setLoginToken from "./dataSources/users/setLoginToken";
 import getLoginToken from "./dataSources/users/getLoginToken";
 // globalPermissions
 import globalPermissionsForUser from "./dataSources/globalPermissions/gpArrayByUserId";
-// Client Permissions
+// Team Permissions
 import OLUserPerms from "./dataSources/OLPermissions/OLUserPerms";
-import OLClientPerms from "./dataSources/OLPermissions/OLClientPerms";
-// Client
+import OLTeamPerms from "./dataSources/OLPermissions/OLTeamPerms";
 
 // pubsub
 import redis, { pubsub } from "./redis";
@@ -28,13 +27,9 @@ import transport from "./connectors/emailTransport";
 export default (req, res) => {
   const userByIdLoader = singleLoaderGDS(sq.from`users`, "id");
   const userByEmailLoader = singleLoaderGDS(sq.from`users`, "email");
-  const clientByIdLoader = singleLoaderGDS(sq.from`clients`, "id");
-  const clientBySlugLoader = singleLoaderGDS(sq.from`clients`, "slug");
-  const clientByAbbreviationLoader = singleLoaderGDS(
-    sq.from`clients`,
-    "abbreviation"
-  );
-  const clientByNameLoader = singleLoaderGDS(sq.from`clients`, "name");
+  const teamByIdLoader = singleLoaderGDS(sq.from`teams`, "id");
+  const teamBySlugLoader = singleLoaderGDS(sq.from`teams`, "slug");
+  const teamByNameLoader = singleLoaderGDS(sq.from`teams`, "name");
 
   const readyMeLoader = meLoader(req.session, userByIdLoader);
   const globalPermissionsByUserIdLoader = manyLoaderGDS(
@@ -45,29 +40,28 @@ export default (req, res) => {
   //   globalPermissionsByUserIdLoader
   // );
 
-  const removeAllClientPermissionsByClientId = removeManyGDS(
-    sq.from`client_permissions`,
-    "clientId"
+  const removeAllTeamPermissionsByTeamId = removeManyGDS(
+    sq.from`team_permissions`,
+    "teamId"
   );
 
   const OLPermsByUserIdLoader = manyLoaderGDS(
-    sq.from`client_permissions`.leftJoin`clients`
-      .on`client_permissions.client_id = clients.id`
-      .where`clients.active = ${true}`,
-    // .andWhere("clients.active", "=", true),
+    sq.from`team_permissions`.leftJoin`teams`
+      .on`team_permissions.team_id = teams.id`.where`teams.active = ${true}`,
+    // .andWhere("teams.active", "=", true),
     "userId"
   );
 
-  const OLPermsByClientIdLoader = manyLoaderGDS(
-    sq.from`client_permissions`,
-    "clientId"
+  const OLPermsByTeamIdLoader = manyLoaderGDS(
+    sq.from`team_permissions`,
+    "teamId"
   );
 
-  const ioByIdLoader = singleLoaderGDS(sq.from`insertion_orders_current`, "id");
-  const ioLiByIdLoader = singleLoaderGDS(
-    sq.from`insertion_orders_line_items_current`,
-    "id"
-  );
+  // const ioByIdLoader = singleLoaderGDS(sq.from`insertion_orders_current`, "id");
+  // const ioLiByIdLoader = singleLoaderGDS(
+  //   sq.from`insertion_orders_line_items_current`,
+  //   "id"
+  // );
 
   const dataSource = {
     user: {
@@ -86,40 +80,18 @@ export default (req, res) => {
     },
     olPerms: {
       byUserIdLoader: OLPermsByUserIdLoader,
-      byClientIdLoader: OLPermsByClientIdLoader,
+      byTeamIdLoader: OLPermsByTeamIdLoader,
       OLUserPerms: OLUserPerms(OLPermsByUserIdLoader),
-      OLClientPerms: OLClientPerms(OLPermsByClientIdLoader)
+      OLTeamPerms: OLTeamPerms(OLPermsByTeamIdLoader)
     },
-    client: {
-      byIdLoader: clientByIdLoader,
-      bySlugLoader: clientBySlugLoader,
-      byAbbreviationLoader: clientByAbbreviationLoader,
-      byNameLoader: clientByNameLoader,
-      create: createGDS(sq.from`clients`),
-      update: updateGDS(sq.from`clients`),
-      remove: removeGDS(sq.from`clients`),
-      removeAllClientPermissionsByClientId
-    },
-    cycle: {
-      create: createGDS(sq.from`cycles`),
-      byClientIdLoader: manyLoaderGDS(sq.from`cycles`, "clientId")
-    },
-    io: {
-      create: createGDS(sq.from`insertion_orders_revisions`),
-      // update: update(knex("insertion_orders_revisions"), "insertion_order_id"),
-      byIdLoader: ioByIdLoader,
-      revisionsByIOIdLoader: manyLoaderGDS(
-        sq.from`insertion_orders_revisions`.orderBy`timestamp DESC`,
-        "insertionOrderId"
-      )
-    },
-    ioLineItem: {
-      create: createGDS(sq.from`insertion_orders_line_items_revisions`),
-      byIdLoader: ioLiByIdLoader,
-      revisionsByIOLineItemIdLoader: manyLoaderGDS(
-        sq.from`insertion_orders_line_items_revisions`.orderBy`timestamp DESC`,
-        "insertionOrderLineItemId"
-      )
+    team: {
+      byIdLoader: teamByIdLoader,
+      bySlugLoader: teamBySlugLoader,
+      byNameLoader: teamByNameLoader,
+      create: createGDS(sq.from`teams`),
+      update: updateGDS(sq.from`teams`),
+      remove: removeGDS(sq.from`teams`),
+      removeAllTeamPermissionsByTeamId
     }
   };
 

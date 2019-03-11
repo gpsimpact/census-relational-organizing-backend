@@ -2,10 +2,9 @@ type User {
   id: ID!
   name: String
   email: String!
-  abbreviation: String
   active: Boolean
   globalPermissions: [GlobalPermissionsEnum]
-  clientPermissions: [OLUserPerms]
+  teamPermissions: [OLUserPerms]
   createdAt: GraphQLDateTime!
   updatedAt: GraphQLDateTime!
 }
@@ -24,16 +23,15 @@ input UsersWhere {
   name: StringWhere
   email: StringWhere
   active: BooleanWhere
-  abbreviation: StringWhere
   createdAt: DateTimeWhere
   updatedAt: DateTimeWhere
 }
 
-input ClientPermissionsWhere {
+input TeamPermissionsWhere {
   OR: [UsersWhere]
   AND: [UsersWhere]
   userId: StringWhere
-  clientId: StringWhere
+  teamId: StringWhere
   permission: StringWhere
 }
 
@@ -48,7 +46,6 @@ input UpdateUserInput {
   name: String
   email: String
   active: Boolean
-  abbreviation: String
 }
 
 type UpdateUserResult {
@@ -62,7 +59,6 @@ input CreateUserInput {
   name: String!
   email: String!
   active: Boolean
-  abbreviation: String
 }
 
 type CreateUserResult {
@@ -82,7 +78,6 @@ input UserSort {
   id: SortDirection
   name: SortDirection
   email: SortDirection
-  abbreviation: SortDirection
   createdAt: SortDirection
   updatedAt: SortDirection
 }

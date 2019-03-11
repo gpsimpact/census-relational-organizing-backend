@@ -3,24 +3,22 @@ import { shield, not, and } from "graphql-shield";
 import isAuthenticated from "./isAuthenticated";
 import hasGlobalPerm from "./hasGlobalPerm";
 
-const has_GP_ADMIN_CLIENTS = hasGlobalPerm("ADMIN_CLIENTS");
-const has_GP_ADMIN_CLIENTS_CRUD = hasGlobalPerm("ADMIN_CLIENTS_CRUD");
+const has_GP_ADMIN_TEAMS = hasGlobalPerm("ADMIN_TEAMS");
+const has_GP_ADMIN_TEAMS_CRUD = hasGlobalPerm("ADMIN_TEAMS_CRUD");
 
 export default shield(
   {
     Query: {
-      client: and(isAuthenticated, has_GP_ADMIN_CLIENTS),
-      clients: and(isAuthenticated, has_GP_ADMIN_CLIENTS)
+      team: and(isAuthenticated, has_GP_ADMIN_TEAMS),
+      teams: and(isAuthenticated, has_GP_ADMIN_TEAMS)
     },
     Mutation: {
       confirmLogin: not(isAuthenticated),
       register: not(isAuthenticated),
       requestLogin: not(isAuthenticated),
-      createClient: and(isAuthenticated, has_GP_ADMIN_CLIENTS_CRUD),
-      removeClient: and(isAuthenticated, has_GP_ADMIN_CLIENTS_CRUD),
-      updateClient: and(isAuthenticated, has_GP_ADMIN_CLIENTS_CRUD),
-      createIO: isAuthenticated,
-      updateIO: isAuthenticated
+      createTeam: and(isAuthenticated, has_GP_ADMIN_TEAMS_CRUD),
+      removeTeam: and(isAuthenticated, has_GP_ADMIN_TEAMS_CRUD),
+      updateTeam: and(isAuthenticated, has_GP_ADMIN_TEAMS_CRUD)
     }
   },
   // 🇺🇸🇺🇸🇺🇸🇺🇸🇺🇸🇺🇸🇺🇸🇺🇸🇺🇸🇺🇸🇺🇸 Fuck YA 🇺🇸🇺🇸🇺🇸🇺🇸🇺🇸🇺🇸🇺🇸🇺🇸🇺🇸🇺🇸🇺🇸🇺🇸🇺🇸

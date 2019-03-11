@@ -7,7 +7,7 @@ export default {
     updateUser: lowerCaseEmailMW,
     register: lowerCaseEmailMW,
     requestLogin: lowerCaseEmailMW,
-    createClient: createSlug
+    createTeam: createSlug
   },
   Query: {
     user: lowerCaseEmailMW

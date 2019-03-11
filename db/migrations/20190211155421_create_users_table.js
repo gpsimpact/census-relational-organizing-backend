@@ -1,15 +1,12 @@
-exports.up = knex => {
-  return knex.schema.createTable("users", t => {
-    t.uuid("id")
-      .primary()
-      .notNull()
-      .defaultTo(knex.raw("uuid_generate_v4()"));
-    t.string("name").notNull();
-    t.string("email").notNull();
-    t.boolean("active").defaultTo(true);
-  });
-};
+exports.up = knex =>
+  knex.raw(`
+    CREATE TABLE users (
+        id uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
+        name character varying(255) NOT NULL,
+        email character varying(255) NOT NULL,
+        active boolean DEFAULT true,
+        abbreviation character varying(7)
+    );
+  `);
 
-exports.down = knex => {
-  return knex.schema.dropTable("users");
-};
+exports.down = knex => knex.raw(`DROP TABLE IF EXISTS users`);

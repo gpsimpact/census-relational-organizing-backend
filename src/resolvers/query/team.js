@@ -5,10 +5,10 @@ export default async (root, args, context, info) => {
   let identifier = null;
 
   if (args.id) {
-    path = "dataSource.client.byIdLoader";
+    path = "dataSource.team.byIdLoader";
     identifier = "id";
   } else if (args.slug) {
-    path = "dataSource.client.bySlugLoader";
+    path = "dataSource.team.bySlugLoader";
     identifier = "slug";
   } else {
     return null;

@@ -28,7 +28,7 @@ afterEach(async () => {
   await dbDown();
 });
 
-describe("Create Client", () => {
+describe("Update Team", () => {
   test("Happy Path", async () => {
     const user = await createTestUser();
 
