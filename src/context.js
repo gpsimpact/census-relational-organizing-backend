@@ -18,11 +18,12 @@ import globalPermissionsForUser from "./dataSources/globalPermissions/gpArrayByU
 // Team Permissions
 import OLUserPerms from "./dataSources/OLPermissions/OLUserPerms";
 import OLTeamPerms from "./dataSources/OLPermissions/OLTeamPerms";
+// email
+import sgMail from "@sendgrid/mail";
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 // pubsub
 import redis, { pubsub } from "./redis";
-// email
-import transport from "./connectors/emailTransport";
 
 export default (req, res) => {
   const userByIdLoader = singleLoaderGDS(sq.from`users`, "id");
@@ -102,6 +103,6 @@ export default (req, res) => {
     dataSource,
     redis,
     pubsub,
-    sendEmail: messageData => transport.sendMail(messageData)
+    sendEmail: messageData => sgMail.send(messageData) //transport.sendMail(messageData)
   };
 };
