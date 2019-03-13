@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "@jakelowen/sqorn-graphql-filters": "0.2.0",
+    "@sendgrid/mail": "^6.3.1",
     "@sqorn/pg": "^0.0.45",
     "connect-redis": "^3.4.0",
     "cors": "^2.8.5",
