@@ -1,8 +1,6 @@
 export default async (root, args, context) => {
   const userId = await context.dataSource.user.getLoginToken(args.token);
-
   if (!userId) {
-    // console.log('!!!!! NO USER');
     return {
       code: "DOES_NOT_EXIST",
       success: false,
@@ -11,12 +9,7 @@ export default async (root, args, context) => {
   }
 
   // 5. Set the cookie
-  // eslint-disable-next-line no-param-reassign
   context.req.session.userId = userId;
-
-  if (context.req.sessionID) {
-    await context.redis.lpush(`session:${userId}`, context.req.sessionID);
-  }
 
   // load full user record
   const user = context.dataSource.user.byIdLoader.load(userId);
