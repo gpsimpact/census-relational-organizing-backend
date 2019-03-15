@@ -6,7 +6,13 @@ const meQuery = `
 {
   me {
     id
-    name
+    firstName
+    lastName
+    address
+    city
+    state
+    zip5
+    phone
     email
   }
 }
@@ -30,6 +36,6 @@ describe("MeResolver", () => {
     const user = await createTestUser();
     const res = await graphqlTestCall(meQuery, {}, user.id);
     expect(res.data.me.id).toBe(user.id);
-    expect(res.data.me.name).toBe(user.name);
+    expect(res.data.me.firstName).toBe(user.firstName);
   });
 });

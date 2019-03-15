@@ -13,7 +13,13 @@ const UPDATE_USER_MUTATION = `
       success
       item {
         id
-        name
+        firstName
+        lastName
+        address
+        city
+        state
+        zip5
+        phone
         email
       }
     }
@@ -28,12 +34,12 @@ afterEach(async () => {
   await dbDown();
 });
 
-describe("Update Team", () => {
+describe("Update User", () => {
   test("Happy Path", async () => {
     const user = await createTestUser();
 
     const newData = {
-      name: `${faker.name.firstName()} ${faker.name.lastName()}`,
+      firstName: faker.name.firstName(),
       email: faker.internet.email().toUpperCase()
     };
 
@@ -42,13 +48,13 @@ describe("Update Team", () => {
       input: newData
     });
     expect(response.data.updateUser).not.toBeNull();
-    expect(response.data.updateUser.item.name).toEqual(newData.name);
+    expect(response.data.updateUser.item.firstName).toEqual(newData.firstName);
     expect(response.data.updateUser.item.email).toEqual(
       newData.email.toLowerCase()
     );
     const [dbUser] = await sq.from`users`.where({ id: user.id });
     expect(dbUser).toBeDefined();
-    expect(dbUser.name).toEqual(newData.name);
+    expect(dbUser.firstName).toEqual(newData.firstName);
     expect(dbUser.email).toEqual(newData.email.toLowerCase());
   });
 });

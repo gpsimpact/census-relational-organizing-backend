@@ -12,7 +12,13 @@ const CREATE_USER_MUTATION = `
       message
       item {
         id
-        name
+        firstName
+        lastName
+        address
+        city
+        state
+        zip5
+        phone
         email
       }
     }
@@ -30,8 +36,17 @@ afterEach(async () => {
 describe("Create User", () => {
   test("Happy Path", async () => {
     const newUserData = {
-      name: `${faker.name.firstName()} ${faker.name.lastName()}`,
-      email: faker.internet.email().toUpperCase()
+      firstName: faker.name.firstName(),
+      lastName: faker.name.lastName(),
+      email: faker.internet.email(),
+      address: faker.address.streetAddress(),
+      city: faker.address.city(),
+      state: faker.address.state(),
+      zip5: faker.address.zipCode().substring(0, 5),
+      phone: `+${faker.random.number({
+        min: 10000000000,
+        max: 19999999999
+      })}`
     };
 
     // no input
@@ -55,16 +70,21 @@ describe("Create User", () => {
   });
 
   test("Duplicate error", async () => {
-    const user = await createTestUser(
-      null,
-      faker.internet.email().toLowerCase()
-    );
+    const user = await createTestUser({
+      email: faker.internet.email().toLowerCase()
+    });
 
     // no input
     const response = await graphqlTestCall(CREATE_USER_MUTATION, {
       input: {
+        firstName: user.firstName,
+        lastName: user.lastName,
         email: user.email,
-        name: user.name
+        address: user.address,
+        city: user.city,
+        state: user.state,
+        zip5: user.zip5,
+        phone: user.phone
       }
     });
     expect(response.data.createUser).not.toBeNull();

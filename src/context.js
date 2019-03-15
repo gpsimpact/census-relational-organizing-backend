@@ -96,6 +96,18 @@ export default (req, res) => {
     }
   };
 
+  const sendEmail = messageData => {
+    // if testing, use sandbox mode. Won't actually send email
+    if (process.env.NODE_ENV === "test") {
+      messageData.mailSettings = {
+        sandbox_mode: {
+          enable: true
+        }
+      };
+    }
+    return sgMail.send(messageData);
+  };
+
   return {
     req,
     res,
@@ -103,6 +115,6 @@ export default (req, res) => {
     dataSource,
     redis,
     pubsub,
-    sendEmail: messageData => sgMail.send(messageData) //transport.sendMail(messageData)
+    sendEmail
   };
 };

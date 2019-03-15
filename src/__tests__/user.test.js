@@ -12,7 +12,13 @@ const GET_USER_QUERY = `
 query User($id: String, $email: String) {
     user(id: $id, email: $email) {
         id
-        name
+        firstName
+        lastName
+        address
+        city
+        state
+        zip5
+        phone
         email
         globalPermissions
         teamPermissions {
@@ -37,16 +43,14 @@ describe("User", () => {
   test("Happy Path By Id", async () => {
     const user = await createTestUser();
     const response = await graphqlTestCall(GET_USER_QUERY, { id: user.id });
-    // console.log(response);
     expect(response.data.user.id).toEqual(user.id);
     expect(response.data.user.name).toEqual(user.name);
   });
 
   test("Happy Path by email", async () => {
-    const user = await createTestUser(
-      null,
-      faker.internet.email().toLowerCase()
-    );
+    const user = await createTestUser({
+      email: faker.internet.email().toLowerCase()
+    });
     const response = await graphqlTestCall(GET_USER_QUERY, {
       email: user.email
     });
@@ -56,10 +60,9 @@ describe("User", () => {
   });
 
   test("Happy Path by email with case coercion", async () => {
-    const user = await createTestUser(
-      null,
-      faker.internet.email().toLowerCase()
-    );
+    const user = await createTestUser({
+      email: faker.internet.email().toLowerCase()
+    });
     const response = await graphqlTestCall(GET_USER_QUERY, {
       email: user.email.toUpperCase()
     });

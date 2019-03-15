@@ -4,7 +4,7 @@ import generateLoginEmail from "../../utils/email/generateLoginEmail";
 
 export default async (root, args, context) => {
   // clean the email and check for duplicates
-  const cleanEmail = args.email.trim().toLowerCase();
+  const cleanEmail = args.input.email.trim().toLowerCase();
 
   // Load user by email
   const existing = await context.dataSource.user.byEmailLoader.load(cleanEmail);
@@ -19,7 +19,7 @@ export default async (root, args, context) => {
 
   // 1. Create user with provided arguments
   const user = await context.dataSource.user.create({
-    name: args.name,
+    ...args.input,
     email: cleanEmail
   });
 
