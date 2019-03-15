@@ -4,18 +4,24 @@ import { sq } from "../db";
 
 export const uuid = () => faker.random.uuid();
 
-export const createTestUser = async (
-  name,
-  email,
-  abbreviation,
-  active = true
-) =>
-  createGDS(sq.from`users`)({
-    name: name || `${faker.name.firstName()} ${faker.name.lastName()}`,
-    email: email || faker.internet.email().toLowerCase(),
-    abbreviation: faker.lorem.word().substring(0, 7),
-    active
-  });
+export const createTestUser = async data => {
+  const fakeData = {
+    firstName: faker.name.firstName(),
+    lastName: faker.name.lastName(),
+    email: faker.internet.email(),
+    address: faker.address.streetAddress(),
+    city: faker.address.city(),
+    state: faker.address.state(),
+    zip5: faker.address.zipCode().substring(0, 5),
+    phone: `+${faker.random.number({
+      min: 10000000000,
+      max: 19999999999
+    })}`,
+    active: true
+  };
+  const writeData = Object.assign({}, fakeData, data);
+  return createGDS(sq.from`users`)(writeData);
+};
 
 export const createTestGlobalPerm = async (userId, permission) =>
   createGDS(sq.from`global_permissions`)({

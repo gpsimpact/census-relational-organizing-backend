@@ -1,0 +1,10 @@
+input RegisterInput {
+  email: String!
+  firstName: String!
+  lastName: String!
+  address: String!
+  city: String!
+  state: String!
+  zip5: String!
+  phone: String!
+}

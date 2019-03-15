@@ -9,7 +9,13 @@ query Users($input:UsersInput) {
         totalCount
         items {
             id
-            name
+            firstName
+            lastName
+            address
+            city
+            state
+            zip5
+            phone
             email
             active
         }
@@ -61,7 +67,7 @@ describe("Users", () => {
 
   test("Boolean Where", async () => {
     await createTestUser();
-    await createTestUser(null, null, null, false);
+    await createTestUser({ active: false });
 
     const response = await graphqlTestCall(GET_ALL_USERS_QUERY, {
       input: { where: { active: { eq: true } } }

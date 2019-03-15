@@ -32,10 +32,9 @@ describe("RequestLoginResolver", () => {
   });
 
   test("happy path", async () => {
-    const user = await createTestUser(
-      null,
-      faker.internet.email().toLowerCase()
-    );
+    const user = await createTestUser({
+      email: faker.internet.email().toLowerCase()
+    });
 
     const mockSendEmail = jest.fn();
     const response = await graphqlTestCall(
@@ -57,10 +56,9 @@ describe("RequestLoginResolver", () => {
   });
 
   test("case trim coercion", async () => {
-    const user = await createTestUser(
-      null,
-      faker.internet.email().toLowerCase()
-    );
+    const user = await createTestUser({
+      email: faker.internet.email().toLowerCase()
+    });
 
     const mockSendEmail = jest.fn();
     const response = await graphqlTestCall(

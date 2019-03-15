@@ -6,7 +6,7 @@ type Mutation {
   removeUser(id: String!): RemoveUserResult!
   removeTeam(id: String!): RemoveTeamResult!
   requestLogin(email: String!, nextPage: String): RequestLoginResult!
-  register(email: String!, name: String!): RequestLoginResult!
+  register(input: RegisterInput!): RequestLoginResult!
   confirmLogin(token: String!): ConfirmLoginResult!
   logout: LogoutResult!
 }
