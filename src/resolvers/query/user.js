@@ -1,9 +1,8 @@
-import { getOneHOR } from "@jakelowen/sqorn-graphql-filters";
+import { loaderGetHOR } from "@jakelowen/sqorn-graphql-filters";
 
 export default async (root, args, context, info) => {
   let path = null;
   let identifier = null;
-
   if (args.id) {
     path = "dataSource.user.byIdLoader";
     identifier = "id";
@@ -14,5 +13,5 @@ export default async (root, args, context, info) => {
     return null;
   }
 
-  return getOneHOR(path, identifier)(root, args, context, info);
+  return loaderGetHOR(path, identifier)(root, args, context, info);
 };

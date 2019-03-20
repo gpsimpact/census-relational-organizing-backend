@@ -636,14 +636,17 @@
     lodash "^4.17.10"
     to-fast-properties "^2.0.0"
 
-"@jakelowen/sqorn-graphql-filters@0.2.0":
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/@jakelowen/sqorn-graphql-filters/-/sqorn-graphql-filters-0.2.0.tgz#465aee8dc33ee69bfce488e07efbf01b156a8989"
-  integrity sha512-p1T0W0hIV9gHyA0bWSrv8vcoR84hLI6jDClIBhvM41XMQCV3vZnN9Mo0+IJRbneUi5DHAr/8KwjSGYC7sm9XJQ==
+"@jakelowen/sqorn-graphql-filters@0.4.1":
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/@jakelowen/sqorn-graphql-filters/-/sqorn-graphql-filters-0.4.1.tgz#c883df8f5af79dca7d7027866264a608acab6239"
+  integrity sha512-IowZDqxk5pM791kaE/7nIyz8RsZ1ZoE2GL+DlvfK5VGe2kx4XRND+bbSSU7ob4/ZnnzboU7g8trj9FLyGJD9Zg==
   dependencies:
     dataloader "^1.4.0"
+    lodash "^4.17.11"
     lodash.get "^4.4.2"
     lodash.groupby "^4.6.0"
+    lodash.includes "^4.3.0"
+    lodash.isempty "^4.4.0"
     lodash.keyby "^4.6.0"
     lodash.keys "^4.2.0"
     lodash.map "^4.6.0"
@@ -4932,6 +4935,11 @@ lodash.groupby@^4.6.0:
   version "4.6.0"
   resolved "https://registry.yarnpkg.com/lodash.groupby/-/lodash.groupby-4.6.0.tgz#0b08a1dcf68397c397855c3239783832df7403d1"
   integrity sha1-Cwih3PaDl8OXhVwyOXg4Mt90A9E=
+
+lodash.includes@^4.3.0:
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/lodash.includes/-/lodash.includes-4.3.0.tgz#60bb98a87cb923c68ca1e51325483314849f553f"
+  integrity sha1-YLuYqHy5I8aMoeUTJUgzFISfVT8=
 
 lodash.isempty@^4.4.0:
   version "4.4.0"

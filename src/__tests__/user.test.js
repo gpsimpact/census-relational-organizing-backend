@@ -43,6 +43,7 @@ describe("User", () => {
   test("Happy Path By Id", async () => {
     const user = await createTestUser();
     const response = await graphqlTestCall(GET_USER_QUERY, { id: user.id });
+    // console.log(response);
     expect(response.data.user.id).toEqual(user.id);
     expect(response.data.user.name).toEqual(user.name);
   });

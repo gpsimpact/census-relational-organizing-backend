@@ -27,6 +27,7 @@ describe("RequestLoginResolver", () => {
     const response = await graphqlTestCall(requestLoginMutation, {
       email: faker.internet.email()
     });
+    // console.log(response);
     expect(response.data.requestLogin.code).toBe("DOES_NOT_EXIST");
     expect(response.data.requestLogin.success).toBe(false);
   });
