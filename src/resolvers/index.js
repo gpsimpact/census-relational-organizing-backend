@@ -5,6 +5,7 @@ import users from "./query/users";
 import user from "./query/user";
 import team from "./query/team";
 import teams from "./query/teams";
+import summaryCountTeams from "./query/summaryCountTeams";
 import removeTeam from "./mutation/removeTeam";
 import createTeam from "./mutation/createTeam";
 import updateTeam from "./mutation/updateTeam";
@@ -28,7 +29,8 @@ export default {
     users,
     user,
     team,
-    teams
+    teams,
+    summaryCountTeams
     // io,
     // ios
   },
