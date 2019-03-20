@@ -10,7 +10,8 @@ export default shield(
   {
     Query: {
       team: and(isAuthenticated, has_GP_ADMIN_TEAMS),
-      teams: and(isAuthenticated, has_GP_ADMIN_TEAMS)
+      teams: and(isAuthenticated, has_GP_ADMIN_TEAMS),
+      summaryCountTeams: and(isAuthenticated, has_GP_ADMIN_TEAMS)
     },
     Mutation: {
       confirmLogin: not(isAuthenticated),
