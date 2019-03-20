@@ -4,7 +4,7 @@ export default async (root, args, context, info) => {
   const existsFilters = {
     teamPermissions: {
       tableName: "team_permissions",
-      where: "team_permissions.team_id = teams.id"
+      joinCondition: "team_permissions.team_id = teams.id"
     }
   };
   const dbHandle = context.sq.from`teams`;

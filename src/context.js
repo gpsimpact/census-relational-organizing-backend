@@ -3,12 +3,13 @@ import {
   createGDS,
   updateGDS,
   removeGDS,
-  removeManyGDS,
-  singleLoaderGDS,
-  manyLoaderGDS
+  removeManyGDS
 } from "@jakelowen/sqorn-graphql-filters";
+// import _ from "lodash";
 
 import { sq } from "./db";
+import simpleSingleLoader from "./dataSources/simpleSingleLoader";
+import simpleManyLoader from "./dataSources/simpleManyLoader";
 // users
 import meLoader from "./dataSources/users/me";
 import setLoginToken from "./dataSources/users/setLoginToken";
@@ -26,14 +27,14 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 import redis, { pubsub } from "./redis";
 
 export default (req, res) => {
-  const userByIdLoader = singleLoaderGDS(sq.from`users`, "id");
-  const userByEmailLoader = singleLoaderGDS(sq.from`users`, "email");
-  const teamByIdLoader = singleLoaderGDS(sq.from`teams`, "id");
-  const teamBySlugLoader = singleLoaderGDS(sq.from`teams`, "slug");
-  const teamByNameLoader = singleLoaderGDS(sq.from`teams`, "name");
+  const userByIdLoader = simpleSingleLoader(sq.from`users`, "id");
+  const userByEmailLoader = simpleSingleLoader(sq.from`users`, "email");
+  const teamByIdLoader = simpleSingleLoader(sq.from`teams`, "id");
+  const teamBySlugLoader = simpleSingleLoader(sq.from`teams`, "slug");
+  const teamByNameLoader = simpleSingleLoader(sq.from`teams`, "name");
 
   const readyMeLoader = meLoader(req.session, userByIdLoader);
-  const globalPermissionsByUserIdLoader = manyLoaderGDS(
+  const globalPermissionsByUserIdLoader = simpleManyLoader(
     sq.from`global_permissions`,
     "userId"
   );
@@ -46,14 +47,14 @@ export default (req, res) => {
     "teamId"
   );
 
-  const OLPermsByUserIdLoader = manyLoaderGDS(
+  const OLPermsByUserIdLoader = simpleManyLoader(
     sq.from`team_permissions`.leftJoin`teams`
       .on`team_permissions.team_id = teams.id`.where`teams.active = ${true}`,
     // .andWhere("teams.active", "=", true),
     "userId"
   );
 
-  const OLPermsByTeamIdLoader = manyLoaderGDS(
+  const OLPermsByTeamIdLoader = simpleManyLoader(
     sq.from`team_permissions`,
     "teamId"
   );
