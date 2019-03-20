@@ -8,3 +8,10 @@ input RegisterInput {
   zip5: String!
   phone: String!
 }
+
+type RegisterResult {
+  code: MutationCodeEnum!
+  success: Boolean!
+  message: String!
+  securityCode: String
+}
