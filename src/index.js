@@ -8,7 +8,9 @@ import { default as typeDefs } from "./typeDefinitions";
 import resolvers from "./resolvers";
 import context from "./context";
 
-import transformsMiddleware from "./middleware/transforms";
+import lowerCaseEmailMW from "./middleware/lowerCaseEmail";
+import createSlugMW from "./middleware/createSlug";
+import defaultToAuthedUserMW from "./middleware/defaultToAuthedUser";
 import permissionsMiddleware from "./middleware/permissions";
 
 require("dotenv").config();
@@ -17,7 +19,12 @@ const server = new GraphQLServer({
   typeDefs,
   resolvers,
   context: ({ request, response }) => context(request, response),
-  middlewares: [permissionsMiddleware, transformsMiddleware]
+  middlewares: [
+    defaultToAuthedUserMW,
+    permissionsMiddleware,
+    lowerCaseEmailMW,
+    createSlugMW
+  ]
 });
 
 server.express.use(

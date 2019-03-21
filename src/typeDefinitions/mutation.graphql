@@ -1,7 +1,7 @@
 type Mutation {
   createUser(input: CreateUserInput!): CreateUserResult!
   createTeam(input: CreateTeamInput!): CreateTeamResult!
-  updateUser(id: String!, input: UpdateUserInput!): UpdateUserResult!
+  updateUser(id: String, input: UpdateUserInput!): UpdateUserResult!
   updateTeam(id: String!, input: UpdateTeamInput!): UpdateTeamResult!
   removeUser(id: String!): RemoveUserResult!
   removeTeam(id: String!): RemoveTeamResult!

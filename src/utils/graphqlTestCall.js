@@ -1,7 +1,9 @@
 import { graphql } from "graphql";
 import { makeExecutableSchema } from "graphql-tools";
 import { applyMiddleware } from "graphql-middleware";
-import transformsMiddleware from "../middleware/transforms";
+import lowerCaseEmailMW from "../middleware/lowerCaseEmail";
+import createSlugMW from "../middleware/createSlug";
+import defaultToAuthedUserMW from "../middleware/defaultToAuthedUser";
 import permissionsMiddleware from "../middleware/permissions";
 
 import makeContext from "../context";
@@ -15,8 +17,10 @@ export const schema = makeExecutableSchema({
 
 const schemaWithMiddleware = applyMiddleware(
   schema,
-  transformsMiddleware,
-  permissionsMiddleware
+  defaultToAuthedUserMW,
+  permissionsMiddleware,
+  lowerCaseEmailMW,
+  createSlugMW
 );
 
 export const makeTestContext = (userId, contextOverRides) => {
