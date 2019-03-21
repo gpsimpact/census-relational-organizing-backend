@@ -1,6 +1,14 @@
 import { updateOneHOR } from "@jakelowen/sqorn-graphql-filters";
 
 export default async (root, args, context) => {
+  if (!args.id) {
+    return {
+      success: false,
+      code: "DOES_NOT_EXIST",
+      message: "No user with this id exists.",
+      item: null
+    };
+  }
   // check if email already exists
   const existing = await context.dataSource.user.byIdLoader.load(args.id);
   if (!existing) {

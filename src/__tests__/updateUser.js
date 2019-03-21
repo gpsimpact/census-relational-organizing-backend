@@ -143,4 +143,21 @@ describe("Update User", () => {
     expect(dbUser.firstName).toEqual(newData.firstName);
     expect(dbUser.email).toEqual(newData.email.toLowerCase());
   });
+
+  test("fails is not authed or no id", async () => {
+    const user = await createTestUser();
+
+    const newData = {
+      firstName: faker.name.firstName(),
+      email: faker.internet.email().toUpperCase()
+    };
+
+    const response = await graphqlTestCall(UPDATE_USER_MUTATION, {
+      id: user.id,
+      input: newData
+    });
+    // console.log(response);
+    expect(response.errors.length).toEqual(1);
+    expect(response.errors[0].message).toEqual("Not Authorized!");
+  });
 });
