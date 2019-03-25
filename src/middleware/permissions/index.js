@@ -11,8 +11,8 @@ const has_GP_ADMIN_USERS_CRUD = hasGlobalPerm("ADMIN_USERS_CRUD");
 export default shield(
   {
     Query: {
-      team: and(isAuthenticated, has_GP_ADMIN_TEAMS),
-      teams: and(isAuthenticated, has_GP_ADMIN_TEAMS),
+      team: isAuthenticated, //and(isAuthenticated, has_GP_ADMIN_TEAMS),
+      teams: isAuthenticated, //and(isAuthenticated, has_GP_ADMIN_TEAMS),
       summaryCountTeams: and(isAuthenticated, has_GP_ADMIN_TEAMS)
     },
     Mutation: {
