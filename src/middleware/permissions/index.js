@@ -25,7 +25,8 @@ export default shield(
       updateUser: and(
         isAuthenticated,
         or(has_GP_ADMIN_USERS_CRUD, argsIDisSelf)
-      )
+      ),
+      requestTeamMembership: isAuthenticated
     }
   },
   // default error spelling is Authorised.

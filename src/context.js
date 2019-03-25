@@ -84,7 +84,8 @@ export default (req, res) => {
       byUserIdLoader: OLPermsByUserIdLoader,
       byTeamIdLoader: OLPermsByTeamIdLoader,
       OLUserPerms: OLUserPerms(OLPermsByUserIdLoader),
-      OLTeamPerms: OLTeamPerms(OLPermsByTeamIdLoader)
+      OLTeamPerms: OLTeamPerms(OLPermsByTeamIdLoader),
+      create: createGDS(sq.from`team_permissions`)
     },
     team: {
       byIdLoader: teamByIdLoader,

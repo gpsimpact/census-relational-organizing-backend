@@ -74,23 +74,23 @@ describe("Team", () => {
     expect(response.data.team).toBeNull();
   });
 
-  test("Fails without ADMIN_TEAMS global perm", async () => {
-    const team = await createTestTeam();
-    const user = await createTestUser();
-    // no input
-    const response = await graphqlTestCall(
-      GET_TEAM_QUERY,
-      {
-        id: team.id
-      },
-      user.id
-    );
-    // console.log(response);
-    // should return correct data
-    expect(response.data.team).toBeNull();
-    expect(response.errors.length).toEqual(1);
-    expect(response.errors[0].message).toEqual("Not Authorized!");
-  });
+  // test("Fails without ADMIN_TEAMS global perm", async () => {
+  //   const team = await createTestTeam();
+  //   const user = await createTestUser();
+  //   // no input
+  //   const response = await graphqlTestCall(
+  //     GET_TEAM_QUERY,
+  //     {
+  //       id: team.id
+  //     },
+  //     user.id
+  //   );
+  //   // console.log(response);
+  //   // should return correct data
+  //   expect(response.data.team).toBeNull();
+  //   expect(response.errors.length).toEqual(1);
+  //   expect(response.errors[0].message).toEqual("Not Authorized!");
+  // });
 
   test("UserPermissions null", async () => {
     const team = await createTestTeam();
