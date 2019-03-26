@@ -64,6 +64,7 @@ describe("User", () => {
   test("fails if already applicant", async () => {
     const user = await createTestUser();
     const team = await createTestTeam();
+    await createTestOLPermission(user.id, team.id, "MOREVALUEEXPERIMENT");
     await createTestOLPermission(user.id, team.id, "APPLICANT");
     const response = await graphqlTestCall(
       REQUEST_TEAM_MEMBERSHIP_MUTATION,

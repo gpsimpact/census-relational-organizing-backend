@@ -10,6 +10,7 @@ import {
 import { sq } from "./db";
 import simpleSingleLoader from "./dataSources/simpleSingleLoader";
 import simpleManyLoader from "./dataSources/simpleManyLoader";
+import compoundOneLoader from "./dataSources/CompoundOneLoader";
 // users
 import meLoader from "./dataSources/users/me";
 import setLoginToken from "./dataSources/users/setLoginToken";
@@ -85,7 +86,12 @@ export default (req, res) => {
       byTeamIdLoader: OLPermsByTeamIdLoader,
       OLUserPerms: OLUserPerms(OLPermsByUserIdLoader),
       OLTeamPerms: OLTeamPerms(OLPermsByTeamIdLoader),
-      create: createGDS(sq.from`team_permissions`)
+      create: createGDS(sq.from`team_permissions`),
+      loadOne: compoundOneLoader(sq.from`team_permissions`, [
+        "userId",
+        "teamId",
+        "permission"
+      ])
     },
     team: {
       byIdLoader: teamByIdLoader,

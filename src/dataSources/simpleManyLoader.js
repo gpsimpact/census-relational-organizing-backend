@@ -5,8 +5,8 @@ import {
 } from "@jakelowen/sqorn-graphql-filters";
 
 export default (query, keyName) => {
-  const dataFetcherFn = key => {
-    return query.where({ [keyName]: key });
+  const dataFetcherFn = keys => {
+    return query.where({ [keyName]: [...keys] });
   };
   const cacheKeyFn = x => x[keyName];
   const dataPrepFn = composeData(cacheKeyFn);
