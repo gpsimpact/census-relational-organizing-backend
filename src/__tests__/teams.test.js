@@ -82,14 +82,14 @@ describe("Teams", () => {
     expect(response1.data.teams.items.length).toBe(2);
   });
 
-  test("Fails without ADMIN_TEAMS global perm", async () => {
-    const user = await createTestUser();
-    // no input
-    const response = await graphqlTestCall(GET_ALL_TEAMS_QUERY, {}, user.id);
-    // should return correct data
-    expect(response.errors.length).toEqual(1);
-    expect(response.errors[0].message).toEqual("Not Authorized!");
-  });
+  // test("Fails without ADMIN_TEAMS global perm", async () => {
+  //   const user = await createTestUser();
+  //   // no input
+  //   const response = await graphqlTestCall(GET_ALL_TEAMS_QUERY, {}, user.id);
+  //   // should return correct data
+  //   expect(response.errors.length).toEqual(1);
+  //   expect(response.errors[0].message).toEqual("Not Authorized!");
+  // });
 
   test("Boolean Where", async () => {
     await createTestTeam();
