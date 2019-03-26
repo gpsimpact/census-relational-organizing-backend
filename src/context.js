@@ -91,7 +91,8 @@ export default (req, res) => {
         "userId",
         "teamId",
         "permission"
-      ])
+      ]),
+      remove: data => sq.delete.from`team_permissions`.where(data)
     },
     team: {
       byIdLoader: teamByIdLoader,

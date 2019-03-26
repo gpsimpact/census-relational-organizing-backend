@@ -16,6 +16,13 @@ export default async (root, args, context) => {
     ...args.input
   });
 
+  // Remove applicant status if exists
+  await context.dataSource.olPerms.remove({
+    userId: args.input.userId,
+    teamId: args.input.teamId,
+    permission: "APPLICANT"
+  });
+
   return {
     success: true,
     code: "OK",

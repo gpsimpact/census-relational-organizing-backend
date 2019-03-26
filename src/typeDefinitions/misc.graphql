@@ -23,6 +23,7 @@ enum MutationCodeEnum {
 enum ObjectLevelPermissionEnum {
   APPLICANT
   ASSIGNPERMISSIONS
+  MEMBER
 }
 
 scalar GraphQLDateTime

@@ -27,7 +27,7 @@ describe("User", () => {
   test("Happy Path", async () => {
     const grantorUser = await createTestUser();
     const granteeUser = await createTestUser();
-    const permission = "APPLICANT";
+    const permission = "ASSIGNPERMISSIONS";
     const team = await createTestTeam();
 
     await createTestGlobalPerm(grantorUser.id, "ADMIN_TEAMS_ASSIGNPERMISSIONS");
@@ -39,7 +39,6 @@ describe("User", () => {
       },
       grantorUser.id
     );
-    // console.log(response);
     expect(response.data.grantTeamPermission.code).toEqual("OK");
     expect(response.data.grantTeamPermission.success).toEqual(true);
     expect(response.data.grantTeamPermission.message).toEqual(
@@ -103,7 +102,7 @@ describe("User", () => {
   test("fails if not right TEAM permissions", async () => {
     const grantorUser = await createTestUser();
     const granteeUser = await createTestUser();
-    const permission = "APPLICANT";
+    const permission = "MEMBER";
     const team = await createTestTeam();
 
     const response = await graphqlTestCall(
@@ -156,5 +155,35 @@ describe("User", () => {
     expect(response.data.grantTeamPermission.message).toEqual(
       "User already has this permission."
     );
+  });
+
+  test("Remove applicant status if exists", async () => {
+    const grantorUser = await createTestUser();
+    const granteeUser = await createTestUser();
+    const permission = "MEMBER";
+    const team = await createTestTeam();
+
+    await createTestGlobalPerm(grantorUser.id, "ADMIN_TEAMS_ASSIGNPERMISSIONS");
+    await createTestOLPermission(granteeUser.id, team.id, "APPLICANT");
+
+    const response = await graphqlTestCall(
+      GRANT_TEAM_PERMISSION_MUTATION,
+      {
+        input: { userId: granteeUser.id, teamId: team.id, permission }
+      },
+      grantorUser.id
+    );
+    expect(response.data.grantTeamPermission.code).toEqual("OK");
+    expect(response.data.grantTeamPermission.success).toEqual(true);
+    expect(response.data.grantTeamPermission.message).toEqual(
+      "Permission granted."
+    );
+
+    const dbUserPerms = await sq.from`team_permissions`.where({
+      userId: granteeUser.id,
+      teamId: team.id
+    });
+    expect(dbUserPerms).toHaveLength(1);
+    expect(dbUserPerms[0].permission).toEqual(permission);
   });
 });
