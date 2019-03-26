@@ -13,6 +13,7 @@ import createUser from "./mutation/createUser";
 import updateUser from "./mutation/updateUser";
 import removeUser from "./mutation/removeUser";
 import requestTeamMembership from "./mutation/requestTeamMembership";
+import grantTeamPermission from "./mutation/grantTeamPermission";
 import globalPermissions from "./user/globalPermissions";
 import teamPermissions from "./user/teamPermissions";
 import userPermissions from "./team/userPermissions";
@@ -46,12 +47,8 @@ export default {
     register,
     confirmLogin,
     logout,
-    requestTeamMembership
-    // createCycle,
-    // createIO,
-    // updateIO,
-    // createIOLineItem,
-    // updateIOLineItem
+    requestTeamMembership,
+    grantTeamPermission
   },
   User: {
     globalPermissions,

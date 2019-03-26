@@ -1,0 +1,11 @@
+input GrantTeamPermissionInput {
+  teamId: String!
+  userId: String!
+  permission: ObjectLevelPermissionEnum!
+}
+
+type GrantTeamPermissionResult {
+  code: MutationCodeEnum!
+  success: Boolean!
+  message: String!
+}
