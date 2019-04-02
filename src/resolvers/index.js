@@ -14,6 +14,7 @@ import updateUser from "./mutation/updateUser";
 import removeUser from "./mutation/removeUser";
 import requestTeamMembership from "./mutation/requestTeamMembership";
 import grantTeamPermission from "./mutation/grantTeamPermission";
+import removeTeamPermission from "./mutation/removeTeamPermission";
 import globalPermissions from "./user/globalPermissions";
 import teamPermissions from "./user/teamPermissions";
 import userPermissions from "./team/userPermissions";
@@ -48,7 +49,8 @@ export default {
     confirmLogin,
     logout,
     requestTeamMembership,
-    grantTeamPermission
+    grantTeamPermission,
+    removeTeamPermission
   },
   User: {
     globalPermissions,

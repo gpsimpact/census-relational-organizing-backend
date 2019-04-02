@@ -39,6 +39,10 @@ export default shield(
       grantTeamPermission: and(
         isAuthenticated,
         or(has_GP_ADMIN_TEAMS_ASSIGNPERMISSIONS, has_TP_ASSIGNPERMISSIONS)
+      ),
+      removeTeamPermission: and(
+        isAuthenticated,
+        or(has_GP_ADMIN_TEAMS_ASSIGNPERMISSIONS, has_TP_ASSIGNPERMISSIONS)
       )
     }
   },
