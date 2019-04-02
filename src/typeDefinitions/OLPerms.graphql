@@ -7,3 +7,8 @@ type OLTeamPerms {
   user: User
   permissions: [String]!
 }
+
+type OLTeamPermsSummary {
+  permission: String!
+  count: Int!
+}

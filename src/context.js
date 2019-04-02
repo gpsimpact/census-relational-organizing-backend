@@ -33,6 +33,10 @@ export default (req, res) => {
   const teamByIdLoader = simpleSingleLoader(sq.from`teams`, "id");
   const teamBySlugLoader = simpleSingleLoader(sq.from`teams`, "slug");
   const teamByNameLoader = simpleSingleLoader(sq.from`teams`, "name");
+  const UserPermissionSummaryCountsByTeamIdLoader = simpleManyLoader(
+    sq.from`team_user_permission_summary_counts`,
+    "teamId"
+  );
 
   const readyMeLoader = meLoader(req.session, userByIdLoader);
   const globalPermissionsByUserIdLoader = simpleManyLoader(
@@ -84,6 +88,7 @@ export default (req, res) => {
     olPerms: {
       byUserIdLoader: OLPermsByUserIdLoader,
       byTeamIdLoader: OLPermsByTeamIdLoader,
+      summaryCountsByTeamIdLoader: UserPermissionSummaryCountsByTeamIdLoader,
       OLUserPerms: OLUserPerms(OLPermsByUserIdLoader),
       OLTeamPerms: OLTeamPerms(OLPermsByTeamIdLoader),
       create: createGDS(sq.from`team_permissions`),
