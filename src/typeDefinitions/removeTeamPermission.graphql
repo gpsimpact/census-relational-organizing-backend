@@ -1,0 +1,11 @@
+input RemoveTeamPermissionInput {
+  teamId: String!
+  userId: String!
+  permission: ObjectLevelPermissionEnum!
+}
+
+type RemoveTeamPermissionResult {
+  code: MutationCodeEnum!
+  success: Boolean!
+  message: String!
+}

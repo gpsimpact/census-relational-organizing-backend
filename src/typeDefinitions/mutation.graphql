@@ -13,4 +13,7 @@ type Mutation {
   grantTeamPermission(
     input: GrantTeamPermissionInput!
   ): GrantTeamPermissionResult!
+  removeTeamPermission(
+    input: RemoveTeamPermissionInput!
+  ): RemoveTeamPermissionResult!
 }
