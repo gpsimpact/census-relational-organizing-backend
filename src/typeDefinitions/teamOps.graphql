@@ -4,6 +4,7 @@ type Team {
   description: String
   active: Boolean
   userPermissions: [OLTeamPerms]
+  userPermissionSummaryCounts: [OLTeamPermsSummary]
   slug: String!
   createdAt: GraphQLDateTime!
   updatedAt: GraphQLDateTime!

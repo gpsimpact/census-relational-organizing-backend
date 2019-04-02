@@ -18,6 +18,7 @@ import removeTeamPermission from "./mutation/removeTeamPermission";
 import globalPermissions from "./user/globalPermissions";
 import teamPermissions from "./user/teamPermissions";
 import userPermissions from "./team/userPermissions";
+import userPermissionSummaryCounts from "./team/userPermissionsSummaryCounts";
 import OLUserPermsTeam from "./OLUserPerms/team";
 import OLTeamPermsUser from "./OLTeamPerms/user";
 import requestLogin from "./mutation/requestLogin";
@@ -57,7 +58,8 @@ export default {
     teamPermissions
   },
   Team: {
-    userPermissions
+    userPermissions,
+    userPermissionSummaryCounts
   },
   OLUserPerms: {
     team: OLUserPermsTeam

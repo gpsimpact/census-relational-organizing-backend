@@ -19,16 +19,16 @@ query team($id: String, $slug: String) {
           }
           permissions
         }
+        userPermissionSummaryCounts {
+          permission
+          count
+        }
     }
 }
 `;
 
 beforeEach(async () => {
   await dbUp();
-});
-
-afterEach(async () => {
-  await dbDown();
 });
 
 describe("Team", () => {
@@ -140,5 +140,42 @@ describe("Team", () => {
       cp2.permission
     );
     expect(response.data.team.userPermissions[0].user.id).toEqual(user.id);
+  });
+
+  test("UserPermissions Summary", async () => {
+    const adminUser = await createTestUser();
+    const user2 = await createTestUser();
+    const user3 = await createTestUser();
+    const user4 = await createTestUser();
+    const user5 = await createTestUser();
+    const user6 = await createTestUser();
+
+    const team = await createTestTeam();
+    await createTestGlobalPerm(adminUser.id, "ADMIN_TEAMS");
+
+    await createTestOLPermission(user2.id, team.id, "USER__READ__TEAM");
+    await createTestOLPermission(user3.id, team.id, "USER__READ__TEAM");
+    await createTestOLPermission(
+      user3.id,
+      team.id,
+      "USER__READ__TEAM_CONTACT_EMAIL"
+    );
+    await createTestOLPermission(user4.id, team.id, "USER__READ__TEAM");
+    await createTestOLPermission(user5.id, team.id, "USER__READ__TEAM");
+    await createTestOLPermission(user6.id, team.id, "USER__READ__TEAM");
+
+    const response = await graphqlTestCall(
+      GET_TEAM_QUERY,
+      {
+        id: team.id
+      },
+      adminUser.id
+    );
+    // console.log(response);
+    expect(response.data.team.userPermissionSummaryCounts.length).toBe(2);
+    expect(response.data.team.userPermissionSummaryCounts).toEqual([
+      { permission: "USER__READ__TEAM", count: 5 },
+      { permission: "USER__READ__TEAM_CONTACT_EMAIL", count: 1 }
+    ]);
   });
 });
