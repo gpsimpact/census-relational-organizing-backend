@@ -21,7 +21,7 @@ export default shield(
   {
     Query: {
       team: isAuthenticated, //and(isAuthenticated, has_GP_ADMIN_TEAMS),
-      // teams: isAuthenticated, //and(isAuthenticated, has_GP_ADMIN_TEAMS),
+      teams: isAuthenticated, //and(isAuthenticated, has_GP_ADMIN_TEAMS),
       summaryCountTeams: and(isAuthenticated, has_GP_ADMIN_TEAMS)
     },
     Mutation: {
