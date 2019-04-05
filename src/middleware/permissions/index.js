@@ -47,5 +47,5 @@ export default shield(
     }
   },
   // default error spelling is Authorised.
-  { fallbackError: "Not Authorized!" }
+  { fallbackError: "Not Authorized!", debug: true, allowExternalErrors: true }
 );

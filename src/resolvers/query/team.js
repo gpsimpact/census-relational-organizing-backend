@@ -8,6 +8,8 @@ export default async (root, args, context, info) => {
     path = "dataSource.team.byIdLoader";
     identifier = "id";
   } else if (args.slug) {
+    // transform
+    args.slug = args.slug.toLowerCase();
     path = "dataSource.team.bySlugLoader";
     identifier = "slug";
   } else {
