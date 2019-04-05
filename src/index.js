@@ -55,7 +55,7 @@ const sessionOptions = {
 
 if (isDeployed) {
   server.express.set("trust proxy", 1); // trust first proxy
-  sessionOptions.cookie.secure = true; // serve secure cookies
+  // sessionOptions.cookie.secure = true; // serve secure cookies
 }
 
 server.express.use(session(sessionOptions));
