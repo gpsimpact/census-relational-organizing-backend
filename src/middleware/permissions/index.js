@@ -1,6 +1,7 @@
 /* eslint-disable camelcase */
 import { shield, not, and, or } from "graphql-shield";
 import isAuthenticated from "./isAuthenticated";
+import isNotAuthenticated from "./IsNotAuthenticated";
 import hasGlobalPerm from "./hasGlobalPerm";
 import hasTeamPerm from "./hasTeamPerm";
 import argsIDisSelf from "./isSelf";
@@ -25,9 +26,9 @@ export default shield(
       summaryCountTeams: and(isAuthenticated, has_GP_ADMIN_TEAMS)
     },
     Mutation: {
-      confirmLogin: not(isAuthenticated),
-      register: not(isAuthenticated),
-      requestLogin: not(isAuthenticated),
+      confirmLogin: isNotAuthenticated,
+      register: isNotAuthenticated,
+      requestLogin: isNotAuthenticated,
       createTeam: and(isAuthenticated, has_GP_ADMIN_TEAMS_CRUD),
       removeTeam: and(isAuthenticated, has_GP_ADMIN_TEAMS_CRUD),
       updateTeam: and(isAuthenticated, has_GP_ADMIN_TEAMS_CRUD),
