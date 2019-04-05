@@ -15,6 +15,9 @@ import permissionsMiddleware from "./middleware/permissions";
 
 require("dotenv").config();
 
+const isDeployed =
+  process.env.NODE_ENV === "production" || process.env.NODE_ENV === "staging";
+
 const server = new GraphQLServer({
   typeDefs,
   resolvers,
@@ -36,22 +39,26 @@ server.express.use(
 
 const RedisStore = connectRedis(session);
 
-server.express.use(
-  session({
-    cookie: {
-      httpOnly: true,
-      maxAge: 1000 * 60 * 60 * 24 * 1 * 365, // 1 years
-      secure: process.env.NODE_ENV === "production"
-    },
-    name: "qid",
-    resave: false,
-    saveUninitialized: false,
-    secret: process.env.TOKEN_SECRET,
-    store: new RedisStore({
-      client: redis
-    })
+const sessionOptions = {
+  cookie: {
+    httpOnly: true,
+    maxAge: 1000 * 60 * 60 * 24 * 1 * 365 // 1 years
+  },
+  name: "qid",
+  resave: false,
+  saveUninitialized: false,
+  secret: process.env.TOKEN_SECRET,
+  store: new RedisStore({
+    client: redis
   })
-);
+};
+
+if (isDeployed) {
+  server.express.set("trust proxy", 1); // trust first proxy
+  sessionOptions.cookie.secure = true; // serve secure cookies
+}
+
+server.express.use(session(sessionOptions));
 
 // eslint-disable-next-line no-console
 // const endpoint = "/graphql";
