@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
-import { shield, not, and, or } from "graphql-shield";
+import { shield, and, or } from "graphql-shield";
 import isAuthenticated from "./isAuthenticated";
-import isNotAuthenticated from "./IsNotAuthenticated";
+import isNotAuthenticated from "./isNotAuthenticated";
 import hasGlobalPerm from "./hasGlobalPerm";
 import hasTeamPerm from "./hasTeamPerm";
 import argsIDisSelf from "./isSelf";
