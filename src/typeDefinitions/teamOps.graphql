@@ -45,7 +45,7 @@ input TeamsInput {
   where: TeamsWhere
   limit: Int
   offset: Int
-  sort: TeamsWhere
+  sort: TeamsSort
 }
 
 input TeamsSort {
