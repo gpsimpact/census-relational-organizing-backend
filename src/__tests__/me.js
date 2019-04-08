@@ -34,7 +34,7 @@ describe("MeResolver", () => {
 
   test("Auth returns user", async () => {
     const user = await createTestUser();
-    const res = await graphqlTestCall(meQuery, {}, user.id);
+    const res = await graphqlTestCall(meQuery, {}, { user: { id: user.id } });
     expect(res.data.me.id).toBe(user.id);
     expect(res.data.me.firstName).toBe(user.firstName);
   });

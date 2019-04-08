@@ -1,4 +1,5 @@
 // import faker from "faker";
+import jsonwebtoken from "jsonwebtoken";
 import { graphqlTestCall } from "../utils/graphqlTestCall";
 import { dbUp, dbDown } from "../utils/testDbOps";
 import { createTestUser } from "../utils/createTestEntities";
@@ -11,9 +12,7 @@ const CONFIRM_LOGIN_MUTATION = `
             code
             success
             message
-            item {
-              id
-            }
+            token 
         }
     }
 `;
@@ -41,9 +40,17 @@ describe("confirmLoginResolver", () => {
     const response = await graphqlTestCall(CONFIRM_LOGIN_MUTATION, {
       token
     });
+    // console.log(response);
     expect(response.data.confirmLogin.code).toBe("OK");
     expect(response.data.confirmLogin.success).toBe(true);
-    expect(response.data.confirmLogin.item.id).toEqual(user.id);
+    expect(response.data.confirmLogin.token).not.toBeNull();
+
+    // test token generation
+    const tokenPayload = jsonwebtoken.verify(
+      response.data.confirmLogin.token,
+      process.env.TOKEN_SECRET
+    );
+    expect(tokenPayload.id).toEqual(user.id);
 
     const rToken2 = await redis.get(token);
     expect(rToken2).toBeNull();
@@ -59,10 +66,10 @@ describe("confirmLoginResolver", () => {
       {
         token
       },
-      user.id
+      { user: { id: user.id } }
     );
     expect(res.errors.length).toBe(1);
-    expect(res.errors).toMatchSnapshot();
+    expect(res.errors[0].message).toEqual("You are already authenticated");
   });
 
   test("response if no matching user", async () => {

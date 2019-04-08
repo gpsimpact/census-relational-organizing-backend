@@ -23,30 +23,15 @@ const schemaWithMiddleware = applyMiddleware(
   createSlugMW
 );
 
-export const makeTestContext = (userId, contextOverRides) => {
-  const context = makeContext(
-    {
-      session: {
-        userId,
-        destroy: () => {}
-      }
-    },
-    {
-      clearCookie: () => {}
-    }
-  );
+export const makeTestContext = contextOverRides => {
+  const context = makeContext({}, {});
   const testContext = Object.assign(context, contextOverRides);
   return testContext;
 };
 
-export const graphqlTestCall = async (
-  query,
-  variables,
-  userId,
-  contextOverRides
-) => {
+export const graphqlTestCall = async (query, variables, contextOverRides) => {
   // const schema = await generateSchema();
-  const testContext = makeTestContext(userId, contextOverRides);
+  const testContext = makeTestContext(contextOverRides);
   return graphql(
     schemaWithMiddleware,
     query,

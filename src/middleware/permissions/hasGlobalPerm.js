@@ -5,12 +5,10 @@ export default requiredGP =>
   rule(`name-has-global-perm-${requiredGP}`, { cache: "contextual" })(
     async (parent, args, ctx) => {
       // get list of users's global perms
-      if (!ctx.req.session.userId) {
+      if (!ctx.user || !ctx.user.id) {
         return false;
       }
-      const gps = await ctx.dataSource.globalPermissions.forUser(
-        ctx.req.session.userId
-      );
+      const gps = await ctx.dataSource.globalPermissions.forUser(ctx.user.id);
 
       return includes(gps, requiredGP);
     }

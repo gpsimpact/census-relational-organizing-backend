@@ -47,7 +47,7 @@ describe("Create Team", () => {
         id: team.id,
         input: newData
       },
-      user.id
+      { user: { id: user.id } }
     );
     expect(response.data.updateTeam).not.toBeNull();
     expect(response.data.updateTeam.item.name).toEqual(newData.name);
@@ -74,7 +74,7 @@ describe("Create Team", () => {
         id: team.id,
         input: newData
       },
-      user.id
+      { user: { id: user.id } }
     );
 
     // should return correct data

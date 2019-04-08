@@ -41,7 +41,7 @@ describe("Team", () => {
       {
         id: team.id
       },
-      user.id
+      { user: { id: user.id } }
     );
     // should return correct data
     expect(response.data.team.id).toEqual(team.id);
@@ -57,7 +57,7 @@ describe("Team", () => {
       {
         slug: team.slug
       },
-      user.id
+      { user: { id: user.id } }
     );
     // should return correct data
     expect(response.data.team.id).toEqual(team.id);
@@ -102,7 +102,7 @@ describe("Team", () => {
       {
         id: team.id
       },
-      user.id
+      { user: { id: user.id } }
     );
 
     expect(response.data.team.userPermissions).toBeNull();
@@ -129,7 +129,7 @@ describe("Team", () => {
       {
         id: team.id
       },
-      user.id
+      { user: { id: user.id } }
     );
     expect(response.data.team.userPermissions.length).toBe(1);
     expect(response.data.team.userPermissions[0].permissions.length).toBe(2);
@@ -169,7 +169,7 @@ describe("Team", () => {
       {
         id: team.id
       },
-      adminUser.id
+      { user: { id: adminUser.id } }
     );
     // console.log(response);
     expect(response.data.team.userPermissionSummaryCounts.length).toBe(2);

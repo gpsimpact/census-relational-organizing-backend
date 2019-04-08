@@ -38,7 +38,7 @@ describe("Remove Team", () => {
       {
         id: team.id
       },
-      user.id
+      { user: { id: user.id } }
     );
     expect(response.data.removeTeam).not.toBeNull();
     expect(response.data.removeTeam.success).toEqual(true);

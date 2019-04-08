@@ -27,7 +27,7 @@ describe("RequestLoginResolver", () => {
     const response = await graphqlTestCall(requestLoginMutation, {
       email: faker.internet.email()
     });
-    // console.log(response);
+    // console.log(JSON.stringify(response, null, "\t"));
     expect(response.data.requestLogin.code).toBe("DOES_NOT_EXIST");
     expect(response.data.requestLogin.success).toBe(false);
   });
@@ -43,7 +43,6 @@ describe("RequestLoginResolver", () => {
       {
         email: user.email
       },
-      undefined,
       {
         sendEmail: mockSendEmail
       }
@@ -67,7 +66,6 @@ describe("RequestLoginResolver", () => {
       {
         email: ` ${user.email.toUpperCase()}    `
       },
-      undefined,
       {
         sendEmail: mockSendEmail
       }
@@ -88,9 +86,9 @@ describe("RequestLoginResolver", () => {
       {
         email: ` ${user.email.toUpperCase()}    `
       },
-      user.id
+      { user: { id: user.id } }
     );
     expect(res.errors.length).toBe(1);
-    expect(res.errors).toMatchSnapshot();
+    expect(res.errors[0].message).toEqual("You are already authenticated");
   });
 });

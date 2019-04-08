@@ -8,7 +8,6 @@ type Mutation {
   requestLogin(email: String!, nextPage: String): RequestLoginResult!
   register(input: RegisterInput!): RegisterResult!
   confirmLogin(token: String!): ConfirmLoginResult!
-  logout: LogoutResult!
   requestTeamMembership(teamId: String!): requestTeamMembershipResult!
   grantTeamPermission(
     input: GrantTeamPermissionInput!
