@@ -31,7 +31,7 @@ describe("User", () => {
     const response = await graphqlTestCall(
       REQUEST_TEAM_MEMBERSHIP_MUTATION,
       { teamId: team.id },
-      user.id
+      { user: { id: user.id } }
     );
     // console.log(response);
     expect(response.data.requestTeamMembership.code).toEqual("OK");
@@ -70,7 +70,7 @@ describe("User", () => {
       {
         teamId: team.id
       },
-      user.id
+      { user: { id: user.id } }
     );
     // console.log(response);
     expect(response.data.requestTeamMembership.code).toEqual("DUPLICATE");

@@ -5,11 +5,11 @@ export default (teamIdPath, requiredTP) =>
   rule(`name-has-team-perm-${teamIdPath}-${requiredTP}`, {
     cache: "contextual"
   })(async (parent, args, ctx) => {
-    if (!ctx.req.session.userId) {
+    if (!ctx.user || !ctx.user.id) {
       return false;
     }
 
-    const grantorUserId = ctx.req.session.userId;
+    const grantorUserId = ctx.user.id;
 
     // extract team id
     const teamId = get(args, teamIdPath);

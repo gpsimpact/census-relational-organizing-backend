@@ -1,5 +1,5 @@
 export default async (root, args, context) => {
-  const userId = context.req.session.userId;
+  const userId = context.user.id;
 
   // using compound loader to check.
   const existing = await context.dataSource.olPerms.loadOne.load({

@@ -23,7 +23,7 @@ describe("Summary Count all teams", () => {
     const response = await graphqlTestCall(
       SUMMARY_COUNT_ALL_TEAMS_QUERY,
       null,
-      user.id
+      { user: { id: user.id } }
     );
     // should return correct data
     // console.log(response);
@@ -42,7 +42,7 @@ describe("Summary Count all teams", () => {
     const response = await graphqlTestCall(
       SUMMARY_COUNT_ALL_TEAMS_QUERY,
       null,
-      user.id
+      { user: { id: user.id } }
     );
     // console.log(response);
     expect(response.data.summaryCountTeams).toEqual(5);

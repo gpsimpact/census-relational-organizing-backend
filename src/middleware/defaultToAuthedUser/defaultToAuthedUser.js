@@ -4,8 +4,8 @@ import _ from "lodash";
 export default async (resolve, root, args, context, info) => {
   const emptyVal = x => _.isUndefined(x) || _.isNull(x);
   const xFormFn = x => {
-    if (emptyVal(x) && !emptyVal(context.req.session.userId)) {
-      return context.req.session.userId;
+    if (emptyVal(x) && !emptyVal(context.user.id)) {
+      return context.user.id;
     }
     return x;
   };

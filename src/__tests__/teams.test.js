@@ -37,7 +37,11 @@ describe("Teams", () => {
     await createTestGlobalPerm(user.id, "ADMIN_TEAMS");
 
     // no input
-    const response1 = await graphqlTestCall(GET_ALL_TEAMS_QUERY, {}, user.id);
+    const response1 = await graphqlTestCall(
+      GET_ALL_TEAMS_QUERY,
+      {},
+      { user: { id: user.id } }
+    );
     // console.log(response1);
     // where only input
     const response2 = await graphqlTestCall(
@@ -45,7 +49,7 @@ describe("Teams", () => {
       {
         input: { where: { name: { neq: "fdsfdsa" } } }
       },
-      user.id
+      { user: { id: user.id } }
     );
     // pagination only no where
     const response3 = await graphqlTestCall(
@@ -53,7 +57,7 @@ describe("Teams", () => {
       {
         input: { limit: 100, offset: 0 }
       },
-      user.id
+      { user: { id: user.id } }
     );
     // partial pagination only 1
     const response4 = await graphqlTestCall(
@@ -61,7 +65,7 @@ describe("Teams", () => {
       {
         input: { limit: 100 }
       },
-      user.id
+      { user: { id: user.id } }
     );
     // partial pagination only 2
     const response5 = await graphqlTestCall(
@@ -69,7 +73,7 @@ describe("Teams", () => {
       {
         input: { offset: 0 }
       },
-      user.id
+      { user: { id: user.id } }
     );
     // should all be equal
     expect(response1).toEqual(response2);
@@ -102,7 +106,7 @@ describe("Teams", () => {
       {
         input: { where: { active: { eq: true } } }
       },
-      user.id
+      { user: { id: user.id } }
     );
     expect(response.data.teams.items.length).toBe(1);
   });
@@ -128,7 +132,7 @@ describe("Teams", () => {
           }
         }
       },
-      user.id
+      { user: { id: user.id } }
     );
     // console.log(response);
     expect(response.data.teams.items.length).toBe(1);

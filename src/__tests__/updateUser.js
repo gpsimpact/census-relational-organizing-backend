@@ -52,7 +52,7 @@ describe("Update User", () => {
         id: user.id,
         input: newData
       },
-      user.id
+      { user: { id: user.id } }
     );
     expect(response.data.updateUser).not.toBeNull();
     expect(response.data.updateUser.item.firstName).toEqual(newData.firstName);
@@ -78,7 +78,7 @@ describe("Update User", () => {
       {
         input: newData
       },
-      user.id
+      { user: { id: user.id } }
     );
     // console.log(response);
     expect(response.data.updateUser).not.toBeNull();
@@ -107,7 +107,7 @@ describe("Update User", () => {
         id: user2.id,
         input: newData
       },
-      user.id
+      { user: { id: user.id } }
     );
     // console.log(response);
     expect(response.errors.length).toEqual(1);
@@ -130,7 +130,7 @@ describe("Update User", () => {
         id: user2.id,
         input: newData
       },
-      user.id
+      { user: { id: user.id } }
     );
     // console.log(response);
     expect(response.data.updateUser).not.toBeNull();

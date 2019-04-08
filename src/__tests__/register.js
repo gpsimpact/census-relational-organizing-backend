@@ -42,7 +42,6 @@ describe("RegisterResolver", () => {
           })}`
         }
       },
-      undefined,
       {
         sendEmail: mockSendEmail
       }
@@ -74,7 +73,6 @@ describe("RegisterResolver", () => {
           })}`
         }
       },
-      undefined,
       {
         sendEmail: mockSendEmail
       }
@@ -107,11 +105,11 @@ describe("RegisterResolver", () => {
           })}`
         }
       },
-      user.id
+      { user: { id: user.id } }
     );
 
     expect(res.errors.length).toBe(1);
-    expect(res.errors).toMatchSnapshot();
+    expect(res.errors[0].message).toEqual("You are already authenticated");
   });
 
   test("Throws Duplicate Error if record already exists", async () => {

@@ -37,8 +37,9 @@ describe("User", () => {
       {
         input: { userId: granteeUser.id, teamId: team.id, permission }
       },
-      grantorUser.id
+      { user: { id: grantorUser.id } }
     );
+    // console.log(response);
     expect(response.data.grantTeamPermission.code).toEqual("OK");
     expect(response.data.grantTeamPermission.success).toEqual(true);
     expect(response.data.grantTeamPermission.message).toEqual(
@@ -78,7 +79,7 @@ describe("User", () => {
       {
         input: { userId: granteeUser.id, teamId: team.id, permission }
       },
-      grantorUser.id
+      { user: { id: grantorUser.id } }
     );
     // console.log(response);
     expect(response.errors.length).toEqual(1);
@@ -90,7 +91,7 @@ describe("User", () => {
       {
         input: { userId: granteeUser.id, teamId: team.id, permission }
       },
-      grantorUser.id
+      { user: { id: grantorUser.id } }
     );
     expect(response2.data.grantTeamPermission.code).toEqual("OK");
     expect(response2.data.grantTeamPermission.success).toEqual(true);
@@ -110,7 +111,7 @@ describe("User", () => {
       {
         input: { userId: granteeUser.id, teamId: team.id, permission }
       },
-      grantorUser.id
+      { user: { id: grantorUser.id } }
     );
     // console.log(response);
     expect(response.errors.length).toEqual(1);
@@ -123,7 +124,7 @@ describe("User", () => {
       {
         input: { userId: granteeUser.id, teamId: team.id, permission }
       },
-      grantorUser.id
+      { user: { id: grantorUser.id } }
     );
     expect(response2.data.grantTeamPermission.code).toEqual("OK");
     expect(response2.data.grantTeamPermission.success).toEqual(true);
@@ -147,7 +148,7 @@ describe("User", () => {
       {
         input: { userId: granteeUser.id, teamId: team.id, permission }
       },
-      grantorUser.id
+      { user: { id: grantorUser.id } }
     );
     // console.log(response);
     expect(response.data.grantTeamPermission.code).toEqual("DUPLICATE");
@@ -171,7 +172,7 @@ describe("User", () => {
       {
         input: { userId: granteeUser.id, teamId: team.id, permission }
       },
-      grantorUser.id
+      { user: { id: grantorUser.id } }
     );
     expect(response.data.grantTeamPermission.code).toEqual("OK");
     expect(response.data.grantTeamPermission.success).toEqual(true);

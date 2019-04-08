@@ -12,7 +12,6 @@ import simpleSingleLoader from "./dataSources/simpleSingleLoader";
 import simpleManyLoader from "./dataSources/simpleManyLoader";
 import compoundOneLoader from "./dataSources/CompoundOneLoader";
 // users
-import meLoader from "./dataSources/users/me";
 import setLoginToken from "./dataSources/users/setLoginToken";
 import getLoginToken from "./dataSources/users/getLoginToken";
 // globalPermissions
@@ -38,7 +37,6 @@ export default (req, res) => {
     "teamId"
   );
 
-  const readyMeLoader = meLoader(req.session, userByIdLoader);
   const globalPermissionsByUserIdLoader = simpleManyLoader(
     sq.from`global_permissions`,
     "userId"
@@ -74,7 +72,6 @@ export default (req, res) => {
     user: {
       byIdLoader: userByIdLoader,
       byEmailLoader: userByEmailLoader,
-      me: readyMeLoader,
       create: createGDS(sq.from`users`),
       update: updateGDS(sq.from`users`),
       remove: removeGDS(sq.from`users`),
@@ -122,7 +119,7 @@ export default (req, res) => {
     return sgMail.send(messageData);
   };
 
-  console.log("AUTH USER IS ", req.session.userId);
+  // console.log("AUTH USER IS ", req.session.userId);
 
   return {
     req,
@@ -131,6 +128,7 @@ export default (req, res) => {
     dataSource,
     redis,
     pubsub,
-    sendEmail
+    sendEmail,
+    user: req.user
   };
 };
