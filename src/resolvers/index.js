@@ -24,6 +24,7 @@ import OLTeamPermsUser from "./OLTeamPerms/user";
 import requestLogin from "./mutation/requestLogin";
 import register from "./mutation/register";
 import confirmLogin from "./mutation/confirmLogin";
+import writeValues from "./mutation/writeValues";
 
 export default {
   Query: {
@@ -49,7 +50,8 @@ export default {
     confirmLogin,
     requestTeamMembership,
     grantTeamPermission,
-    removeTeamPermission
+    removeTeamPermission,
+    writeValues
   },
   User: {
     globalPermissions,

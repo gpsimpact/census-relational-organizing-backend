@@ -1,0 +1,16 @@
+input WriteValuesDataPoint {
+  fieldId: String!
+  value: String!
+  userId: String!
+  targetId: String!
+}
+
+input WriteValuesInput {
+  data: [WriteValuesDataPoint]!
+}
+
+type WriteValuesResult {
+  code: MutationCodeEnum!
+  success: Boolean!
+  message: String!
+}

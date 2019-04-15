@@ -42,3 +42,13 @@ export const createTestOLPermission = async (userId, teamId, permission) =>
     userId,
     permission
   });
+
+export const createTestTarget = async data => {
+  const fakeData = {
+    firstName: faker.name.firstName(),
+    lastName: faker.name.lastName(),
+    active: true
+  };
+  const writeData = Object.assign({}, fakeData, data);
+  return createGDS(sq.from`targets`)(writeData);
+};
