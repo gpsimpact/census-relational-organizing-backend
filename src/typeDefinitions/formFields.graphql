@@ -1,0 +1,110 @@
+type FormField {
+  label: String!
+  type: FORM_FIELD_TYPE_ENUM!
+  name: String!
+  value: String
+  # used only for select fields
+  selectOptions: [SelectOptions]
+  placeholder: String
+  # for value storage
+  id: String!
+  validationTests: [ValidationTests]
+  formId: String!
+  ordering: Int!
+  validationType: ValidationTypeEnum!
+}
+
+type ValidationTests {
+  method: String!
+  value: String
+  message: String!
+}
+
+enum ValidationTypeEnum {
+  string
+  number
+}
+
+enum VALIDATION_TEST_METHOD_ENUM {
+  required
+  min
+  email
+  url
+  lessThan
+  moreThan
+  positive
+  negative
+  integer
+}
+
+input ValidationTestsInput {
+  method: VALIDATION_TEST_METHOD_ENUM!
+  value: String
+  message: String!
+}
+
+type SelectOptions {
+  value: String!
+  label: String!
+}
+
+input SelectOptionsInput {
+  value: String!
+  label: String!
+}
+
+enum FORM_FIELD_TYPE_ENUM {
+  button
+  checkbox
+  color
+  date
+  datetime
+  email
+  file
+  hidden
+  number
+  password
+  radio
+  tel
+  text
+}
+
+input CreateFormFieldInput {
+  label: String!
+  type: FORM_FIELD_TYPE_ENUM!
+  name: String!
+  # used only for select fields
+  selectOptions: [SelectOptionsInput]
+  placeholder: String
+  validationType: ValidationTypeEnum!
+  validationTests: [ValidationTestsInput]
+  formId: String!
+  ordering: Int!
+}
+
+type CreateFormFieldResult {
+  code: MutationCodeEnum!
+  success: Boolean!
+  message: String!
+  item: FormField
+}
+
+input UpdateFormFieldInput {
+  label: String
+  type: FORM_FIELD_TYPE_ENUM
+  name: String
+  # used only for select fields
+  selectOptions: [SelectOptionsInput]
+  placeholder: String
+  validationType: ValidationTypeEnum
+  validationTests: [ValidationTestsInput]
+  formId: String
+  ordering: Int
+}
+
+type UpdateFormFieldResult {
+  code: MutationCodeEnum!
+  success: Boolean!
+  message: String!
+  item: FormField
+}

@@ -25,6 +25,8 @@ import requestLogin from "./mutation/requestLogin";
 import register from "./mutation/register";
 import confirmLogin from "./mutation/confirmLogin";
 import writeValues from "./mutation/writeValues";
+import createFormField from "./mutation/createFormField";
+import updateFormField from "./mutation/updateFormField";
 
 export default {
   Query: {
@@ -51,7 +53,9 @@ export default {
     requestTeamMembership,
     grantTeamPermission,
     removeTeamPermission,
-    writeValues
+    writeValues,
+    createFormField,
+    updateFormField
   },
   User: {
     globalPermissions,

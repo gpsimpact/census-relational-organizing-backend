@@ -104,6 +104,11 @@ export default (req, res) => {
       update: updateGDS(sq.from`teams`),
       remove: removeGDS(sq.from`teams`),
       removeAllTeamPermissionsByTeamId
+    },
+    formField: {
+      create: createGDS(sq.from`form_fields`),
+      update: updateGDS(sq.from`form_fields`),
+      byIdLoader: simpleSingleLoader(sq.from`form_fields`, "id")
     }
   };
 
