@@ -15,4 +15,5 @@ type Mutation {
   removeTeamPermission(
     input: RemoveTeamPermissionInput!
   ): RemoveTeamPermissionResult!
+  writeValues(input: WriteValuesInput!): WriteValuesResult!
 }
