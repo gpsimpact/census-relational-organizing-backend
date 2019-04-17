@@ -108,7 +108,11 @@ export default (req, res) => {
     formField: {
       create: createGDS(sq.from`form_fields`),
       update: updateGDS(sq.from`form_fields`),
-      byIdLoader: simpleSingleLoader(sq.from`form_fields`, "id")
+      byIdLoader: simpleSingleLoader(sq.from`form_fields`, "id"),
+      valueLoader: compoundOneLoader(sq.from`dynamic_value_store`, [
+        "fieldId",
+        "targetId"
+      ])
     }
   };
 

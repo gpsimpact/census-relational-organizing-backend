@@ -2,7 +2,7 @@ type FormField {
   label: String!
   type: FORM_FIELD_TYPE_ENUM!
   name: String!
-  value: String
+  value(targetId: String): String
   # used only for select fields
   selectOptions: [SelectOptions]
   placeholder: String

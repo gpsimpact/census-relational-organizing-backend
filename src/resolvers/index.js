@@ -27,6 +27,8 @@ import confirmLogin from "./mutation/confirmLogin";
 import writeValues from "./mutation/writeValues";
 import createFormField from "./mutation/createFormField";
 import updateFormField from "./mutation/updateFormField";
+import formField from "./query/formField";
+import value from "./formField/value";
 
 export default {
   Query: {
@@ -36,9 +38,8 @@ export default {
     user,
     team,
     teams,
-    summaryCountTeams
-    // io,
-    // ios
+    summaryCountTeams,
+    formField
   },
   Mutation: {
     createUser,
@@ -73,5 +74,8 @@ export default {
   },
   GraphQLDate,
   GraphQLTime,
-  GraphQLDateTime
+  GraphQLDateTime,
+  FormField: {
+    value
+  }
 };

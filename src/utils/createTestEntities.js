@@ -85,3 +85,13 @@ export const createTestFormField = async data => {
   const writeData = Object.assign({}, fakeData, data);
   return createGDS(sq.from`form_fields`)(writeData);
 };
+
+export const createTestDVSvalue = async (fieldId, userId, targetId) => {
+  const data = {
+    value: faker.random.word(),
+    fieldId,
+    userId,
+    targetId
+  };
+  return createGDS(sq.from`dynamic_value_store`)(data);
+};
