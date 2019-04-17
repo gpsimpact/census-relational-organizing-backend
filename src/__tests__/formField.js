@@ -26,7 +26,6 @@ query formField($id: String!, $targetId: String) {
             value
             message
         }
-        formId
         validationType
     }
 }

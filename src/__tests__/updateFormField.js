@@ -1,5 +1,3 @@
-import faker from "faker";
-
 import { graphqlTestCall } from "../utils/graphqlTestCall";
 import { dbUp, dbDown } from "../utils/testDbOps";
 import {

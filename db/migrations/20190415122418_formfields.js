@@ -3,7 +3,6 @@ exports.up = knex => {
         CREATE TABLE form_fields (
             id uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
             user_id uuid REFERENCES users(id) NOT NULL,
-            form_id uuid NOT NULL,
             label VARCHAR NOT NULL,
             type VARCHAR NOT NULL,
             name VARCHAR NOT NULL,

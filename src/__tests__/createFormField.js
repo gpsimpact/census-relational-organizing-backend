@@ -1,4 +1,3 @@
-import faker from "faker";
 import { graphqlTestCall } from "../utils/graphqlTestCall";
 import { dbUp } from "../utils/testDbOps";
 import { createTestUser } from "../utils/createTestEntities";
@@ -48,8 +47,7 @@ describe("RequestLoginResolver", () => {
           value: "2",
           message: "Must have length of 2."
         }
-      ],
-      formId: faker.random.uuid()
+      ]
     };
 
     const response = await graphqlTestCall(

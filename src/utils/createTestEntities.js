@@ -78,8 +78,7 @@ export const createTestFormField = async data => {
         value: "2",
         message: "Must have length of 2."
       }
-    ]),
-    formId: faker.random.uuid()
+    ])
   };
   const writeData = Object.assign({}, fakeData, data);
   return createGDS(sq.from`form_fields`)(writeData);
