@@ -27,7 +27,6 @@ query formField($id: String!, $targetId: String) {
             message
         }
         formId
-        ordering
         validationType
     }
 }

@@ -10,7 +10,6 @@ type FormField {
   id: String!
   validationTests: [ValidationTests]
   formId: String!
-  ordering: Int!
   validationType: ValidationTypeEnum!
 }
 
@@ -79,7 +78,6 @@ input CreateFormFieldInput {
   validationType: ValidationTypeEnum!
   validationTests: [ValidationTestsInput]
   formId: String!
-  ordering: Int!
 }
 
 type CreateFormFieldResult {
@@ -99,7 +97,6 @@ input UpdateFormFieldInput {
   validationType: ValidationTypeEnum
   validationTests: [ValidationTestsInput]
   formId: String
-  ordering: Int
 }
 
 type UpdateFormFieldResult {

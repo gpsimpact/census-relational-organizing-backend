@@ -10,8 +10,7 @@ exports.up = knex => {
             select_options JSONB,
             placeholder VARCHAR,
             validation_tests JSONB,
-            validation_type VARCHAR,
-            ordering NUMERIC
+            validation_type VARCHAR
         );
     `);
 };

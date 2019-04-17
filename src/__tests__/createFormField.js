@@ -49,8 +49,7 @@ describe("RequestLoginResolver", () => {
           message: "Must have length of 2."
         }
       ],
-      formId: faker.random.uuid(),
-      ordering: 10
+      formId: faker.random.uuid()
     };
 
     const response = await graphqlTestCall(
@@ -73,8 +72,7 @@ describe("RequestLoginResolver", () => {
     expect(dbFF).toEqual(
       Object.assign({}, formFieldData, {
         id: response.data.createFormField.item.id,
-        userId: user.id,
-        ordering: formFieldData.ordering.toString()
+        userId: user.id
       })
     );
   });
