@@ -1,6 +1,7 @@
 import generateRandomBytes from "../../utils/generateRandomBytes";
 import generateSecurityCode from "../../utils/securityCode";
 import generateLoginEmail from "../../utils/email/generateLoginEmail";
+import _ from "lodash";
 
 export default async (root, args, context) => {
   // clean the email and check for duplicates
@@ -17,11 +18,21 @@ export default async (root, args, context) => {
     };
   }
 
+  const writePayload = _.omit(args.input, "teamId");
+
   // 1. Create user with provided arguments
   const user = await context.dataSource.user.create({
-    ...args.input,
+    ...writePayload,
     email: cleanEmail
   });
+
+  if (args.input.teamId) {
+    await context.dataSource.olPerms.create({
+      userId: user.id,
+      teamId: args.input.teamId,
+      permission: "APPLICANT"
+    });
+  }
 
   // 2. Set a reset token and expiry on that user
   const loginToken = await generateRandomBytes(20);
