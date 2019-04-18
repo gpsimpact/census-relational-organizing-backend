@@ -1,0 +1,35 @@
+type Form {
+  id: String!
+  title: String!
+  buttonText: String!
+  redirectRoute: String!
+  fields: [FormField]
+}
+
+input CreateFormInput {
+  title: String!
+  buttonText: String!
+  redirectRoute: String!
+  fields: [CreateFormFieldInput]
+}
+
+type CreateFormResult {
+  code: MutationCodeEnum!
+  success: Boolean!
+  message: String!
+  item: Form
+}
+
+input UpdateFormInput {
+  title: String
+  buttonText: String
+  redirectRoute: String
+  fields: [CreateFormFieldInput]
+}
+
+type UpdateFormResult {
+  code: MutationCodeEnum!
+  success: Boolean!
+  message: String!
+  item: Form
+}

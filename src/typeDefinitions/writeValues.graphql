@@ -1,15 +1,16 @@
-input WriteValuesDataPoint {
-  fieldId: String!
-  value: String!
+input WriteFormValuesDataPoint {
+  formId: String!
   userId: String!
   targetId: String!
+  name: String!
+  value: String!
 }
 
-input WriteValuesInput {
-  data: [WriteValuesDataPoint]!
+input WriteFormValuesInput {
+  data: [WriteFormValuesDataPoint]!
 }
 
-type WriteValuesResult {
+type WriteFormValuesResult {
   code: MutationCodeEnum!
   success: Boolean!
   message: String!

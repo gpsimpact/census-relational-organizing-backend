@@ -6,7 +6,7 @@ export default async (root, { input }, { sq }) => {
   const trx = await sq.transaction();
   try {
     await sq
-      .from("dynamic_value_store")
+      .from("form_values")
       .insert(input.data)
       .all(trx);
     await trx.commit();

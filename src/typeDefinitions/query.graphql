@@ -6,4 +6,5 @@ type Query {
   team(id: String, slug: String): Team
   teams(input: TeamsInput): TeamsResults!
   summaryCountTeams: Int!
+  form(id: String!): Form
 }
