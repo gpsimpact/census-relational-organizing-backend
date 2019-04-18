@@ -7,7 +7,6 @@ type FormField {
   selectOptions: [SelectOptions]
   placeholder: String
   # for value storage
-  id: String!
   validationTests: [ValidationTests]
   validationType: ValidationTypeEnum!
 }
@@ -76,29 +75,4 @@ input CreateFormFieldInput {
   placeholder: String
   validationType: ValidationTypeEnum!
   validationTests: [ValidationTestsInput]
-}
-
-type CreateFormFieldResult {
-  code: MutationCodeEnum!
-  success: Boolean!
-  message: String!
-  item: FormField
-}
-
-input UpdateFormFieldInput {
-  label: String
-  type: FORM_FIELD_TYPE_ENUM
-  name: String
-  # used only for select fields
-  selectOptions: [SelectOptionsInput]
-  placeholder: String
-  validationType: ValidationTypeEnum
-  validationTests: [ValidationTestsInput]
-}
-
-type UpdateFormFieldResult {
-  code: MutationCodeEnum!
-  success: Boolean!
-  message: String!
-  item: FormField
 }

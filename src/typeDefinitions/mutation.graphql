@@ -15,12 +15,7 @@ type Mutation {
   removeTeamPermission(
     input: RemoveTeamPermissionInput!
   ): RemoveTeamPermissionResult!
-  writeValues(input: WriteValuesInput!): WriteValuesResult!
-  createFormField(input: CreateFormFieldInput!): CreateFormFieldResult!
-  updateFormField(
-    id: String!
-    input: UpdateFormFieldInput!
-  ): UpdateFormFieldResult!
+  writeFormValues(input: WriteFormValuesInput!): WriteFormValuesResult!
   createForm(input: CreateFormInput!): CreateFormResult!
   updateForm(id: String!, input: UpdateFormInput!): UpdateFormResult!
 }

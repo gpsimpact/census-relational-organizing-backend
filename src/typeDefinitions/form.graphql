@@ -10,7 +10,7 @@ input CreateFormInput {
   title: String!
   buttonText: String!
   redirectRoute: String!
-  fields: [String!]
+  fields: [CreateFormFieldInput]
 }
 
 type CreateFormResult {
@@ -24,7 +24,7 @@ input UpdateFormInput {
   title: String
   buttonText: String
   redirectRoute: String
-  fields: [String!]
+  fields: [CreateFormFieldInput]
 }
 
 type UpdateFormResult {

@@ -24,11 +24,11 @@ import OLTeamPermsUser from "./OLTeamPerms/user";
 import requestLogin from "./mutation/requestLogin";
 import register from "./mutation/register";
 import confirmLogin from "./mutation/confirmLogin";
-import writeValues from "./mutation/writeValues";
-import createFormField from "./mutation/createFormField";
-import updateFormField from "./mutation/updateFormField";
-import formField from "./query/formField";
+import writeFormValues from "./mutation/writeFormValues";
+import form from "./query/form";
 import value from "./formField/value";
+import createForm from "./mutation/createForm";
+import updateForm from "./mutation/updateForm";
 
 export default {
   Query: {
@@ -39,7 +39,7 @@ export default {
     team,
     teams,
     summaryCountTeams,
-    formField
+    form
   },
   Mutation: {
     createUser,
@@ -54,9 +54,9 @@ export default {
     requestTeamMembership,
     grantTeamPermission,
     removeTeamPermission,
-    writeValues,
-    createFormField,
-    updateFormField
+    writeFormValues,
+    createForm,
+    updateForm
   },
   User: {
     globalPermissions,

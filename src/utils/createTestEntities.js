@@ -84,12 +84,77 @@ export const createTestFormField = async data => {
   return createGDS(sq.from`form_fields`)(writeData);
 };
 
-export const createTestDVSvalue = async (fieldId, userId, targetId) => {
+export const createTestFormValue = async (formId, userId, targetId, name) => {
   const data = {
     value: faker.random.word(),
-    fieldId,
+    formId,
     userId,
-    targetId
+    targetId,
+    name
   };
-  return createGDS(sq.from`dynamic_value_store`)(data);
+  return createGDS(sq.from`form_values`)(data);
+};
+
+export const createTestForm = async userId => {
+  const data = {
+    id: faker.random.uuid(),
+    userId,
+    title: "This is form title",
+    buttonText: "Button Text",
+    redirectRoute: "/someRoute",
+    fields: JSON.stringify([
+      {
+        label: "I am the label text",
+        type: "text",
+        name: "alpha",
+        selectOptions: [
+          {
+            value: "alpha",
+            label: "alpha"
+          },
+          {
+            value: "beta",
+            label: "beta"
+          }
+        ],
+        placeholder: "I am a place holder",
+        validationType: "string",
+        validationTests: [
+          { method: "required", message: "Value is required." },
+          {
+            method: "min",
+            value: "2",
+            message: "Must have length of 2."
+          }
+        ]
+      },
+      {
+        label: "I am the label text",
+        type: "text",
+        name: "beta",
+        selectOptions: [
+          {
+            value: "alpha",
+            label: "alpha"
+          },
+          {
+            value: "beta",
+            label: "beta"
+          }
+        ],
+        placeholder: "I am a place holder",
+        validationType: "string",
+        validationTests: [
+          { method: "required", message: "Value is required." },
+          {
+            method: "min",
+            value: "2",
+            message: "Must have length of 2."
+          }
+        ]
+      }
+    ])
+  };
+
+  return createGDS(sq.from`forms`)(data);
 };

@@ -106,13 +106,19 @@ export default (req, res) => {
       removeAllTeamPermissionsByTeamId
     },
     formField: {
-      create: createGDS(sq.from`form_fields`),
-      update: updateGDS(sq.from`form_fields`),
-      byIdLoader: simpleSingleLoader(sq.from`form_fields`, "id"),
-      valueLoader: compoundOneLoader(sq.from`dynamic_value_store`, [
-        "fieldId",
-        "targetId"
+      // create: createGDS(sq.from`form_fields`),
+      // update: updateGDS(sq.from`form_fields`),
+      // byIdLoader: simpleSingleLoader(sq.from`form_fields`, "id"),
+      valueLoader: compoundOneLoader(sq.from`form_values`, [
+        "formId",
+        "targetId",
+        "name"
       ])
+    },
+    form: {
+      create: createGDS(sq.from`forms`),
+      update: updateGDS(sq.from`forms`),
+      byIdLoader: simpleSingleLoader(sq.from`forms`, "id")
     }
   };
 
