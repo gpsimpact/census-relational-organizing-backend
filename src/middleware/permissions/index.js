@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import { shield, and, or } from "graphql-shield";
+import { shield, and, or, allow, deny } from "graphql-shield";
 import isAuthenticated from "./isAuthenticated";
 import isNotAuthenticated from "./isNotAuthenticated";
 import hasGlobalPerm from "./hasGlobalPerm";
@@ -21,7 +21,6 @@ const has_TP_ASSIGNPERMISSIONS = hasTeamPerm(
 export default shield(
   {
     Query: {
-      team: isAuthenticated, //and(isAuthenticated, has_GP_ADMIN_TEAMS),
       teams: isAuthenticated, //and(isAuthenticated, has_GP_ADMIN_TEAMS),
       summaryCountTeams: and(isAuthenticated, has_GP_ADMIN_TEAMS)
     },
@@ -45,6 +44,10 @@ export default shield(
         isAuthenticated,
         or(has_GP_ADMIN_TEAMS_ASSIGNPERMISSIONS, has_TP_ASSIGNPERMISSIONS)
       )
+    },
+    Team: {
+      userPermissions: and(isAuthenticated, has_GP_ADMIN_TEAMS),
+      userPermissionSummaryCounts: and(isAuthenticated, has_GP_ADMIN_TEAMS)
     }
   },
   // default error spelling is Authorised.
