@@ -18,4 +18,5 @@ type Mutation {
   writeFormValues(input: WriteFormValuesInput!): WriteFormValuesResult!
   createForm(input: CreateFormInput!): CreateFormResult!
   updateForm(id: String!, input: UpdateFormInput!): UpdateFormResult!
+  createGtib(input: CreateGtibInput!): CreateGtibResponse!
 }
