@@ -18,3 +18,16 @@ type CreateGtibResponse {
   message: String!
   item: Gtib
 }
+
+input UpdateGtibInput {
+  text: String
+  active: Boolean
+  visible: Boolean
+}
+
+type UpdateGtibResponse {
+  code: MutationCodeEnum!
+  success: Boolean!
+  message: String!
+  item: Gtib!
+}

@@ -20,18 +20,7 @@ exports.addTimeStamps = (knex, name) => {
             FOR EACH ROW
             EXECUTE PROCEDURE update_modified_column();
 
-            CREATE OR REPLACE FUNCTION update_createdat_column()
-            RETURNS TRIGGER AS $$
-            BEGIN
-              NEW.created_at = now();
-              RETURN NEW;
-            END;
-            $$ language 'plpgsql';
-    
-            CREATE TRIGGER update_${name}_created_at
-            BEFORE INSERT ON ${name}
-            FOR EACH ROW
-            EXECUTE PROCEDURE update_createdat_column();
+            
           `);
     });
 };
@@ -42,3 +31,16 @@ exports.removeTimeStampsColumns = (knex, name) => {
     t.dropColumn("updated_at");
   });
 };
+
+// CREATE OR REPLACE FUNCTION update_createdat_column()
+//             RETURNS TRIGGER AS $$
+//             BEGIN
+//               NEW.created_at = now();
+//               RETURN NEW;
+//             END;
+//             $$ language 'plpgsql';
+
+//             CREATE TRIGGER update_${name}_created_at
+//             BEFORE INSERT ON ${name}
+//             FOR EACH ROW
+//             EXECUTE PROCEDURE update_createdat_column();
