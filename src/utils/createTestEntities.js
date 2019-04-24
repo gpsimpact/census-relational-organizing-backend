@@ -158,3 +158,12 @@ export const createTestForm = async userId => {
 
   return createGDS(sq.from`forms`)(data);
 };
+
+export const createTestGtib = async userId => {
+  const data = {
+    text: faker.random.words(5),
+    userId
+  };
+
+  return createGDS(sq.from`gtibs`)(data);
+};

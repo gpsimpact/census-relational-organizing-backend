@@ -119,6 +119,11 @@ export default (req, res) => {
       create: createGDS(sq.from`forms`),
       update: updateGDS(sq.from`forms`),
       byIdLoader: simpleSingleLoader(sq.from`forms`, "id")
+    },
+    gtib: {
+      create: createGDS(sq.from`gtibs`),
+      update: updateGDS(sq.from`gtibs`),
+      byIdLoader: simpleSingleLoader(sq.from`gtibs`, "id")
     }
   };
 

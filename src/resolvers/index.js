@@ -29,6 +29,8 @@ import form from "./query/form";
 import value from "./formField/value";
 import createForm from "./mutation/createForm";
 import updateForm from "./mutation/updateForm";
+import createGtib from "./mutation/createGtib";
+import updateGtib from "./mutation/updateGtib";
 
 export default {
   Query: {
@@ -56,7 +58,9 @@ export default {
     removeTeamPermission,
     writeFormValues,
     createForm,
-    updateForm
+    updateForm,
+    createGtib,
+    updateGtib
   },
   User: {
     globalPermissions,
