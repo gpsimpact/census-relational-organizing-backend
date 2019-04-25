@@ -167,3 +167,13 @@ export const createTestGtib = async userId => {
 
   return createGDS(sq.from`gtibs`)(data);
 };
+
+export const createTestTtib = async (userId, teamId) => {
+  const data = {
+    text: faker.random.words(5),
+    userId,
+    teamId
+  };
+
+  return createGDS(sq.from`ttibs`)(data);
+};
