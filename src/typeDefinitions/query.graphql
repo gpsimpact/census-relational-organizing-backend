@@ -8,4 +8,5 @@ type Query {
   summaryCountTeams: Int!
   form(id: String!): Form
   gtibs(visible: Boolean = true): [Gtib]
+  ttibs(teamId: String!, visible: Boolean = true): [Ttib]
 }

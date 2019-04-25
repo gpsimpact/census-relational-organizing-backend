@@ -32,6 +32,9 @@ import updateForm from "./mutation/updateForm";
 import createGtib from "./mutation/createGtib";
 import updateGtib from "./mutation/updateGtib";
 import gtibs from "./query/gtibs";
+import createTtib from "./mutation/createTtib";
+import updateTtib from "./mutation/updateTtib";
+import ttibs from "./query/ttibs";
 
 export default {
   Query: {
@@ -43,7 +46,8 @@ export default {
     teams,
     summaryCountTeams,
     form,
-    gtibs
+    gtibs,
+    ttibs
   },
   Mutation: {
     createUser,
@@ -62,7 +66,9 @@ export default {
     createForm,
     updateForm,
     createGtib,
-    updateGtib
+    updateGtib,
+    createTtib,
+    updateTtib
   },
   User: {
     globalPermissions,

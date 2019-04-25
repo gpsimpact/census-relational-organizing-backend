@@ -1,0 +1,35 @@
+type Ttib {
+  id: String!
+  text: String!
+  active: Boolean!
+  visible: Boolean!
+  userId: String!
+  gtibLink: String
+  createdAt: GraphQLDateTime!
+  updatedAt: GraphQLDateTime!
+}
+
+input CreateTtibInput {
+  text: String!
+  teamId: String!
+}
+
+type CreateTtibResponse {
+  code: MutationCodeEnum!
+  success: Boolean!
+  message: String!
+  item: Ttib
+}
+
+input UpdateTtibInput {
+  text: String
+  active: Boolean
+  visible: Boolean
+}
+
+type UpdateTtibResponse {
+  code: MutationCodeEnum!
+  success: Boolean!
+  message: String!
+  item: Ttib!
+}

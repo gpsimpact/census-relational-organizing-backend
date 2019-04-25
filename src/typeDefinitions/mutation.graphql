@@ -20,4 +20,6 @@ type Mutation {
   updateForm(id: String!, input: UpdateFormInput!): UpdateFormResult!
   createGtib(input: CreateGtibInput!): CreateGtibResponse!
   updateGtib(id: String!, input: UpdateGtibInput!): UpdateGtibResponse!
+  createTtib(input: CreateTtibInput!): CreateTtibResponse!
+  updateTtib(id: String!, input: UpdateTtibInput!): UpdateTtibResponse!
 }
