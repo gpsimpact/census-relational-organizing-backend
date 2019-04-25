@@ -22,4 +22,5 @@ type Mutation {
   updateGtib(id: String!, input: UpdateGtibInput!): UpdateGtibResponse!
   createTtib(input: CreateTtibInput!): CreateTtibResponse!
   updateTtib(id: String!, input: UpdateTtibInput!): UpdateTtibResponse!
+  applyGtib(input: ApplyGtibInput!): ApplyGtibResponse!
 }

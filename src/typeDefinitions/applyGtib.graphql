@@ -1,0 +1,11 @@
+input ApplyGtibInput {
+  gtibId: String!
+  teamId: String!
+}
+
+type ApplyGtibResponse {
+  code: MutationCodeEnum!
+  success: Boolean!
+  message: String!
+  item: Ttib
+}
