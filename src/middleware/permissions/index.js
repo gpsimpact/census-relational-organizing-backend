@@ -21,7 +21,7 @@ const has_TP_ASSIGNPERMISSIONS = hasTeamPerm(
 export default shield(
   {
     Query: {
-      teams: isAuthenticated, //and(isAuthenticated, has_GP_ADMIN_TEAMS),
+      //teams: //isAuthenticated, //and(isAuthenticated, has_GP_ADMIN_TEAMS),
       summaryCountTeams: and(isAuthenticated, has_GP_ADMIN_TEAMS)
     },
     Mutation: {
