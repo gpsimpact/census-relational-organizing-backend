@@ -40,7 +40,6 @@ describe("confirmLoginResolver", () => {
     const response = await graphqlTestCall(CONFIRM_LOGIN_MUTATION, {
       token
     });
-    // console.log(response);
     expect(response.data.confirmLogin.code).toBe("OK");
     expect(response.data.confirmLogin.success).toBe(true);
     expect(response.data.confirmLogin.token).not.toBeNull();

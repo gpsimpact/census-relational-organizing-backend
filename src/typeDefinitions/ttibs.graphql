@@ -14,7 +14,7 @@ input CreateTtibInput {
   teamId: String!
 }
 
-type CreateTtibResponse {
+type CreateTtibResult {
   code: MutationCodeEnum!
   success: Boolean!
   message: String!
@@ -27,9 +27,14 @@ input UpdateTtibInput {
   visible: Boolean
 }
 
-type UpdateTtibResponse {
+type UpdateTtibResult {
   code: MutationCodeEnum!
   success: Boolean!
   message: String!
   item: Ttib!
+}
+
+input TtibsInput {
+  teamId: String!
+  visible: Boolean = true
 }

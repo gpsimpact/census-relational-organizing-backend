@@ -3,7 +3,9 @@ import { dbUp } from "../utils/testDbOps";
 import {
   createTestUser,
   createTestTtib,
-  createTestTeam
+  createTestTeam,
+  createAdminUser,
+  createTestOLPermission
 } from "../utils/createTestEntities";
 import { sq } from "../db";
 
@@ -30,12 +32,11 @@ beforeEach(async () => {
 });
 
 describe("RequestLoginResolver", () => {
-  test("happy path", async () => {
+  test("happy path as global admin", async () => {
     const user = await createTestUser();
-    const user2 = await createTestUser();
+    const adminUser = await createAdminUser();
     const team = await createTestTeam();
     const ttib = await createTestTtib(user.id, team.id);
-
     const updateData = {
       text: "I am text!"
     };
@@ -46,13 +47,13 @@ describe("RequestLoginResolver", () => {
         id: ttib.id,
         input: updateData
       },
-      { user: { id: user2.id } }
+      { user: { id: adminUser.id } }
     );
-    // console.log(response);
+    // console.log(JSON.stringify(response));
     expect(response.data.updateTtib.code).toBe("OK");
     expect(response.data.updateTtib.message).toBe("TTIB has been updated.");
     expect(response.data.updateTtib.success).toBe(true);
-    expect(response.data.updateTtib.item.userId).toBe(user2.id);
+    expect(response.data.updateTtib.item.userId).toBe(adminUser.id);
     expect(response.data.updateTtib.item.text).toBe(updateData.text);
     const [dbTTIB] = await sq.from`ttibs`.where({
       id: response.data.updateTtib.item.id
@@ -60,14 +61,70 @@ describe("RequestLoginResolver", () => {
     expect(dbTTIB).not.toBeNull();
     expect(dbTTIB.active).toBe(true);
     expect(dbTTIB.visible).toBe(true);
-    expect(dbTTIB.userId).toBe(user2.id);
+    expect(dbTTIB.userId).toBe(adminUser.id);
     expect(dbTTIB.text).toBe(updateData.text);
+  });
+
+  test("happy path as team admin", async () => {
+    const user = await createTestUser();
+    const team = await createTestTeam();
+    await createTestOLPermission(user.id, team.id, "ADMIN");
+    const ttib = await createTestTtib(user.id, team.id);
+    const updateData = {
+      text: "I am text!"
+    };
+
+    const response = await graphqlTestCall(
+      UPDATE_TTIB_MUTATION,
+      {
+        id: ttib.id,
+        input: updateData
+      },
+      { user: { id: user.id } }
+    );
+    // console.log(JSON.stringify(response));
+    expect(response.data.updateTtib.code).toBe("OK");
+    expect(response.data.updateTtib.message).toBe("TTIB has been updated.");
+    expect(response.data.updateTtib.success).toBe(true);
+    expect(response.data.updateTtib.item.userId).toBe(user.id);
+    expect(response.data.updateTtib.item.text).toBe(updateData.text);
+    const [dbTTIB] = await sq.from`ttibs`.where({
+      id: response.data.updateTtib.item.id
+    });
+    expect(dbTTIB).not.toBeNull();
+    expect(dbTTIB.active).toBe(true);
+    expect(dbTTIB.visible).toBe(true);
+    expect(dbTTIB.userId).toBe(user.id);
+    expect(dbTTIB.text).toBe(updateData.text);
+  });
+
+  test("non admin can not update", async () => {
+    const user = await createTestUser();
+    const team = await createTestTeam();
+    const ttib = await createTestTtib(user.id, team.id);
+    const updateData = {
+      text: "I am text!"
+    };
+
+    const response = await graphqlTestCall(
+      UPDATE_TTIB_MUTATION,
+      {
+        id: ttib.id,
+        input: updateData
+      },
+      { user: { id: user.id } }
+    );
+    // console.log(JSON.stringify(response));
+    expect(response.data).toBeNull();
+    expect(response.errors.length).toEqual(1);
+    expect(response.errors[0].message).toEqual("Not Authorized!");
   });
 
   test("can not update text 5 mins after creation", async () => {
     const user = await createTestUser();
     const team = await createTestTeam();
     const ttib = await createTestTtib(user.id, team.id);
+    const adminUser = await createAdminUser();
 
     // update timestamp of ttib to 10 mins ago.
     await sq.from`ttibs`
@@ -84,7 +141,7 @@ describe("RequestLoginResolver", () => {
         id: ttib.id,
         input: updateData
       },
-      { user: { id: user.id } }
+      { user: { id: adminUser.id } }
     );
     // console.log(response);
     expect(response.data.updateTtib.code).toBe("EXPIRED");

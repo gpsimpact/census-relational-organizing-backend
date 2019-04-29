@@ -5,7 +5,8 @@ import {
   createTestUser,
   createTestForm,
   createTestTarget,
-  createTestFormValue
+  createTestFormValue,
+  createTestGlobalPerm
 } from "../utils/createTestEntities";
 
 const GET_FORM_QUERY = `
@@ -46,9 +47,14 @@ afterEach(async () => {
 
 describe("User", () => {
   test("Happy Path By Id, no value", async () => {
-    const user = await createTestUser();
-    const form = await createTestForm(user.id);
-    const response = await graphqlTestCall(GET_FORM_QUERY, { id: form.id });
+    const adminUser = await createTestUser();
+    await createTestGlobalPerm(adminUser.id, "ADMIN");
+    const form = await createTestForm(adminUser.id);
+    const response = await graphqlTestCall(
+      GET_FORM_QUERY,
+      { id: form.id },
+      { user: { id: adminUser.id } }
+    );
     // console.log(JSON.stringify(response, null, "\t"));
     expect(response.data.form.id).toEqual(form.id);
     expect(response.data.form.title).toEqual(form.title);
@@ -56,19 +62,24 @@ describe("User", () => {
   });
 
   test("Happy Path By Id, WITH value", async () => {
-    const user = await createTestUser();
-    const form = await createTestForm(user.id);
+    const adminUser = await createTestUser();
+    await createTestGlobalPerm(adminUser.id, "ADMIN");
+    const form = await createTestForm(adminUser.id);
     const target = await createTestTarget();
     const formValue = await createTestFormValue(
       form.id,
-      user.id,
+      adminUser.id,
       target.id,
       form.fields[0].name
     );
-    const response = await graphqlTestCall(GET_FORM_QUERY, {
-      id: form.id,
-      targetId: target.id
-    });
+    const response = await graphqlTestCall(
+      GET_FORM_QUERY,
+      {
+        id: form.id,
+        targetId: target.id
+      },
+      { user: { id: adminUser.id } }
+    );
     // console.log(JSON.stringify(response, null, "\t"));
     expect(response.data.form.id).toEqual(form.id);
     expect(response.data.form.label).toEqual(form.label);

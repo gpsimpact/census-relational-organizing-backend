@@ -6,7 +6,8 @@ import {
   createTestUser,
   createTestGlobalPerm,
   createTestTeam,
-  createTestOLPermission
+  createTestOLPermission,
+  createAdminUser
 } from "../utils/createTestEntities";
 
 const REMOVE_TEAM_PERMISSION_MUTATION = `
@@ -25,19 +26,18 @@ beforeEach(async () => {
 
 describe("User", () => {
   test("Happy Path", async () => {
-    const grantorUser = await createTestUser();
+    const adminUser = await createAdminUser();
     const granteeUser = await createTestUser();
-    const permission = "ASSIGNPERMISSIONS";
+    const permission = "MEMBER";
     const team = await createTestTeam();
     await createTestOLPermission(granteeUser.id, team.id, permission);
-    await createTestGlobalPerm(grantorUser.id, "ADMIN_TEAMS_ASSIGNPERMISSIONS");
 
     const response = await graphqlTestCall(
       REMOVE_TEAM_PERMISSION_MUTATION,
       {
         input: { userId: granteeUser.id, teamId: team.id, permission }
       },
-      { user: { id: grantorUser.id } }
+      { user: { id: adminUser.id } }
     );
     // console.log(response);
     expect(response.data.removeTeamPermission.code).toEqual("OK");
@@ -84,7 +84,7 @@ describe("User", () => {
     expect(response.errors.length).toEqual(1);
     expect(response.errors[0].message).toEqual("Not Authorized!");
 
-    await createTestGlobalPerm(grantorUser.id, "ADMIN_TEAMS_ASSIGNPERMISSIONS");
+    await createTestGlobalPerm(grantorUser.id, "ADMIN");
     const response2 = await graphqlTestCall(
       REMOVE_TEAM_PERMISSION_MUTATION,
       {
@@ -112,10 +112,11 @@ describe("User", () => {
       },
       { user: { id: grantorUser.id } }
     );
+
     expect(response.errors.length).toEqual(1);
     expect(response.errors[0].message).toEqual("Not Authorized!");
 
-    await createTestOLPermission(grantorUser.id, team.id, "ASSIGNPERMISSIONS");
+    await createTestOLPermission(grantorUser.id, team.id, "ADMIN");
 
     const response2 = await graphqlTestCall(
       REMOVE_TEAM_PERMISSION_MUTATION,
@@ -124,6 +125,7 @@ describe("User", () => {
       },
       { user: { id: grantorUser.id } }
     );
+    // console.log(response2);
     expect(response2.data.removeTeamPermission.code).toEqual("OK");
     expect(response2.data.removeTeamPermission.success).toEqual(true);
     expect(response2.data.removeTeamPermission.message).toEqual(
@@ -132,18 +134,17 @@ describe("User", () => {
   });
 
   test("fails if permission does not exist", async () => {
-    const grantorUser = await createTestUser();
+    const adminUser = await createAdminUser();
     const granteeUser = await createTestUser();
     const permission = "APPLICANT";
     const team = await createTestTeam();
-    await createTestGlobalPerm(grantorUser.id, "ADMIN_TEAMS_ASSIGNPERMISSIONS");
 
     const response = await graphqlTestCall(
       REMOVE_TEAM_PERMISSION_MUTATION,
       {
         input: { userId: granteeUser.id, teamId: team.id, permission }
       },
-      { user: { id: grantorUser.id } }
+      { user: { id: adminUser.id } }
     );
     // console.log(response);
     expect(response.data.removeTeamPermission.code).toEqual("DOES_NOT_EXIST");

@@ -67,7 +67,7 @@ input TeamsWhere {
   updatedAt: DateTimeWhere
 }
 
-type TeamsResults {
+type TeamsResult {
   hasMore: Boolean!
   totalCount: Int!
   items: [Team]!

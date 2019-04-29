@@ -4,7 +4,8 @@ import {
   createTestUser,
   createTestTeam,
   createTestGlobalPerm,
-  createTestOLPermission
+  createTestOLPermission,
+  createAdminUser
 } from "../utils/createTestEntities";
 
 const GET_TEAM_QUERY = `
@@ -109,19 +110,14 @@ describe("Team", () => {
   });
 
   test("UserPermissions not null", async () => {
-    const user = await createTestUser();
+    const adminUser = await createAdminUser();
     const team = await createTestTeam();
-    await createTestGlobalPerm(user.id, "ADMIN_TEAMS");
 
-    const cp1 = await createTestOLPermission(
-      user.id,
-      team.id,
-      "USER__READ__TEAM"
-    );
+    const cp1 = await createTestOLPermission(adminUser.id, team.id, "MEMBER");
     const cp2 = await createTestOLPermission(
-      user.id,
+      adminUser.id,
       team.id,
-      "USER__READ__TEAM_CONTACT_EMAIL"
+      "APPLICANT"
     );
 
     const response = await graphqlTestCall(
@@ -129,8 +125,9 @@ describe("Team", () => {
       {
         id: team.id
       },
-      { user: { id: user.id } }
+      { user: { id: adminUser.id } }
     );
+    // console.log(JSON.stringify(response, null, "\t"));
     expect(response.data.team.userPermissions.length).toBe(1);
     expect(response.data.team.userPermissions[0].permissions.length).toBe(2);
     expect(response.data.team.userPermissions[0].permissions).toContain(
@@ -139,7 +136,7 @@ describe("Team", () => {
     expect(response.data.team.userPermissions[0].permissions).toContain(
       cp2.permission
     );
-    expect(response.data.team.userPermissions[0].user.id).toEqual(user.id);
+    expect(response.data.team.userPermissions[0].user.id).toEqual(adminUser.id);
   });
 
   test("UserPermissions Summary", async () => {

@@ -3,7 +3,6 @@ import { dbUp, dbDown } from "../utils/testDbOps";
 import {
   createTestUser,
   createTestTeam,
-  createTestOLPermission,
   createTestGlobalPerm
 } from "../utils/createTestEntities";
 import { sq } from "../db";
@@ -28,17 +27,16 @@ afterEach(async () => {
 
 describe("Remove Team", () => {
   test("Happy Path", async () => {
-    const user = await createTestUser();
+    const adminUser = await createTestUser();
+    await createTestGlobalPerm(adminUser.id, "ADMIN");
     const team = await createTestTeam();
-    await createTestGlobalPerm(user.id, "ADMIN_TEAMS_CRUD");
-    await createTestOLPermission(user.id, team.id, "USER__READ__TEAM");
 
     const response = await graphqlTestCall(
       REMOVE_TEAM_MUTATION,
       {
         id: team.id
       },
-      { user: { id: user.id } }
+      { user: { id: adminUser.id } }
     );
     expect(response.data.removeTeam).not.toBeNull();
     expect(response.data.removeTeam.success).toEqual(true);

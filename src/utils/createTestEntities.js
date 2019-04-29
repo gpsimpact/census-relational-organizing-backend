@@ -177,3 +177,9 @@ export const createTestTtib = async (userId, teamId) => {
 
   return createGDS(sq.from`ttibs`)(data);
 };
+
+export const createAdminUser = async data => {
+  const user = await createTestUser(data);
+  await createTestGlobalPerm(user.id, "ADMIN");
+  return user;
+};

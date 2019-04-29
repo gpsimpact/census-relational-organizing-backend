@@ -1,12 +1,3 @@
-enum GlobalPermissionsEnum {
-  ADMIN
-  ADMIN_TEAMS
-  ADMIN_TEAMS_CRUD
-  ADMIN_USERS
-  ADMIN_USERS_CRUD
-  ADMIN_TEAMS_ASSIGNPERMISSIONS
-}
-
 enum SortDirection {
   ASC
   DESC
@@ -19,12 +10,6 @@ enum MutationCodeEnum {
   UNKNOWN_ERROR
   OK
   EXPIRED
-}
-
-enum ObjectLevelPermissionEnum {
-  APPLICANT
-  ASSIGNPERMISSIONS
-  MEMBER
 }
 
 scalar GraphQLDateTime
