@@ -18,7 +18,7 @@ export default async (root, args, context) => {
     };
   }
 
-  const writePayload = _.omit(args.input, "teamId");
+  const writePayload = _.omit(args.input, "teamSlug");
 
   // 1. Create user with provided arguments
   const user = await context.dataSource.user.create({
@@ -26,10 +26,23 @@ export default async (root, args, context) => {
     email: cleanEmail
   });
 
-  if (args.input.teamId) {
+  if (args.input.teamSlug) {
+    // grab team record
+    const dbTeam = await context.dataSource.team.bySlugLoader.load(
+      args.input.teamSlug
+    );
+
+    if (!dbTeam) {
+      return {
+        code: "INPUT_ERROR",
+        message: `No such team exists.`,
+        success: false
+      };
+    }
+
     await context.dataSource.olPerms.create({
       userId: user.id,
-      teamId: args.input.teamId,
+      teamId: dbTeam.id,
       permission: "APPLICANT"
     });
   }

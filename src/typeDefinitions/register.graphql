@@ -7,7 +7,7 @@ input RegisterInput {
   state: String!
   zip5: String!
   phone: String!
-  teamId: String
+  teamSlug: String
 }
 
 type RegisterResult {
