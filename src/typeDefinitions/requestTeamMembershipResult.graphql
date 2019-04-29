@@ -1,4 +1,4 @@
-type requestTeamMembershipResult {
+type RequestTeamMembershipResult {
   code: MutationCodeEnum!
   success: Boolean!
   message: String!

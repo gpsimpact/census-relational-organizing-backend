@@ -1,6 +1,9 @@
 import { graphqlTestCall } from "../utils/graphqlTestCall";
 import { dbUp } from "../utils/testDbOps";
-import { createTestUser } from "../utils/createTestEntities";
+import {
+  createTestUser,
+  createTestGlobalPerm
+} from "../utils/createTestEntities";
 import { sq } from "../db";
 
 const CREATE_FORM_MUTATION = `
@@ -22,7 +25,8 @@ beforeEach(async () => {
 
 describe("RequestLoginResolver", () => {
   test("happy path", async () => {
-    const user = await createTestUser();
+    const adminUser = await createTestUser();
+    await createTestGlobalPerm(adminUser.id, "ADMIN");
 
     const formData = {
       title: "This is form title",
@@ -62,7 +66,7 @@ describe("RequestLoginResolver", () => {
       {
         input: formData
       },
-      { user: { id: user.id } }
+      { user: { id: adminUser.id } }
     );
     // console.log(response);
     expect(response.data.createForm.code).toBe("OK");
@@ -75,13 +79,14 @@ describe("RequestLoginResolver", () => {
     expect(dbForm).toEqual(
       Object.assign({}, formData, {
         id: response.data.createForm.item.id,
-        userId: user.id
+        userId: adminUser.id
       })
     );
   });
 
   test("Can not create fields with duplicate names", async () => {
-    const user = await createTestUser();
+    const adminUser = await createTestUser();
+    await createTestGlobalPerm(adminUser.id, "ADMIN");
 
     const formData = {
       title: "This is form title",
@@ -146,7 +151,7 @@ describe("RequestLoginResolver", () => {
       {
         input: formData
       },
-      { user: { id: user.id } }
+      { user: { id: adminUser.id } }
     );
     // console.log(response);
     expect(response.data.createForm.code).toBe("INPUT_ERROR");

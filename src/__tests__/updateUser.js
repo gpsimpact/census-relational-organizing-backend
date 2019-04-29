@@ -2,10 +2,7 @@ import faker from "faker";
 
 import { graphqlTestCall } from "../utils/graphqlTestCall";
 import { dbUp, dbDown } from "../utils/testDbOps";
-import {
-  createTestUser,
-  createTestGlobalPerm
-} from "../utils/createTestEntities";
+import { createTestUser, createAdminUser } from "../utils/createTestEntities";
 import { sq } from "../db";
 
 const UPDATE_USER_MUTATION = `
@@ -92,7 +89,7 @@ describe("Update User", () => {
     expect(dbUser.email).toEqual(newData.email.toLowerCase());
   });
 
-  test("Can not update another user without GP ADMIN_USERS_CRUD", async () => {
+  test("Can not update another user without GP ADMIN", async () => {
     const user = await createTestUser();
     const user2 = await createTestUser();
 
@@ -114,10 +111,9 @@ describe("Update User", () => {
     expect(response.errors[0].message).toEqual("Not Authorized!");
   });
 
-  test("CAN update another user WITH GP ADMIN_USERS_CRUD", async () => {
-    const user = await createTestUser();
+  test("CAN update another user WITH GP ADMIN", async () => {
+    const adminUser = await createAdminUser();
     const user2 = await createTestUser();
-    await createTestGlobalPerm(user.id, "ADMIN_USERS_CRUD");
 
     const newData = {
       firstName: faker.name.firstName(),
@@ -130,7 +126,7 @@ describe("Update User", () => {
         id: user2.id,
         input: newData
       },
-      { user: { id: user.id } }
+      { user: { id: adminUser.id } }
     );
     // console.log(response);
     expect(response.data.updateUser).not.toBeNull();

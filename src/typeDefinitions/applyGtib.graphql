@@ -3,7 +3,7 @@ input ApplyGtibInput {
   teamId: String!
 }
 
-type ApplyGtibResponse {
+type ApplyGtibResult {
   code: MutationCodeEnum!
   success: Boolean!
   message: String!

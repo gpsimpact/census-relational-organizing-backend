@@ -1,6 +1,10 @@
 import { graphqlTestCall } from "../utils/graphqlTestCall";
 import { dbUp, dbDown } from "../utils/testDbOps";
-import { createTestUser, createTestForm } from "../utils/createTestEntities";
+import {
+  createTestUser,
+  createTestForm,
+  createTestGlobalPerm
+} from "../utils/createTestEntities";
 import { sq } from "../db";
 
 const UPDATE_FORM_MUTATION = `
@@ -27,8 +31,9 @@ afterEach(async () => {
 
 describe("Update Form", () => {
   test("Happy Path", async () => {
-    const user = await createTestUser();
-    const form = await createTestForm(user.id);
+    const adminUser = await createTestUser();
+    await createTestGlobalPerm(adminUser.id, "ADMIN");
+    const form = await createTestForm(adminUser.id);
 
     const newData = {
       buttonText: "zim zam!"
@@ -40,7 +45,7 @@ describe("Update Form", () => {
         id: form.id,
         input: newData
       },
-      { user: { id: user.id } }
+      { user: { id: adminUser.id } }
     );
     expect(response.data.updateForm).not.toBeNull();
     expect(response.data.updateForm.code).toBe("OK");
@@ -58,8 +63,9 @@ describe("Update Form", () => {
   });
 
   test("Duplicate form name check", async () => {
-    const user = await createTestUser();
-    const form = await createTestForm(user.id);
+    const adminUser = await createTestUser();
+    await createTestGlobalPerm(adminUser.id, "ADMIN");
+    const form = await createTestForm(adminUser.id);
 
     const newData = {
       fields: [
@@ -122,7 +128,7 @@ describe("Update Form", () => {
         id: form.id,
         input: newData
       },
-      { user: { id: user.id } }
+      { user: { id: adminUser.id } }
     );
     // console.log(response);
     expect(response.data.updateForm.code).toBe("INPUT_ERROR");

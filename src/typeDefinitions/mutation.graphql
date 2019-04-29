@@ -8,7 +8,7 @@ type Mutation {
   requestLogin(email: String!, nextPage: String): RequestLoginResult!
   register(input: RegisterInput!): RegisterResult!
   confirmLogin(token: String!): ConfirmLoginResult!
-  requestTeamMembership(teamId: String!): requestTeamMembershipResult!
+  requestTeamMembership(teamId: String!): RequestTeamMembershipResult!
   grantTeamPermission(
     input: GrantTeamPermissionInput!
   ): GrantTeamPermissionResult!
@@ -19,8 +19,8 @@ type Mutation {
   createForm(input: CreateFormInput!): CreateFormResult!
   updateForm(id: String!, input: UpdateFormInput!): UpdateFormResult!
   createGtib(input: CreateGtibInput!): CreateGtibResponse!
-  updateGtib(id: String!, input: UpdateGtibInput!): UpdateGtibResponse!
-  createTtib(input: CreateTtibInput!): CreateTtibResponse!
-  updateTtib(id: String!, input: UpdateTtibInput!): UpdateTtibResponse!
-  applyGtib(input: ApplyGtibInput!): ApplyGtibResponse!
+  updateGtib(id: String!, input: UpdateGtibInput!): UpdateGtibResult!
+  createTtib(input: CreateTtibInput!): CreateTtibResult!
+  updateTtib(id: String!, input: UpdateTtibInput!): UpdateTtibResult!
+  applyGtib(input: ApplyGtibInput!): ApplyGtibResult!
 }

@@ -4,7 +4,8 @@ import { dbUp, dbDown } from "../utils/testDbOps";
 import {
   createTestUser,
   createTestTeam,
-  createTestGlobalPerm
+  createAdminUser,
+  createTestOLPermission
 } from "../utils/createTestEntities";
 import { sq } from "../db";
 
@@ -31,11 +32,37 @@ afterEach(async () => {
 });
 
 describe("Create Team", () => {
-  test("Happy Path", async () => {
-    const user = await createTestUser();
+  test("Happy Path by Global Admin", async () => {
     const team = await createTestTeam();
+    const adminUser = await createAdminUser();
 
-    await createTestGlobalPerm(user.id, "ADMIN_TEAMS_CRUD");
+    const newData = {
+      name: faker.company.companyName()
+    };
+
+    const response = await graphqlTestCall(
+      UPDATE_TEAM_MUTATION,
+      {
+        id: team.id,
+        input: newData
+      },
+      { user: { id: adminUser.id } }
+    );
+    expect(response.data.updateTeam).not.toBeNull();
+    expect(response.data.updateTeam.item.name).toEqual(newData.name);
+    expect(response.data.updateTeam.item.abbreviation).toEqual(
+      team.abbreviation
+    );
+    const [dbTeam] = await sq.from`teams`.where({ id: team.id });
+    expect(dbTeam).toBeDefined();
+    expect(dbTeam.name).toEqual(newData.name);
+    expect(dbTeam.abbreviation).toEqual(team.abbreviation);
+  });
+
+  test("Happy Path by Team  Admin", async () => {
+    const team = await createTestTeam();
+    const user = await createTestUser();
+    await createTestOLPermission(user.id, team.id, "ADMIN");
 
     const newData = {
       name: faker.company.companyName()

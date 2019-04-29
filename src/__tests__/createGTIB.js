@@ -1,6 +1,9 @@
 import { graphqlTestCall } from "../utils/graphqlTestCall";
 import { dbUp } from "../utils/testDbOps";
-import { createTestUser } from "../utils/createTestEntities";
+import {
+  createTestUser,
+  createTestGlobalPerm
+} from "../utils/createTestEntities";
 import { sq } from "../db";
 
 const CREATE_GTIB_MUTATION = `
@@ -27,6 +30,7 @@ beforeEach(async () => {
 describe("RequestLoginResolver", () => {
   test("happy path", async () => {
     const user = await createTestUser();
+    await createTestGlobalPerm(user.id, "ADMIN");
 
     const newData = {
       text: "I am text!"

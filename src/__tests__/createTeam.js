@@ -4,7 +4,7 @@ import { dbUp, dbDown } from "../utils/testDbOps";
 import {
   createTestUser,
   createTestTeam,
-  createTestGlobalPerm
+  createAdminUser
 } from "../utils/createTestEntities";
 import { sq } from "../db";
 
@@ -32,8 +32,7 @@ afterEach(async () => {
 
 describe("Create Team", () => {
   test("Happy Path", async () => {
-    const user = await createTestUser();
-    await createTestGlobalPerm(user.id, "ADMIN_TEAMS_CRUD");
+    const adminUser = await createAdminUser();
 
     const newTeamData = {
       name: faker.company.companyName()
@@ -45,7 +44,7 @@ describe("Create Team", () => {
       {
         input: newTeamData
       },
-      { user: { id: user.id } }
+      { user: { id: adminUser.id } }
     );
     expect(response.data.createTeam).not.toBeNull();
     expect(response.data.createTeam.item.name).toEqual(newTeamData.name);
@@ -59,8 +58,7 @@ describe("Create Team", () => {
 
   test("Duplicate error", async () => {
     const team = await createTestTeam();
-    const user = await createTestUser();
-    await createTestGlobalPerm(user.id, "ADMIN_TEAMS_CRUD");
+    const adminUser = await createAdminUser();
 
     // no input
     const response1 = await graphqlTestCall(
@@ -70,7 +68,7 @@ describe("Create Team", () => {
           name: team.name
         }
       },
-      { user: { id: user.id } }
+      { user: { id: adminUser.id } }
     );
 
     expect(response1.data.createTeam).not.toBeNull();
@@ -80,7 +78,6 @@ describe("Create Team", () => {
 
   test("Fails without ADMIN_TEAMS_CRUD global perm", async () => {
     const user = await createTestUser();
-    // await createGlobalPerm(user, AllowedGlobalPermissions.ADMIN_TEAMS_CRUD);
 
     const newTeamData = {
       name: faker.company.companyName()

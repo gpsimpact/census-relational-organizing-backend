@@ -1,7 +1,10 @@
 import faker from "faker";
 import { graphqlTestCall } from "../utils/graphqlTestCall";
-import { dbUp, dbDown } from "../utils/testDbOps";
-import { createTestUser } from "../utils/createTestEntities";
+import { dbUp } from "../utils/testDbOps";
+import {
+  createTestUser,
+  createTestGlobalPerm
+} from "../utils/createTestEntities";
 import { sq } from "../db";
 
 const CREATE_USER_MUTATION = `
@@ -29,10 +32,6 @@ beforeEach(async () => {
   await dbUp();
 });
 
-afterEach(async () => {
-  await dbDown();
-});
-
 describe("Create User", () => {
   test("Happy Path", async () => {
     const newUserData = {
@@ -49,10 +48,17 @@ describe("Create User", () => {
       })}`
     };
 
+    const adminUser = await createTestUser();
+    await createTestGlobalPerm(adminUser.id, "ADMIN");
+
     // no input
-    const response = await graphqlTestCall(CREATE_USER_MUTATION, {
-      input: newUserData
-    });
+    const response = await graphqlTestCall(
+      CREATE_USER_MUTATION,
+      {
+        input: newUserData
+      },
+      { user: { id: adminUser.id } }
+    );
     expect(response.data.createUser).not.toBeNull();
     expect(response.data.createUser.item.name).toEqual(newUserData.name);
     // Also check email is lower case (as per middleware)
@@ -70,23 +76,30 @@ describe("Create User", () => {
   });
 
   test("Duplicate error", async () => {
+    const adminUser = await createTestUser();
+    await createTestGlobalPerm(adminUser.id, "ADMIN");
+
     const user = await createTestUser({
       email: faker.internet.email().toLowerCase()
     });
 
     // no input
-    const response = await graphqlTestCall(CREATE_USER_MUTATION, {
-      input: {
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-        address: user.address,
-        city: user.city,
-        state: user.state,
-        zip5: user.zip5,
-        phone: user.phone
-      }
-    });
+    const response = await graphqlTestCall(
+      CREATE_USER_MUTATION,
+      {
+        input: {
+          firstName: user.firstName,
+          lastName: user.lastName,
+          email: user.email,
+          address: user.address,
+          city: user.city,
+          state: user.state,
+          zip5: user.zip5,
+          phone: user.phone
+        }
+      },
+      { user: { id: adminUser.id } }
+    );
     expect(response.data.createUser).not.toBeNull();
     expect(response.data.createUser.success).toBe(false);
     expect(response.data.createUser.code).toBe("DUPLICATE");

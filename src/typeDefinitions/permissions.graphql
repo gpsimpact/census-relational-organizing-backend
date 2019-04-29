@@ -1,0 +1,9 @@
+enum GlobalPermissionsEnum {
+  ADMIN
+}
+
+enum ObjectLevelPermissionEnum {
+  APPLICANT
+  MEMBER
+  ADMIN
+}
