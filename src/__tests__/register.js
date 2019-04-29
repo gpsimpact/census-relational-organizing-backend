@@ -134,7 +134,7 @@ describe("RegisterResolver", () => {
     expect(res.data.register.success).toBe(false);
   });
 
-  test("if optional team id arg is present, creates application record", async () => {
+  test("if optional team slug arg is present, creates application record", async () => {
     const mockSendEmail = jest.fn();
     const team = await createTestTeam();
     const email = faker.internet.email().toLowerCase();
@@ -153,7 +153,7 @@ describe("RegisterResolver", () => {
             min: 10000000000,
             max: 19999999999
           })}`,
-          teamId: team.id
+          teamSlug: team.slug
         }
       },
       {
@@ -175,5 +175,35 @@ describe("RegisterResolver", () => {
     });
     expect(dbUserPerms).toHaveLength(1);
     expect(dbUserPerms[0].permission).toEqual("APPLICANT");
+  });
+
+  test("Nonsense team slug fails", async () => {
+    const mockSendEmail = jest.fn();
+    const email = faker.internet.email().toLowerCase();
+    const response = await graphqlTestCall(
+      REGISTER_MUTATION,
+      {
+        input: {
+          firstName: faker.name.firstName(),
+          lastName: faker.name.lastName(),
+          email,
+          address: faker.address.streetAddress(),
+          city: faker.address.city(),
+          state: faker.address.state(),
+          zip5: faker.address.zipCode().substring(0, 5),
+          phone: `+${faker.random.number({
+            min: 10000000000,
+            max: 19999999999
+          })}`,
+          teamSlug: "WUBWUBWUB"
+        }
+      },
+      {
+        sendEmail: mockSendEmail
+      }
+    );
+    expect(response.data.register.code).toBe("INPUT_ERROR");
+    expect(response.data.register.message).toBe("No such team exists.");
+    expect(response.data.register.success).toBe(false);
   });
 });
