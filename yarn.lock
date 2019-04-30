@@ -636,10 +636,10 @@
     lodash "^4.17.10"
     to-fast-properties "^2.0.0"
 
-"@jakelowen/sqorn-graphql-filters@0.4.4":
-  version "0.4.4"
-  resolved "https://registry.yarnpkg.com/@jakelowen/sqorn-graphql-filters/-/sqorn-graphql-filters-0.4.4.tgz#c4547e9e6a9f3d487de4989b303fd048d3cfe45c"
-  integrity sha512-rvyM9XMq0rUDvaWzEKaNVx4oIWPUZJ51NOMj9c1TghYGrrLx3K+ZAEDWwp+AynXgvsCl0yVFijCBOSEF9SZVDA==
+"@jakelowen/sqorn-graphql-filters@0.4.5":
+  version "0.4.5"
+  resolved "https://registry.yarnpkg.com/@jakelowen/sqorn-graphql-filters/-/sqorn-graphql-filters-0.4.5.tgz#18dae56cf3b3f3478c9a8552a510889586d0105e"
+  integrity sha512-NkiD61Hb164P6lt99JqP0dWtq1VqS1jnsbUgexbKNktDJcmjcjw/AQnfLWipV4WL+dqB93FHLIUM7nOWgnRfDg==
   dependencies:
     dataloader "^1.4.0"
     lodash "^4.17.11"
