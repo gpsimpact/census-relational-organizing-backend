@@ -111,33 +111,34 @@ describe("Teams", () => {
     expect(response.data.teams.items.length).toBe(1);
   });
 
-  test("nested advanced join query filter", async () => {
-    const team = await createTestTeam();
-    await createTestTeam();
-    const user = await createTestUser();
-    await createTestGlobalPerm(user.id, "ADMIN_TEAMS");
-    await createTestOLPermission(user.id, team.id, "ALPHA");
-    await createTestOLPermission(user.id, team.id, "BETA");
-    await createTestOLPermission(user.id, team.id, "CHARLIE");
+  // I think we can dissapear this. Was replaced with teamUsers top level query.
+  // test("nested advanced join query filter", async () => {
+  //   const team = await createTestTeam();
+  //   await createTestTeam();
+  //   const user = await createTestUser();
+  //   await createTestGlobalPerm(user.id, "ADMIN_TEAMS");
+  //   await createTestOLPermission(user.id, team.id, "ALPHA");
+  //   await createTestOLPermission(user.id, team.id, "BETA");
+  //   await createTestOLPermission(user.id, team.id, "CHARLIE");
 
-    const response = await graphqlTestCall(
-      GET_ALL_TEAMS_QUERY,
-      {
-        input: {
-          where: {
-            active: { eq: true },
-            teamPermissions: {
-              permission: { in: ["BETA", "CHARLIE"] }
-            }
-          }
-        }
-      },
-      { user: { id: user.id } }
-    );
-    // console.log(response);
-    expect(response.data.teams.items.length).toBe(1);
-    expect(response.data.teams.items[0].id).toEqual(team.id);
-  });
+  //   const response = await graphqlTestCall(
+  //     GET_ALL_TEAMS_QUERY,
+  //     {
+  //       input: {
+  //         where: {
+  //           active: { eq: true },
+  //           teamPermissions: {
+  //             permission: { in: ["BETA", "CHARLIE"] }
+  //           }
+  //         }
+  //       }
+  //     },
+  //     { user: { id: user.id } }
+  //   );
+  //   // console.log(response);
+  //   expect(response.data.teams.items.length).toBe(1);
+  //   expect(response.data.teams.items[0].id).toEqual(team.id);
+  // });
 
   // temporarily disable this test because I have no known need for exists filter yet.
   // test("Exists Teams", async () => {

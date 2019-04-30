@@ -3,11 +3,11 @@ type Team {
   name: String!
   description: String
   active: Boolean
-  userPermissions: [OLTeamPerms]
   userPermissionSummaryCounts: [OLTeamPermsSummary]
   slug: String!
   createdAt: GraphQLDateTime!
   updatedAt: GraphQLDateTime!
+  # userPermissions: [OLTeamPerms]
 }
 
 type RemoveTeamResult {

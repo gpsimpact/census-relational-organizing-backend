@@ -9,4 +9,5 @@ type Query {
   form(id: String!): Form
   gtibs(visible: Boolean = true): [Gtib]
   ttibs(input: TtibsInput!): [Ttib]
+  teamUsers(input: TeamUsersInput!): TeamUsersResult!
 }

@@ -1,0 +1,19 @@
+# type TeamUserPermissions {
+#   user: User!
+#   permissions: [ObjectLevelPermissionEnum]!
+# }
+
+input TeamUsersInput {
+  teamId: String!
+  includePermissions: [ObjectLevelPermissionEnum!]!
+  where: UsersWhere
+  limit: Int
+  offset: Int
+  sort: UserSort
+}
+
+type TeamUsersResult {
+  hasMore: Boolean!
+  totalCount: Int!
+  items: [User]!
+}
