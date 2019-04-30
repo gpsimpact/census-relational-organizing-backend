@@ -17,7 +17,7 @@ import grantTeamPermission from "./mutation/grantTeamPermission";
 import removeTeamPermission from "./mutation/removeTeamPermission";
 import globalPermissions from "./user/globalPermissions";
 import teamPermissions from "./user/teamPermissions";
-import userPermissions from "./team/userPermissions";
+// import userPermissions from "./team/userPermissions";
 import userPermissionSummaryCounts from "./team/userPermissionsSummaryCounts";
 import OLUserPermsTeam from "./OLUserPerms/team";
 import OLTeamPermsUser from "./OLTeamPerms/user";
@@ -36,6 +36,7 @@ import createTtib from "./mutation/createTtib";
 import updateTtib from "./mutation/updateTtib";
 import ttibs from "./query/ttibs";
 import applyGtib from "./mutation/applyGtib";
+import teamUsers from "./query/teamUsers";
 
 export default {
   Query: {
@@ -48,7 +49,8 @@ export default {
     summaryCountTeams,
     form,
     gtibs,
-    ttibs
+    ttibs,
+    teamUsers
   },
   Mutation: {
     createUser,
@@ -77,7 +79,7 @@ export default {
     teamPermissions
   },
   Team: {
-    userPermissions,
+    // userPermissions,
     userPermissionSummaryCounts
   },
   OLUserPerms: {

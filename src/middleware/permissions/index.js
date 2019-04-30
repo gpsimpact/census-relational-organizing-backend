@@ -172,7 +172,8 @@ export default shield(
       team: allow,
       summaryCountTeams: and(isAuthenticated, has_GP_ADMIN_TEAMS),
       gtibs: and(isAuthenticated, or(has_GP_ADMIN, isAnyTeamAdmin)),
-      user: and(isAuthenticated, or(has_GP_ADMIN, isSelf))
+      user: and(isAuthenticated, or(has_GP_ADMIN, isSelf)),
+      teamUsers: and(isAuthenticated, or(has_TP_ADMIN, has_GP_ADMIN))
     },
     Mutation: {
       removeUser: and(isAuthenticated, has_GP_ADMIN),
@@ -246,7 +247,8 @@ export default shield(
     OLTeamPermsSummary: allow,
     GlobalPermissionsEnum: allow,
     OLUserPerms: allow,
-    UpdateTtibResult: allow
+    UpdateTtibResult: allow,
+    TeamUsersResult: allow
   },
   {
     fallbackError: "Not Authorized!", // default error spelling is Authorised.

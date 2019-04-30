@@ -13,13 +13,7 @@ query team($id: String, $slug: String) {
     team(id:$id, slug:$slug) {
         id
         name
-        slug
-        userPermissions {
-          user {
-            id
-          }
-          permissions
-        }
+        slug    
         userPermissionSummaryCounts {
           permission
           count
@@ -27,6 +21,14 @@ query team($id: String, $slug: String) {
     }
 }
 `;
+
+// extracted from query. Depreciated.
+// userPermissions {
+//   user {
+//     id
+//   }
+//   permissions
+// }
 
 beforeEach(async () => {
   await dbUp();
@@ -93,51 +95,51 @@ describe("Team", () => {
   //   expect(response.errors[0].message).toEqual("Not Authorized!");
   // });
 
-  test("UserPermissions null", async () => {
-    const team = await createTestTeam();
-    const user = await createTestUser();
-    await createTestGlobalPerm(user.id, "ADMIN_TEAMS");
+  // test("UserPermissions null", async () => {
+  //   const team = await createTestTeam();
+  //   const user = await createTestUser();
+  //   await createTestGlobalPerm(user.id, "ADMIN_TEAMS");
 
-    const response = await graphqlTestCall(
-      GET_TEAM_QUERY,
-      {
-        id: team.id
-      },
-      { user: { id: user.id } }
-    );
+  //   const response = await graphqlTestCall(
+  //     GET_TEAM_QUERY,
+  //     {
+  //       id: team.id
+  //     },
+  //     { user: { id: user.id } }
+  //   );
 
-    expect(response.data.team.userPermissions).toBeNull();
-  });
+  //   expect(response.data.team.userPermissions).toBeNull();
+  // });
 
-  test("UserPermissions not null", async () => {
-    const adminUser = await createAdminUser();
-    const team = await createTestTeam();
+  // test("UserPermissions not null", async () => {
+  //   const adminUser = await createAdminUser();
+  //   const team = await createTestTeam();
 
-    const cp1 = await createTestOLPermission(adminUser.id, team.id, "MEMBER");
-    const cp2 = await createTestOLPermission(
-      adminUser.id,
-      team.id,
-      "APPLICANT"
-    );
+  //   const cp1 = await createTestOLPermission(adminUser.id, team.id, "MEMBER");
+  //   const cp2 = await createTestOLPermission(
+  //     adminUser.id,
+  //     team.id,
+  //     "APPLICANT"
+  //   );
 
-    const response = await graphqlTestCall(
-      GET_TEAM_QUERY,
-      {
-        id: team.id
-      },
-      { user: { id: adminUser.id } }
-    );
-    // console.log(JSON.stringify(response, null, "\t"));
-    expect(response.data.team.userPermissions.length).toBe(1);
-    expect(response.data.team.userPermissions[0].permissions.length).toBe(2);
-    expect(response.data.team.userPermissions[0].permissions).toContain(
-      cp1.permission
-    );
-    expect(response.data.team.userPermissions[0].permissions).toContain(
-      cp2.permission
-    );
-    expect(response.data.team.userPermissions[0].user.id).toEqual(adminUser.id);
-  });
+  //   const response = await graphqlTestCall(
+  //     GET_TEAM_QUERY,
+  //     {
+  //       id: team.id
+  //     },
+  //     { user: { id: adminUser.id } }
+  //   );
+  //   // console.log(JSON.stringify(response, null, "\t"));
+  //   expect(response.data.team.userPermissions.length).toBe(1);
+  //   expect(response.data.team.userPermissions[0].permissions.length).toBe(2);
+  //   expect(response.data.team.userPermissions[0].permissions).toContain(
+  //     cp1.permission
+  //   );
+  //   expect(response.data.team.userPermissions[0].permissions).toContain(
+  //     cp2.permission
+  //   );
+  //   expect(response.data.team.userPermissions[0].user.id).toEqual(adminUser.id);
+  // });
 
   test("UserPermissions Summary", async () => {
     const adminUser = await createTestUser();

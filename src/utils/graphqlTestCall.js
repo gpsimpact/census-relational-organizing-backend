@@ -40,3 +40,9 @@ export const graphqlTestCall = async (query, variables, contextOverRides) => {
     variables
   );
 };
+
+export const debugResponse = response => {
+  if (process.env.DEBUG_RESPONSE) {
+    console.log(JSON.stringify(response, null, "\t"));
+  }
+};
