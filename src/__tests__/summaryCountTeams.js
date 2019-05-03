@@ -4,7 +4,8 @@ import { dbUp } from "../utils/testDbOps";
 import {
   createTestTeam,
   createTestUser,
-  createTestGlobalPerm
+  // createTestGlobalPerm,
+  createAdminUser
 } from "../utils/createTestEntities";
 
 const SUMMARY_COUNT_ALL_TEAMS_QUERY = `
@@ -30,9 +31,10 @@ describe("Summary Count all teams", () => {
     expect(response.errors.length).toEqual(1);
     expect(response.errors[0].message).toEqual("Not Authorized!");
   });
+
   test("Happy Path", async () => {
-    const user = await createTestUser();
-    await createTestGlobalPerm(user.id, "ADMIN_TEAMS");
+    const adminUser = await createAdminUser();
+
     // create 5 test teams
     await createTestTeam();
     await createTestTeam();
@@ -42,7 +44,7 @@ describe("Summary Count all teams", () => {
     const response = await graphqlTestCall(
       SUMMARY_COUNT_ALL_TEAMS_QUERY,
       null,
-      { user: { id: user.id } }
+      { user: { id: adminUser.id } }
     );
     // console.log(response);
     expect(response.data.summaryCountTeams).toEqual(5);

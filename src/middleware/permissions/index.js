@@ -150,8 +150,6 @@ const userIsTeamAdminofUpdatingTtib = rule(`userIsTeamAdminofUpdatingTtib`, {
 ************************************************************************* */
 
 const has_GP_ADMIN = hasGlobalPerm("ADMIN");
-const has_GP_ADMIN_TEAMS = hasGlobalPerm("ADMIN_TEAMS");
-
 const has_TP_ADMIN = hasTeamPerm("input.teamId", "ADMIN");
 const has_TP_ADMIN_ROOT = hasTeamPerm("id", "ADMIN");
 const has_TP_MEMBER = hasTeamPerm("input.teamId", "MEMBER");
@@ -170,7 +168,7 @@ export default shield(
       users: and(isAuthenticated, has_GP_ADMIN),
       teams: allow,
       team: allow,
-      summaryCountTeams: and(isAuthenticated, has_GP_ADMIN_TEAMS),
+      summaryCountTeams: and(isAuthenticated, has_GP_ADMIN),
       gtibs: and(isAuthenticated, or(has_GP_ADMIN, isAnyTeamAdmin)),
       user: and(isAuthenticated, or(has_GP_ADMIN, isSelf)),
       teamUsers: and(isAuthenticated, or(has_TP_ADMIN, has_GP_ADMIN))

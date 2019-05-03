@@ -4,8 +4,7 @@ import { dbUp, dbDown } from "../utils/testDbOps";
 import {
   createTestUser,
   createTestTeam,
-  createTestGlobalPerm,
-  createTestOLPermission
+  createTestGlobalPerm
 } from "../utils/createTestEntities";
 
 const GET_ALL_TEAMS_QUERY = `

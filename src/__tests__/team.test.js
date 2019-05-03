@@ -4,8 +4,7 @@ import {
   createTestUser,
   createTestTeam,
   createTestGlobalPerm,
-  createTestOLPermission,
-  createAdminUser
+  createTestOLPermission
 } from "../utils/createTestEntities";
 
 const GET_TEAM_QUERY = `
