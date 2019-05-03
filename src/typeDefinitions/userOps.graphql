@@ -26,7 +26,13 @@ input UsersWhere {
   OR: [UsersWhere]
   AND: [UsersWhere]
   id: StringWhere
-  name: StringWhere
+  firstName: StringWhere
+  lastName: StringWhere
+  address: StringWhere
+  city: StringWhere
+  state: StringWhere
+  zip5: StringWhere
+  phone: StringWhere
   email: StringWhere
   active: BooleanWhere
   createdAt: DateTimeWhere
