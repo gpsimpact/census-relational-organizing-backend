@@ -9,17 +9,20 @@
     "build": "rimraf build/ && backpack build",
     "migrate-down": "knex-migrate down --to 0",
     "migrate-up": "knex-migrate up",
-    "test": "NODE_ENV=test yarn migrate-down && NODE_ENV=test yarn migrate-up --env test && jest --detectOpenHandles --runInBand --forceExit",
+    "test": "NODE_ENV=test LOG_LEVEL=critical yarn migrate-down && NODE_ENV=test LOG_LEVEL=critical yarn migrate-up --env test && LOG_LEVEL=critical jest --detectOpenHandles --runInBand --forceExit",
     "refresh": "bash cmds/refresh.sh",
     "grab": "bash cmds/grab.sh",
     "branch": "bash cmds/branch.sh",
     "start": "yarn migrate-up && yarn serve",
-    "serve": "node build/main.js"
+    "serve": "node build/main.js",
+    "postinstall": "echo $gcloud_service_account_credentials > gcloud_service_account_credentials.json "
   },
   "dependencies": {
+    "@google-cloud/logging-bunyan": "^0.10.1",
     "@jakelowen/sqorn-graphql-filters": "0.4.5",
     "@sendgrid/mail": "^6.3.1",
     "@sqorn/pg": "^0.0.45",
+    "bunyan": "^1.8.12",
     "cors": "^2.8.5",
     "dataloader": "^1.4.0",
     "dotenv": "^6.2.0",

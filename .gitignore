@@ -7,3 +7,5 @@ logs.txt
 dist
 build
 TODO
+
+gcloud_service_account_credentials.json
