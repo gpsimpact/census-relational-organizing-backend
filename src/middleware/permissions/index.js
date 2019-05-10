@@ -163,7 +163,7 @@ export default shield(
   {
     Query: {
       ttibs: and(isAuthenticated, or(has_TP_MEMBER, has_GP_ADMIN)),
-      me: isAuthenticated,
+      me: allow,
       form: and(isAuthenticated, has_GP_ADMIN),
       users: and(isAuthenticated, has_GP_ADMIN),
       teams: allow,
@@ -252,7 +252,7 @@ export default shield(
     fallbackError: "Not Authorized!", // default error spelling is Authorised.
     fallbackRule: deny,
     debug: process.env.NODE_ENV !== "production",
-    allowExternalErrors: process.env.NODE_ENV !== "production"
+    allowExternalErrors: true
   }
   // { debug: true, allowExternalErrors: true }
 );

@@ -26,7 +26,7 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 // pubsub
 import redis, { pubsub } from "./redis";
 
-export default (req, res) => {
+export default (req, res, logger) => {
   const userByIdLoader = simpleSingleLoader(sq.from`users`, "id");
   const userByEmailLoader = simpleSingleLoader(sq.from`users`, "email");
   const teamByIdLoader = simpleSingleLoader(sq.from`teams`, "id");
@@ -155,6 +155,7 @@ export default (req, res) => {
     redis,
     pubsub,
     sendEmail,
-    user: req.user
+    user: req.user,
+    logger
   };
 };
