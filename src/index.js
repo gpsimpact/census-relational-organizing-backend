@@ -1,6 +1,8 @@
 import { GraphQLServer } from "graphql-yoga";
 import cors from "cors";
 import jwt from "express-jwt";
+import fs from "fs";
+import path from "path";
 
 // Logging
 import bunyan from "bunyan";
@@ -19,6 +21,10 @@ import defaultToAuthedUserMW from "./middleware/defaultToAuthedUser";
 import permissionsMiddleware from "./middleware/permissions";
 
 require("dotenv").config();
+fs.writeFileSync(
+  path.join(__dirname, "gcloud-credentials.json"),
+  process.env.SERVICE_ACCOUNT_JSON
+);
 
 // Creates a Bunyan Stackdriver Logging client
 const loggingBunyan = new LoggingBunyan();

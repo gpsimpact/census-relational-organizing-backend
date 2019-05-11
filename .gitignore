@@ -8,4 +8,5 @@ dist
 build
 TODO
 
-gcloud_service_account_credentials.json
+civicpromotor-74143b491be1.json
+src/gcloud-credentials.json
