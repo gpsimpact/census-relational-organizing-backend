@@ -27,7 +27,7 @@ console.log(
 );
 console.log("WRITING DATA", process.env.SERVICE_ACCOUNT_JSON);
 fs.writeFileSync(
-  path.join(__dirname, "gcloud-credentials.json"),
+  path.join(__dirname, "/../gcloud-credentials.json"),
   process.env.SERVICE_ACCOUNT_JSON
 );
 
