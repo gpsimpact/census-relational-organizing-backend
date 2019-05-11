@@ -21,13 +21,13 @@ import defaultToAuthedUserMW from "./middleware/defaultToAuthedUser";
 import permissionsMiddleware from "./middleware/permissions";
 
 require("dotenv").config();
-console.log(
-  "WRITING to file ",
-  path.join(__dirname, "gcloud-credentials.json")
-);
-console.log("WRITING DATA", process.env.SERVICE_ACCOUNT_JSON);
+
+// download json key from google and minify with npx minify-json <file>.
+// use that oneline in ENV SERVICE_ACCOUNT_JSON
+// use a FULL qualified path to where you want key to exist on disk.
+// populate file on disk needed for gcloud credentials
 fs.writeFileSync(
-  path.join(__dirname, "/../gcloud-credentials.json"),
+  process.env.GOOGLE_APPLICATION_CREDENTIALS,
   process.env.SERVICE_ACCOUNT_JSON
 );
 
