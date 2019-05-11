@@ -1,10 +1,12 @@
+import loggableContext from "../../utils/loggableContext";
+
 export default async (resolve, root, args, context, info) => {
   // log REQUEST
   context.logger.info(
     {
       root,
       args,
-      info,
+      // info,
       user: context.user
     },
     "/ REQUEST"
@@ -14,8 +16,8 @@ export default async (resolve, root, args, context, info) => {
     {
       root,
       args,
-      info,
-      context
+      // info,
+      context: loggableContext(context)
     },
     "/ REQUEST_DEBUG"
   );
@@ -28,7 +30,7 @@ export default async (resolve, root, args, context, info) => {
     {
       root,
       args,
-      info,
+      // info,
       result,
       user: context.user
     },
@@ -39,9 +41,9 @@ export default async (resolve, root, args, context, info) => {
     {
       root,
       args,
-      info,
+      // info,
       result,
-      context
+      context: loggableContext(context)
     },
     "/ RESULT_DEBUG"
   );
