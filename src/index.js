@@ -2,7 +2,6 @@ import { GraphQLServer } from "graphql-yoga";
 import cors from "cors";
 import jwt from "express-jwt";
 import fs from "fs";
-import path from "path";
 
 // Logging
 import bunyan from "bunyan";

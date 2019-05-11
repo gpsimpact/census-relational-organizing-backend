@@ -14,8 +14,7 @@
     "grab": "bash cmds/grab.sh",
     "branch": "bash cmds/branch.sh",
     "start": "yarn migrate-up && yarn serve",
-    "serve": "node build/main.js",
-    "postinstall": "echo $gcloud_service_account_credentials > gcloud_service_account_credentials.json "
+    "serve": "node build/main.js"
   },
   "dependencies": {
     "@google-cloud/logging-bunyan": "^0.10.1",
