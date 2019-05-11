@@ -21,6 +21,11 @@ import defaultToAuthedUserMW from "./middleware/defaultToAuthedUser";
 import permissionsMiddleware from "./middleware/permissions";
 
 require("dotenv").config();
+console.log(
+  "WRITING to file ",
+  path.join(__dirname, "gcloud-credentials.json")
+);
+console.log("WRITING DATA", process.env.SERVICE_ACCOUNT_JSON);
 fs.writeFileSync(
   path.join(__dirname, "gcloud-credentials.json"),
   process.env.SERVICE_ACCOUNT_JSON
