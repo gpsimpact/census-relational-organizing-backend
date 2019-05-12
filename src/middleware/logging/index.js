@@ -1,3 +1,4 @@
+import now from "performance-now";
 import loggableContext from "../../utils/loggableContext";
 
 export default async (resolve, root, args, context, info) => {
@@ -23,7 +24,10 @@ export default async (resolve, root, args, context, info) => {
   );
 
   // await result
+  var start = now();
   const result = await resolve(root, args, context, info);
+  var end = now();
+  const responseTime = (end - start).toFixed(3);
 
   // log RESULT
   context.logger.info(
@@ -32,6 +36,7 @@ export default async (resolve, root, args, context, info) => {
       args,
       // info,
       result,
+      responseTime,
       user: context.user
     },
     "/ RESULT"
@@ -43,6 +48,7 @@ export default async (resolve, root, args, context, info) => {
       args,
       // info,
       result,
+      responseTime,
       context: loggableContext(context)
     },
     "/ RESULT_DEBUG"
