@@ -6,7 +6,8 @@ import {
   createTestForm,
   createTestTarget,
   createTestFormValue,
-  createTestGlobalPerm
+  createTestGlobalPerm,
+  createTestTeam
 } from "../utils/createTestEntities";
 
 const GET_FORM_QUERY = `
@@ -63,9 +64,13 @@ describe("User", () => {
 
   test("Happy Path By Id, WITH value", async () => {
     const adminUser = await createTestUser();
+    const team = await createTestTeam();
     await createTestGlobalPerm(adminUser.id, "ADMIN");
     const form = await createTestForm(adminUser.id);
-    const target = await createTestTarget();
+    const target = await createTestTarget({
+      userId: adminUser.id,
+      teamId: team.id
+    });
     const formValue = await createTestFormValue(
       form.id,
       adminUser.id,

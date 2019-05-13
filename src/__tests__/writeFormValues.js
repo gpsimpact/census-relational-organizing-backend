@@ -5,7 +5,8 @@ import {
   createTestUser,
   createTestTarget,
   createTestForm,
-  createTestGlobalPerm
+  createTestGlobalPerm,
+  createTestTeam
 } from "../utils/createTestEntities";
 import { sq } from "../db";
 
@@ -27,8 +28,12 @@ describe("Write Form Values", () => {
   test("happy path", async () => {
     const user = await createTestUser();
     const adminUser = await createTestUser();
+    const team = await createTestTeam();
     await createTestGlobalPerm(adminUser.id, "ADMIN");
-    const target = await createTestTarget();
+    const target = await createTestTarget({
+      userId: adminUser.id,
+      teamId: team.id
+    });
     const form = await createTestForm(adminUser.id);
 
     const response = await graphqlTestCall(
@@ -73,8 +78,12 @@ describe("Write Form Values", () => {
   test("one bad entry rollsback all.", async () => {
     const user = await createTestUser();
     const adminUser = await createTestUser();
+    const team = await createTestTeam();
     await createTestGlobalPerm(adminUser.id, "ADMIN");
-    const target = await createTestTarget();
+    const target = await createTestTarget({
+      userId: adminUser.id,
+      teamId: team.id
+    });
     const form = await createTestForm(adminUser.id);
 
     const response = await graphqlTestCall(

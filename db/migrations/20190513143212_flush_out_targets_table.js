@@ -9,7 +9,9 @@ exports.up = knex =>
     ADD COLUMN facebook_profile VARCHAR,
     ADD COLUMN email VARCHAR,
     ADD COLUMN household_size NUMERIC,
-    ADD COLUMN phone VARCHAR
+    ADD COLUMN phone VARCHAR,
+    ADD COLUMN user_id UUID REFERENCES users(id) NOT NULL,
+    ADD COLUMN team_id UUID REFERENCES teams(id) NOT NULL
   `);
 
 exports.down = knex =>
@@ -23,5 +25,7 @@ exports.down = knex =>
     DROP COLUMN facebook_profile,
     DROP COLUMN email,
     DROP COLUMN household_size,
-    DROP COLUMN phone
+    DROP COLUMN phone,
+    DROP COLUMN user_id,
+    DROP COLUMN team_id
 `);

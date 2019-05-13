@@ -26,6 +26,7 @@ input CreateTargetInput {
   facebookProfile: String
   householdSize: Int
   activeTibs: [String!]
+  teamId: String!
 }
 
 type CreateTargetResult {

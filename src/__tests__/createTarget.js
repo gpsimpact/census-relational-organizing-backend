@@ -5,7 +5,8 @@ import { dbUp } from "../utils/testDbOps";
 import {
   createTestUser,
   createTestTeam,
-  createTestTtib
+  createTestTtib,
+  createTestOLPermission
 } from "../utils/createTestEntities";
 import { sq } from "../db";
 
@@ -39,6 +40,10 @@ beforeEach(async () => {
 
 describe("Create Target", () => {
   test("Happy Path", async () => {
+    const user = await createTestUser();
+    const team = await createTestTeam();
+    await createTestOLPermission(user.id, team.id, "MEMBER");
+
     const newTargetData = {
       firstName: faker.name.firstName(),
       lastName: faker.name.lastName(),
@@ -56,12 +61,10 @@ describe("Create Target", () => {
       householdSize: faker.random.number({
         min: 1,
         max: 10
-      })
+      }),
+      teamId: team.id
     };
 
-    const user = await createTestUser();
-
-    // no input
     const response = await graphqlTestCall(
       CREATE_USER_MUTATION,
       {
@@ -84,9 +87,15 @@ describe("Create Target", () => {
     expect(dbTarget.firstName).toEqual(newTargetData.firstName);
     // Also check email is lower case (as per middleware)
     expect(dbTarget.email).toEqual(newTargetData.email.toLowerCase());
+    expect(dbTarget.userId).toBe(user.id);
+    expect(dbTarget.teamId).toBe(team.id);
   });
 
   test("set activeTibs", async () => {
+    const user = await createTestUser();
+    const team = await createTestTeam();
+    await createTestOLPermission(user.id, team.id, "MEMBER");
+
     const newTargetData = {
       firstName: faker.name.firstName(),
       lastName: faker.name.lastName(),
@@ -104,11 +113,10 @@ describe("Create Target", () => {
       householdSize: faker.random.number({
         min: 1,
         max: 10
-      })
+      }),
+      teamId: team.id
     };
 
-    const user = await createTestUser();
-    const team = await createTestTeam();
     const tib1 = await createTestTtib(user.id, team.id);
     const tib2 = await createTestTtib(user.id, team.id);
     const tib3 = await createTestTtib(user.id, team.id);
@@ -133,5 +141,31 @@ describe("Create Target", () => {
     expect(_.includes(activeTibIds, tib1.id)).toBe(true);
     expect(_.includes(activeTibIds, tib2.id)).toBe(true);
     expect(_.includes(activeTibIds, tib3.id)).toBe(false);
+  });
+
+  test("perm check. Must be team member", async () => {
+    const user = await createTestUser();
+    const team = await createTestTeam();
+
+    const newTargetData = {
+      firstName: faker.name.firstName(),
+      lastName: faker.name.lastName(),
+      teamId: team.id
+    };
+
+    // no input
+    const response = await graphqlTestCall(
+      CREATE_USER_MUTATION,
+      {
+        input: newTargetData
+      },
+      { user: { id: user.id } }
+    );
+    debugResponse(response);
+
+    // should return correct data
+    expect(response.data).toBeNull();
+    expect(response.errors.length).toEqual(1);
+    expect(response.errors[0].message).toEqual("Not Authorized!");
   });
 });

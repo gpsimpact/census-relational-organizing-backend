@@ -153,6 +153,7 @@ const has_GP_ADMIN = hasGlobalPerm("ADMIN");
 const has_TP_ADMIN = hasTeamPerm("input.teamId", "ADMIN");
 const has_TP_ADMIN_ROOT = hasTeamPerm("id", "ADMIN");
 const has_TP_MEMBER = hasTeamPerm("input.teamId", "MEMBER");
+
 // const owns_target = userOwnsTarget("input.targetId");
 
 /* ************************************************************************* 
@@ -201,7 +202,7 @@ export default shield(
         or(has_TP_ADMIN, has_GP_ADMIN)
       ),
       grantTeamPermission: and(isAuthenticated, or(has_TP_ADMIN, has_GP_ADMIN)),
-      createTarget: isAuthenticated
+      createTarget: and(isAuthenticated, or(has_TP_MEMBER, has_GP_ADMIN))
     },
     Team: {
       userPermissions: allow, // <- Make this go away soon in favor of own root query
