@@ -37,6 +37,7 @@ import updateTtib from "./mutation/updateTtib";
 import ttibs from "./query/ttibs";
 import applyGtib from "./mutation/applyGtib";
 import teamUsers from "./query/teamUsers";
+import createTarget from "./mutation/createTarget";
 
 export default {
   Query: {
@@ -72,7 +73,8 @@ export default {
     updateGtib,
     createTtib,
     updateTtib,
-    applyGtib
+    applyGtib,
+    createTarget
   },
   User: {
     globalPermissions,
