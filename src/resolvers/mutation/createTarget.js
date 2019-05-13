@@ -2,9 +2,24 @@ import { addOneHOR } from "@jakelowen/sqorn-graphql-filters";
 import _ from "lodash";
 
 export default async (root, args, context) => {
+  // make sure team exists
+  const existingTeam = await context.dataSource.team.byIdLoader.load(
+    args.input.teamId
+  );
+  if (!existingTeam) {
+    return {
+      success: false,
+      code: "INPUT_ERROR",
+      message: "No team with this id exists.",
+      item: null
+    };
+  }
+
   // make lowercase email
   const lowerEmail = args.input.email && args.input.email.toLowerCase();
-  let writeInput = Object.assign({}, args.input);
+  let writeInput = Object.assign({}, args.input, {
+    userId: context.user.id
+  });
   if (lowerEmail) {
     writeInput.email = lowerEmail;
   }
