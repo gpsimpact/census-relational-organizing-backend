@@ -200,7 +200,8 @@ export default shield(
         isAuthenticated,
         or(has_TP_ADMIN, has_GP_ADMIN)
       ),
-      grantTeamPermission: and(isAuthenticated, or(has_TP_ADMIN, has_GP_ADMIN))
+      grantTeamPermission: and(isAuthenticated, or(has_TP_ADMIN, has_GP_ADMIN)),
+      createTarget: isAuthenticated
     },
     Team: {
       userPermissions: allow, // <- Make this go away soon in favor of own root query
@@ -246,7 +247,9 @@ export default shield(
     GlobalPermissionsEnum: allow,
     OLUserPerms: allow,
     UpdateTtibResult: allow,
-    TeamUsersResult: allow
+    TeamUsersResult: allow,
+    Target: allow,
+    CreateTargetResult: allow
   },
   {
     fallbackError: "Not Authorized!", // default error spelling is Authorised.

@@ -130,6 +130,9 @@ export default (req, res, logger) => {
       update: updateGDS(sq.from`ttibs`),
       byIdLoader: simpleSingleLoader(sq.from`ttibs`, "id"),
       byGtibLinkIdLoader: simpleSingleLoader(sq.from`ttibs`, "gtib_link")
+    },
+    target: {
+      create: createGDS(sq.from`targets`)
     }
   };
 
