@@ -134,6 +134,7 @@ export default (req, res, logger) => {
     },
     target: {
       create: createGDS(sq.from`targets`),
+      update: updateGDS(sq.from`targets`),
       byIdLoader: simpleSingleLoader(sq.from`targets`, "id"),
       trueTibsLoader: simpleManyLoader(sq.from`target_true_tibs`, "targetId")
     }

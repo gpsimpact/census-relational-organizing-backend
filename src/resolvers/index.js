@@ -40,6 +40,7 @@ import teamUsers from "./query/teamUsers";
 import createTarget from "./mutation/createTarget";
 import target from "./query/target";
 import tibs from "./target/tibs";
+import updateTarget from "./mutation/updateTarget";
 
 export default {
   Query: {
@@ -77,7 +78,8 @@ export default {
     createTtib,
     updateTtib,
     applyGtib,
-    createTarget
+    createTarget,
+    updateTarget
   },
   User: {
     globalPermissions,

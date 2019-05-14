@@ -38,3 +38,25 @@ type CreateTargetResult {
   message: String!
   item: Target
 }
+
+input UpdateTargetInput {
+  firstName: String
+  lastName: String
+  email: String
+  address: String
+  city: String
+  state: String
+  zip5: String
+  phone: String
+  twitterHandle: String
+  facebookProfile: String
+  householdSize: Int
+  activeTibs: [String!]
+}
+
+type UpdateTargetResult {
+  code: MutationCodeEnum!
+  success: Boolean!
+  message: String!
+  item: Target
+}

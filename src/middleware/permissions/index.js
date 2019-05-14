@@ -10,7 +10,7 @@ const userOwnsTargetCheck = async (parent, args, ctx) => {
     return false;
   }
   const target = await ctx.dataSource.target.byIdLoader.load(args.id);
-  return ctx.user.id === target.userId;
+  return target && target.userId && ctx.user.id === target.userId;
 };
 
 const hasGlobalPermCheck = requiredGP => async (parent, args, ctx) => {
@@ -120,7 +120,9 @@ const userIsTeamAdminofUpdatingTtibCheck = async (parent, args, ctx) => {
   RULE DEFINITIONS- turns checks into GRAPHQL-SHIELD rules
 ************************************************************************* */
 
-const userOwnsTarget = rule({ cache: "contextual" })(userOwnsTargetCheck);
+const userOwnsTarget = rule(`user-owns-target`, { cache: "contextual" })(
+  userOwnsTargetCheck
+);
 
 const hasGlobalPerm = requiredGP =>
   rule(`name-has-global-perm-${requiredGP}`, { cache: "contextual" })(
@@ -213,7 +215,8 @@ export default shield(
         or(has_TP_ADMIN, has_GP_ADMIN)
       ),
       grantTeamPermission: and(isAuthenticated, or(has_TP_ADMIN, has_GP_ADMIN)),
-      createTarget: and(isAuthenticated, or(has_TP_MEMBER, has_GP_ADMIN))
+      createTarget: and(isAuthenticated, or(has_TP_MEMBER, has_GP_ADMIN)),
+      updateTarget: and(isAuthenticated, or(has_GP_ADMIN, userOwnsTarget))
     },
     Team: {
       userPermissions: allow, // <- Make this go away soon in favor of own root query
@@ -262,7 +265,8 @@ export default shield(
     TeamUsersResult: allow,
     Target: allow,
     CreateTargetResult: allow,
-    Tib: allow
+    Tib: allow,
+    UpdateTargetResult: allow
   },
   {
     fallbackError: "Not Authorized!", // default error spelling is Authorised.
