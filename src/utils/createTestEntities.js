@@ -47,6 +47,21 @@ export const createTestTarget = async data => {
   const fakeData = {
     firstName: faker.name.firstName(),
     lastName: faker.name.lastName(),
+    email: faker.internet.email(),
+    address: faker.address.streetAddress(),
+    city: faker.address.city(),
+    state: faker.address.state(),
+    zip5: faker.address.zipCode().substring(0, 5),
+    phone: `+${faker.random.number({
+      min: 10000000000,
+      max: 19999999999
+    })}`,
+    twitterHandle: `@${faker.random.word()}`,
+    facebookProfile: faker.random.word(),
+    householdSize: faker.random.number({
+      min: 1,
+      max: 10
+    }),
     active: true
   };
   const writeData = Object.assign({}, fakeData, data);

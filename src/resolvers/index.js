@@ -38,6 +38,8 @@ import ttibs from "./query/ttibs";
 import applyGtib from "./mutation/applyGtib";
 import teamUsers from "./query/teamUsers";
 import createTarget from "./mutation/createTarget";
+import target from "./query/target";
+import tibs from "./target/tibs";
 
 import target from "./query/target";
 import tibs from "./target/tibs";
