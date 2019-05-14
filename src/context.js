@@ -129,10 +129,14 @@ export default (req, res, logger) => {
       create: createGDS(sq.from`ttibs`),
       update: updateGDS(sq.from`ttibs`),
       byIdLoader: simpleSingleLoader(sq.from`ttibs`, "id"),
-      byGtibLinkIdLoader: simpleSingleLoader(sq.from`ttibs`, "gtib_link")
+      byGtibLinkIdLoader: simpleSingleLoader(sq.from`ttibs`, "gtib_link"),
+      byTeamIdLoader: simpleManyLoader(sq.from`ttibs`, "teamId")
     },
     target: {
-      create: createGDS(sq.from`targets`)
+      create: createGDS(sq.from`targets`),
+      update: updateGDS(sq.from`targets`),
+      byIdLoader: simpleSingleLoader(sq.from`targets`, "id"),
+      trueTibsLoader: simpleManyLoader(sq.from`target_true_tibs`, "targetId")
     }
   };
 

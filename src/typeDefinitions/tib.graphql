@@ -1,0 +1,6 @@
+type Tib {
+  id: String!
+  text: String!
+  isApplied: Boolean!
+  appliedAt: GraphQLDateTime
+}

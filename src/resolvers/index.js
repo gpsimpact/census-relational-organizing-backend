@@ -39,6 +39,10 @@ import applyGtib from "./mutation/applyGtib";
 import teamUsers from "./query/teamUsers";
 import createTarget from "./mutation/createTarget";
 
+import target from "./query/target";
+import tibs from "./target/tibs";
+import updateTarget from "./mutation/updateTarget";
+
 export default {
   Query: {
     hello,
@@ -51,7 +55,8 @@ export default {
     form,
     gtibs,
     ttibs,
-    teamUsers
+    teamUsers,
+    target
   },
   Mutation: {
     createUser,
@@ -74,7 +79,8 @@ export default {
     createTtib,
     updateTtib,
     applyGtib,
-    createTarget
+    createTarget,
+    updateTarget
   },
   User: {
     globalPermissions,
@@ -95,5 +101,8 @@ export default {
   GraphQLDateTime,
   FormField: {
     value
+  },
+  Target: {
+    tibs
   }
 };

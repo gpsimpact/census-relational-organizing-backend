@@ -5,6 +5,14 @@ import _ from "lodash";
   CHECKS - isolated testable logic 
 ************************************************************************* */
 
+const userOwnsTargetCheck = async (parent, args, ctx) => {
+  if (!ctx.user || !ctx.user.id) {
+    return false;
+  }
+  const target = await ctx.dataSource.target.byIdLoader.load(args.id);
+  return target && target.userId && ctx.user.id === target.userId;
+};
+
 const hasGlobalPermCheck = requiredGP => async (parent, args, ctx) => {
   // get list of users's global perms
   if (!ctx.user || !ctx.user.id) {
@@ -112,6 +120,10 @@ const userIsTeamAdminofUpdatingTtibCheck = async (parent, args, ctx) => {
   RULE DEFINITIONS- turns checks into GRAPHQL-SHIELD rules
 ************************************************************************* */
 
+const userOwnsTarget = rule(`user-owns-target`, { cache: "contextual" })(
+  userOwnsTargetCheck
+);
+
 const hasGlobalPerm = requiredGP =>
   rule(`name-has-global-perm-${requiredGP}`, { cache: "contextual" })(
     hasGlobalPermCheck(requiredGP)
@@ -172,7 +184,8 @@ export default shield(
       summaryCountTeams: and(isAuthenticated, has_GP_ADMIN),
       gtibs: and(isAuthenticated, or(has_GP_ADMIN, isAnyTeamAdmin)),
       user: and(isAuthenticated, or(has_GP_ADMIN, isSelf)),
-      teamUsers: and(isAuthenticated, or(has_TP_ADMIN, has_GP_ADMIN))
+      teamUsers: and(isAuthenticated, or(has_TP_ADMIN, has_GP_ADMIN)),
+      target: and(isAuthenticated, or(has_GP_ADMIN, userOwnsTarget))
     },
     Mutation: {
       removeUser: and(isAuthenticated, has_GP_ADMIN),
@@ -202,7 +215,8 @@ export default shield(
         or(has_TP_ADMIN, has_GP_ADMIN)
       ),
       grantTeamPermission: and(isAuthenticated, or(has_TP_ADMIN, has_GP_ADMIN)),
-      createTarget: and(isAuthenticated, or(has_TP_MEMBER, has_GP_ADMIN))
+      createTarget: and(isAuthenticated, or(has_TP_MEMBER, has_GP_ADMIN)),
+      updateTarget: and(isAuthenticated, or(has_GP_ADMIN, userOwnsTarget))
     },
     Team: {
       userPermissions: allow, // <- Make this go away soon in favor of own root query
@@ -250,7 +264,9 @@ export default shield(
     UpdateTtibResult: allow,
     TeamUsersResult: allow,
     Target: allow,
-    CreateTargetResult: allow
+    CreateTargetResult: allow,
+    Tib: allow,
+    UpdateTargetResult: allow
   },
   {
     fallbackError: "Not Authorized!", // default error spelling is Authorised.

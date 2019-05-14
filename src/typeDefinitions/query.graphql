@@ -10,4 +10,5 @@ type Query {
   gtibs(visible: Boolean = true): [Gtib]
   ttibs(input: TtibsInput!): [Ttib]
   teamUsers(input: TeamUsersInput!): TeamUsersResult!
+  target(id: String!): Target
 }
