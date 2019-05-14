@@ -165,6 +165,7 @@ const has_GP_ADMIN = hasGlobalPerm("ADMIN");
 const has_TP_ADMIN = hasTeamPerm("input.teamId", "ADMIN");
 const has_TP_ADMIN_ROOT = hasTeamPerm("id", "ADMIN");
 const has_TP_MEMBER = hasTeamPerm("input.teamId", "MEMBER");
+const has_TP_MEMBER_ROOT = hasTeamPerm("teamId", "MEMBER");
 
 // const owns_target = userOwnsTarget("input.targetId");
 
@@ -185,7 +186,9 @@ export default shield(
       gtibs: and(isAuthenticated, or(has_GP_ADMIN, isAnyTeamAdmin)),
       user: and(isAuthenticated, or(has_GP_ADMIN, isSelf)),
       teamUsers: and(isAuthenticated, or(has_TP_ADMIN, has_GP_ADMIN)),
-      target: and(isAuthenticated, or(has_GP_ADMIN, userOwnsTarget))
+      target: and(isAuthenticated, or(has_GP_ADMIN, userOwnsTarget)),
+      targets: and(isAuthenticated, has_GP_ADMIN),
+      userTargets: and(isAuthenticated, has_TP_MEMBER_ROOT)
     },
     Mutation: {
       removeUser: and(isAuthenticated, has_GP_ADMIN),
@@ -266,7 +269,8 @@ export default shield(
     Target: allow,
     CreateTargetResult: allow,
     Tib: allow,
-    UpdateTargetResult: allow
+    UpdateTargetResult: allow,
+    TargetsResult: allow
   },
   {
     fallbackError: "Not Authorized!", // default error spelling is Authorised.

@@ -41,6 +41,8 @@ import createTarget from "./mutation/createTarget";
 import target from "./query/target";
 import tibs from "./target/tibs";
 import updateTarget from "./mutation/updateTarget";
+import targets from "./query/targets";
+import userTargets from "./query/userTargets";
 
 export default {
   Query: {
@@ -55,7 +57,9 @@ export default {
     gtibs,
     ttibs,
     teamUsers,
-    target
+    target,
+    targets,
+    userTargets
   },
   Mutation: {
     createUser,
