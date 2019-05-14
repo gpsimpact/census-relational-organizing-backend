@@ -11,6 +11,9 @@ type Target {
   twitterHandle: String
   facebookProfile: String
   householdSize: Int
+  tibs: [Tib]!
+  createdAt: GraphQLDateTime!
+  updatedAt: GraphQLDateTime!
 }
 
 input CreateTargetInput {
