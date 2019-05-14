@@ -4,4 +4,7 @@ export default {
   Mutation: {
     updateUser: defaultToAuthedUser
   }
+  // Query: {
+  //   userTargets: defaultToAuthedUser
+  // }
 };

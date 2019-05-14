@@ -60,3 +60,42 @@ type UpdateTargetResult {
   message: String!
   item: Target
 }
+
+input TargetsInput {
+  where: TargetsWhere
+  limit: Int
+  offset: Int
+  sort: TargetsSort
+}
+
+input TargetsSort {
+  id: SortDirection
+  firstName: SortDirection
+  lastName: SortDirection
+  createdAt: SortDirection
+  updatedAt: SortDirection
+}
+
+input TargetsWhere {
+  OR: [TeamsWhere]
+  AND: [TeamsWhere]
+  id: StringWhere
+  firstName: StringWhere
+  lastName: StringWhere
+  email: StringWhere
+  address: StringWhere
+  city: StringWhere
+  state: StringWhere
+  zip5: StringWhere
+  phone: StringWhere
+  twitterHandle: StringWhere
+  facebookProfile: StringWhere
+  createdAt: DateTimeWhere
+  updatedAt: DateTimeWhere
+}
+
+type TargetsResult {
+  hasMore: Boolean!
+  totalCount: Int!
+  items: [Target]!
+}

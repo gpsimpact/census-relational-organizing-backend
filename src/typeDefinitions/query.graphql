@@ -11,4 +11,6 @@ type Query {
   ttibs(input: TtibsInput!): [Ttib]
   teamUsers(input: TeamUsersInput!): TeamUsersResult!
   target(id: String!): Target
+  targets(input: TargetsInput): TargetsResult!
+  userTargets(id: String, teamId: String!, input: TargetsInput): TargetsResult!
 }
