@@ -43,6 +43,7 @@ import tibs from "./target/tibs";
 import updateTarget from "./mutation/updateTarget";
 import targets from "./query/targets";
 import userTargets from "./query/userTargets";
+import removeTarget from "./mutation/removeTarget";
 
 export default {
   Query: {
@@ -83,7 +84,8 @@ export default {
     updateTtib,
     applyGtib,
     createTarget,
-    updateTarget
+    updateTarget,
+    removeTarget
   },
   User: {
     globalPermissions,

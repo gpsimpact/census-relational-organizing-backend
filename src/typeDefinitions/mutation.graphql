@@ -25,4 +25,5 @@ type Mutation {
   applyGtib(input: ApplyGtibInput!): ApplyGtibResult!
   createTarget(input: CreateTargetInput!): CreateTargetResult!
   updateTarget(id: String!, input: UpdateTargetInput!): UpdateTargetResult!
+  removeTarget(id: String!): RemoveTargetResult!
 }

@@ -26,6 +26,11 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 // pubsub
 import redis, { pubsub } from "./redis";
 
+const setInactiveDataSource = dbHandle => async id => {
+  await dbHandle.where({ id }).set({ active: false });
+  return true;
+};
+
 export default (req, res, logger) => {
   const userByIdLoader = simpleSingleLoader(sq.from`users`, "id");
   const userByEmailLoader = simpleSingleLoader(sq.from`users`, "email");
@@ -136,7 +141,8 @@ export default (req, res, logger) => {
       create: createGDS(sq.from`targets`),
       update: updateGDS(sq.from`targets`),
       byIdLoader: simpleSingleLoader(sq.from`targets`, "id"),
-      trueTibsLoader: simpleManyLoader(sq.from`target_true_tibs`, "targetId")
+      trueTibsLoader: simpleManyLoader(sq.from`target_true_tibs`, "targetId"),
+      remove: setInactiveDataSource(sq.from`targets`)
     }
   };
 
