@@ -219,7 +219,8 @@ export default shield(
       ),
       grantTeamPermission: and(isAuthenticated, or(has_TP_ADMIN, has_GP_ADMIN)),
       createTarget: and(isAuthenticated, or(has_TP_MEMBER, has_GP_ADMIN)),
-      updateTarget: and(isAuthenticated, or(has_GP_ADMIN, userOwnsTarget))
+      updateTarget: and(isAuthenticated, or(has_GP_ADMIN, userOwnsTarget)),
+      removeTarget: and(isAuthenticated, or(has_GP_ADMIN, userOwnsTarget))
     },
     Team: {
       userPermissions: allow, // <- Make this go away soon in favor of own root query
@@ -270,7 +271,8 @@ export default shield(
     CreateTargetResult: allow,
     Tib: allow,
     UpdateTargetResult: allow,
-    TargetsResult: allow
+    TargetsResult: allow,
+    RemoveTargetResult: allow
   },
   {
     fallbackError: "Not Authorized!", // default error spelling is Authorised.

@@ -8,6 +8,7 @@ export const dbUp = async () => {
     TRUNCATE TABLE teams CASCADE;
     TRUNCATE TABLE global_permissions CASCADE;
     TRUNCATE TABLE team_permissions CASCADE;
+    TRUNCATE TABLE targets CASCADE;
   `);
   await redis.flushdb();
 };

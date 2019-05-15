@@ -14,6 +14,7 @@ type Target {
   tibs: [Tib]!
   createdAt: GraphQLDateTime!
   updatedAt: GraphQLDateTime!
+  active: Boolean!
 }
 
 input CreateTargetInput {
@@ -92,10 +93,18 @@ input TargetsWhere {
   facebookProfile: StringWhere
   createdAt: DateTimeWhere
   updatedAt: DateTimeWhere
+  active: BooleanWhere
 }
 
 type TargetsResult {
   hasMore: Boolean!
   totalCount: Int!
   items: [Target]!
+}
+
+type RemoveTargetResult {
+  code: MutationCodeEnum!
+  success: Boolean!
+  message: String!
+  item: Target
 }
