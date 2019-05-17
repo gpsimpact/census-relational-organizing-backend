@@ -188,7 +188,8 @@ export default shield(
       teamUsers: and(isAuthenticated, or(has_TP_ADMIN, has_GP_ADMIN)),
       target: and(isAuthenticated, or(has_GP_ADMIN, userOwnsTarget)),
       targets: and(isAuthenticated, has_GP_ADMIN),
-      userTargets: and(isAuthenticated, has_TP_MEMBER_ROOT)
+      userTargets: and(isAuthenticated, has_TP_MEMBER_ROOT),
+      summaryCountMyTeamTargets: isAuthenticated
     },
     Mutation: {
       removeUser: and(isAuthenticated, has_GP_ADMIN),
