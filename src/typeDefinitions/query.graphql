@@ -13,4 +13,7 @@ type Query {
   target(id: String!): Target
   targets(input: TargetsInput): TargetsResult!
   userTargets(id: String, teamId: String!, input: TargetsInput): TargetsResult!
+  summaryCountMyTeamTargets(teamId: String!): Int!
+  summaryTotalMyTeamHouseholdSize(teamId: String!): Int!
+  summaryCountMyTeamTibs(teamId: String!): [TibTotal]!
 }

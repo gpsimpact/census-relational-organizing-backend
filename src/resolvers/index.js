@@ -44,6 +44,9 @@ import updateTarget from "./mutation/updateTarget";
 import targets from "./query/targets";
 import userTargets from "./query/userTargets";
 import removeTarget from "./mutation/removeTarget";
+import summaryCountMyTeamTargets from "./query/summaryCountMyTeamTargets";
+import summaryTotalMyTeamHouseholdSize from "./query/summaryTotalMyTeamHouseholdSize";
+import summaryCountMyTeamTibs from "./query/summaryCountMyTeamTibs";
 
 export default {
   Query: {
@@ -60,7 +63,10 @@ export default {
     teamUsers,
     target,
     targets,
-    userTargets
+    userTargets,
+    summaryCountMyTeamTargets,
+    summaryTotalMyTeamHouseholdSize,
+    summaryCountMyTeamTibs
   },
   Mutation: {
     createUser,
