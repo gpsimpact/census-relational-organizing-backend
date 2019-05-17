@@ -190,7 +190,8 @@ export default shield(
       targets: and(isAuthenticated, has_GP_ADMIN),
       userTargets: and(isAuthenticated, has_TP_MEMBER_ROOT),
       summaryCountMyTeamTargets: isAuthenticated,
-      summaryTotalMyTeamHouseholdSize: isAuthenticated
+      summaryTotalMyTeamHouseholdSize: isAuthenticated,
+      summaryCountMyTeamTibs: isAuthenticated
     },
     Mutation: {
       removeUser: and(isAuthenticated, has_GP_ADMIN),
@@ -271,10 +272,11 @@ export default shield(
     TeamUsersResult: allow,
     Target: allow,
     CreateTargetResult: allow,
-    Tib: allow,
+    TibApplication: allow,
     UpdateTargetResult: allow,
     TargetsResult: allow,
-    RemoveTargetResult: allow
+    RemoveTargetResult: allow,
+    TibTotal: allow
   },
   {
     fallbackError: "Not Authorized!", // default error spelling is Authorised.

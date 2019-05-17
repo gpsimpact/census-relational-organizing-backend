@@ -1,6 +1,12 @@
-type Tib {
+type TibApplication {
   id: String!
   text: String!
   isApplied: Boolean!
   appliedAt: GraphQLDateTime
+}
+
+type TibTotal {
+  id: String!
+  text: String!
+  count: Int!
 }

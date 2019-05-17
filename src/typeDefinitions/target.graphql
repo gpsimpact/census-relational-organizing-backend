@@ -11,7 +11,7 @@ type Target {
   twitterHandle: String
   facebookProfile: String
   householdSize: Int
-  tibs: [Tib]!
+  tibs: [TibApplication]!
   createdAt: GraphQLDateTime!
   updatedAt: GraphQLDateTime!
   active: Boolean!
