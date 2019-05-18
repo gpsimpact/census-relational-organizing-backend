@@ -3,6 +3,10 @@ import cors from "cors";
 import jwt from "express-jwt";
 import fs from "fs";
 
+// messaging
+import { PubSub } from "@google-cloud/pubsub";
+import messageHandler from "./pubsubMessageHandlers";
+
 // Logging
 import bunyan from "bunyan";
 import { LoggingBunyan } from "@google-cloud/logging-bunyan";
@@ -37,7 +41,7 @@ const level = process.env.LOG_LEVEL || "info";
 
 // Create a Bunyan logger that streams to Stackdriver Logging
 // Logs will be written to: "projects/YOUR_PROJECT_ID/logs/bunyan_log"
-const logger = bunyan.createLogger({
+export const logger = bunyan.createLogger({
   // The JSON payload of the log as it appears in Stackdriver Logging
   // will contain "name": "my-service"
   name: "census-backend",
@@ -49,6 +53,14 @@ const logger = bunyan.createLogger({
     loggingBunyan.stream(level)
   ]
 });
+
+// set up gcloud pubsub messaging
+// Creates a client
+const pubsub = new PubSub();
+// References an existing subscription
+const subscription = pubsub.subscription(
+  process.env.GCLOUD_PUBSUB_INBOUND_SUBSCRIPTION_NAME
+);
 
 // const isDeployed =
 //   process.env.NODE_ENV === "production" || process.env.NODE_ENV === "staging";
@@ -92,9 +104,11 @@ const options = {
   }
 };
 
-server.start(options, ({ port }) =>
+server.start(options, ({ port }) => {
   // Writes some log entries
   logger.info(
     `Server started, listening on port ${port} for incoming requests.`
-  )
-);
+  );
+  // Listen for new messages until timeout is hit
+  subscription.on(`message`, messageHandler);
+});

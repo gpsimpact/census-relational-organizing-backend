@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "@google-cloud/logging-bunyan": "^0.10.1",
+    "@google-cloud/pubsub": "^0.29.0",
     "@jakelowen/sqorn-graphql-filters": "0.4.5",
     "@sendgrid/mail": "^6.3.1",
     "@sqorn/pg": "^0.0.45",
