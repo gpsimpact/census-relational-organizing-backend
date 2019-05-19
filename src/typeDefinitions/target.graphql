@@ -31,6 +31,7 @@ input CreateTargetInput {
   householdSize: Int
   activeTibs: [String!]
   teamId: String!
+  retainAddress: Boolean! = true
 }
 
 type CreateTargetResult {
@@ -53,6 +54,7 @@ input UpdateTargetInput {
   facebookProfile: String
   householdSize: Int
   activeTibs: [String!]
+  retainAddress: Boolean! = true
 }
 
 type UpdateTargetResult {

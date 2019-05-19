@@ -41,7 +41,7 @@ const level = process.env.LOG_LEVEL || "info";
 
 // Create a Bunyan logger that streams to Stackdriver Logging
 // Logs will be written to: "projects/YOUR_PROJECT_ID/logs/bunyan_log"
-export const logger = bunyan.createLogger({
+const logger = bunyan.createLogger({
   // The JSON payload of the log as it appears in Stackdriver Logging
   // will contain "name": "my-service"
   name: "census-backend",
@@ -56,9 +56,9 @@ export const logger = bunyan.createLogger({
 
 // set up gcloud pubsub messaging
 // Creates a client
-const pubsub = new PubSub();
+const gcPubsub = new PubSub();
 // References an existing subscription
-const subscription = pubsub.subscription(
+const subscription = gcPubsub.subscription(
   process.env.GCLOUD_PUBSUB_INBOUND_SUBSCRIPTION_NAME
 );
 
@@ -68,7 +68,8 @@ const subscription = pubsub.subscription(
 const server = new GraphQLServer({
   typeDefs,
   resolvers,
-  context: ({ request, response }) => context(request, response, logger),
+  context: ({ request, response }) =>
+    context(request, response, logger, gcPubsub),
   middlewares: [
     loggingMW,
     defaultToAuthedUserMW,

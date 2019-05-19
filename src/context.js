@@ -31,7 +31,7 @@ const setInactiveDataSource = dbHandle => async id => {
   return true;
 };
 
-export default (req, res, logger) => {
+export default (req, res, logger, gcPubsub) => {
   const userByIdLoader = simpleSingleLoader(sq.from`users`, "id");
   const userByEmailLoader = simpleSingleLoader(sq.from`users`, "email");
   const teamByIdLoader = simpleSingleLoader(sq.from`teams`, "id");
@@ -166,9 +166,10 @@ export default (req, res, logger) => {
     sq,
     dataSource,
     redis,
-    pubsub,
+    pubsub, // redis pubsub
     sendEmail,
     user: req.user,
-    logger
+    logger,
+    gcPubsub // google cloud pubsub
   };
 };

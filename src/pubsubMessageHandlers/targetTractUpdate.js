@@ -1,5 +1,7 @@
+require("dotenv").config();
+
 import { sq } from "../db";
-import { logger } from "../index";
+// import { logger } from "../index";
 
 export default async message => {
   if (
@@ -10,18 +12,11 @@ export default async message => {
     await sq`targets`
       .set({ censusTract: message.attributes.censusTract })
       .where({ id: message.attributes.targetId });
+    // all went well, so ack the message to remove from queue.
     message.ack();
   } else {
-    // might as well clear because its malformed ?
-    logger.bug(
-      Object.assign(
-        {},
-        {
-          pubSubMessage: message,
-          message: "MALFORMED TARGET_TRACT_UPDATE pubsub event"
-        }
-      )
-    );
-    message.ack();
+    // It's malformed, so reject it.
+    // Unless someone else picks it up, it will expire after 7 days
+    message.nack();
   }
 };

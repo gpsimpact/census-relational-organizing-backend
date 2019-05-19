@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 import { sq } from "../db";
 import { dbUp } from "../utils/testDbOps";
 import {

@@ -1,3 +1,4 @@
+import faker from "faker";
 import _ from "lodash";
 import { graphqlTestCall, debugResponse } from "../utils/graphqlTestCall";
 import { dbUp } from "../utils/testDbOps";
@@ -180,5 +181,93 @@ describe("Update Form", () => {
     expect(_.includes(trueTibsAfter, tib1.id)).toBe(false);
     expect(_.includes(trueTibsAfter, tib2.id)).toBe(true);
     expect(_.includes(trueTibsAfter, tib3.id)).toBe(true);
+  });
+
+  test("Calls pubsub for tract", async () => {
+    const user = await createTestUser();
+    const team = await createTestTeam();
+    const target = await createTestTarget({ userId: user.id, teamId: team.id });
+
+    const newData = {
+      firstName: "Billiam",
+      address: faker.address.streetAddress(),
+      city: faker.address.city(),
+      state: faker.address.state(),
+      zip5: faker.address.zipCode().substring(0, 5)
+    };
+
+    const mockPublish = jest.fn();
+    const mockGcPubSub = {
+      topic: () => {
+        return {
+          publisher: () => {
+            return {
+              publish: mockPublish
+            };
+          }
+        };
+      }
+    };
+
+    const response = await graphqlTestCall(
+      UPDATE_TARGET_MUTATION,
+      {
+        id: target.id,
+        input: newData
+      },
+      { user: { id: user.id }, gcPubsub: mockGcPubSub }
+    );
+    debugResponse(response);
+    expect(mockPublish).toHaveBeenCalled();
+    const calledWith = JSON.parse(mockPublish.mock.calls[0][0]);
+    expect(calledWith.addressData.address).toBe(newData.address);
+    expect(calledWith.addressData.city).toBe(newData.city);
+    expect(calledWith.addressData.state).toBe(newData.state);
+    expect(calledWith.addressData.zip5).toBe(newData.zip5);
+    expect(calledWith.returnTopic).toBe(
+      process.env.GCLOUD_PUBSUB_INBOUND_TOPIC
+    );
+    expect(calledWith.targetId).toBe(response.data.updateTarget.item.id);
+  });
+
+  test.only("Happy Path, no retain address", async () => {
+    const user = await createTestUser();
+    const team = await createTestTeam();
+    const target = await createTestTarget({ userId: user.id, teamId: team.id });
+
+    const newData = {
+      firstName: "Billiam",
+      address: faker.address.streetAddress(),
+      city: faker.address.city(),
+      state: faker.address.state(),
+      zip5: faker.address.zipCode().substring(0, 5),
+      retainAddress: false
+    };
+
+    const response = await graphqlTestCall(
+      UPDATE_TARGET_MUTATION,
+      {
+        id: target.id,
+        input: newData
+      },
+      { user: { id: user.id } }
+    );
+    debugResponse(response);
+    expect(response.data.updateTarget).not.toBeNull();
+    expect(response.data.updateTarget.code).toBe("OK");
+    expect(response.data.updateTarget.success).toBe(true);
+    expect(response.data.updateTarget.message).toBe("Target updated.");
+
+    expect(response.data.updateTarget.item.address).toBeNull();
+    expect(response.data.updateTarget.item.city).toBeNull();
+    expect(response.data.updateTarget.item.state).toBeNull();
+    expect(response.data.updateTarget.item.zip5).toBe(newData.zip5);
+
+    const [dbTarget] = await sq.from`targets`.where({ id: target.id });
+    expect(dbTarget).toBeDefined();
+    expect(dbTarget.address).toBeNull();
+    expect(dbTarget.city).toBeNull();
+    expect(dbTarget.state).toBeNull();
+    expect(dbTarget.zip5).toBe(newData.zip5);
   });
 });
