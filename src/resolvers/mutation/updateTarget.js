@@ -27,6 +27,25 @@ export default async (root, args, context) => {
     writeInput = _.omit(writeInput, "activeTibs");
   }
 
+  let addressData;
+  // If have address in it, grab it into own element
+  if (writeInput.address) {
+    addressData = {
+      address: writeInput.address,
+      city: writeInput.city,
+      state: writeInput.state,
+      zip5: writeInput.zip5
+    };
+  }
+
+  if (!writeInput.retainAddress) {
+    writeInput = Object.assign({}, writeInput, {
+      address: null,
+      city: null,
+      state: null
+    });
+  }
+
   const writeArgs = Object.assign({}, args, { input: writeInput });
 
   // now apply activeTibs
@@ -59,6 +78,22 @@ export default async (root, args, context) => {
     "id",
     "UPDATE_TARGET"
   )(root, writeArgs, context);
+
+  if (addressData) {
+    // send to pubsub topic for census encode
+    // In this example, the message is current time
+    const data = {
+      addressData,
+      returnTopic: process.env.GCLOUD_PUBSUB_INBOUND_TOPIC,
+      targetId: target.id
+    };
+    const dataBuffer = Buffer.from(JSON.stringify(data));
+    context.gcPubsub &&
+      context.gcPubsub
+        .topic(process.env.GCLOUD_PUBSUB_NEED_TRACT_TOPIC)
+        .publisher()
+        .publish(dataBuffer);
+  }
 
   return {
     success: true,

@@ -10,6 +10,8 @@ import {
 } from "../utils/createTestEntities";
 import { sq } from "../db";
 
+require("dotenv").config();
+
 const CREATE_USER_MUTATION = `
   mutation createTarget($input: CreateTargetInput!) {
      createTarget(input:$input) {
@@ -167,5 +169,115 @@ describe("Create Target", () => {
     expect(response.data).toBeNull();
     expect(response.errors.length).toEqual(1);
     expect(response.errors[0].message).toEqual("Not Authorized!");
+  });
+
+  test("Calls pubsub for tract encoding", async () => {
+    const user = await createTestUser();
+    const team = await createTestTeam();
+    await createTestOLPermission(user.id, team.id, "MEMBER");
+
+    const newTargetData = {
+      firstName: faker.name.firstName(),
+      lastName: faker.name.lastName(),
+      email: faker.internet.email(),
+      address: faker.address.streetAddress(),
+      city: faker.address.city(),
+      state: faker.address.state(),
+      zip5: faker.address.zipCode().substring(0, 5),
+      phone: `+${faker.random.number({
+        min: 10000000000,
+        max: 19999999999
+      })}`,
+      twitterHandle: `@${faker.random.word()}`,
+      facebookProfile: faker.random.word(),
+      householdSize: faker.random.number({
+        min: 1,
+        max: 10
+      }),
+      teamId: team.id
+    };
+
+    const mockPublish = jest.fn();
+    const mockGcPubSub = {
+      topic: () => {
+        return {
+          publisher: () => {
+            return {
+              publish: mockPublish
+            };
+          }
+        };
+      }
+    };
+
+    const response = await graphqlTestCall(
+      CREATE_USER_MUTATION,
+      {
+        input: newTargetData
+      },
+      { user: { id: user.id }, gcPubsub: mockGcPubSub }
+    );
+    debugResponse(response);
+    expect(mockPublish).toHaveBeenCalled();
+    const calledWith = JSON.parse(mockPublish.mock.calls[0][0]);
+    expect(calledWith.addressData.address).toBe(newTargetData.address);
+    expect(calledWith.addressData.city).toBe(newTargetData.city);
+    expect(calledWith.addressData.state).toBe(newTargetData.state);
+    expect(calledWith.addressData.zip5).toBe(newTargetData.zip5);
+    expect(calledWith.returnTopic).toBe(
+      process.env.GCLOUD_PUBSUB_INBOUND_TOPIC
+    );
+    expect(calledWith.targetId).toBe(response.data.createTarget.item.id);
+  });
+
+  test("Happy Path, no retain address", async () => {
+    const user = await createTestUser();
+    const team = await createTestTeam();
+    await createTestOLPermission(user.id, team.id, "MEMBER");
+
+    const newTargetData = {
+      firstName: faker.name.firstName(),
+      lastName: faker.name.lastName(),
+      email: faker.internet.email(),
+      address: faker.address.streetAddress(),
+      city: faker.address.city(),
+      state: faker.address.state(),
+      zip5: faker.address.zipCode().substring(0, 5),
+      phone: `+${faker.random.number({
+        min: 10000000000,
+        max: 19999999999
+      })}`,
+      twitterHandle: `@${faker.random.word()}`,
+      facebookProfile: faker.random.word(),
+      householdSize: faker.random.number({
+        min: 1,
+        max: 10
+      }),
+      teamId: team.id,
+      retainAddress: false
+    };
+
+    const response = await graphqlTestCall(
+      CREATE_USER_MUTATION,
+      {
+        input: newTargetData
+      },
+      { user: { id: user.id } }
+    );
+    debugResponse(response);
+    expect(response.data.createTarget).not.toBeNull();
+    expect(response.data.createTarget.item.address).toBeNull();
+    expect(response.data.createTarget.item.city).toBeNull();
+    expect(response.data.createTarget.item.state).toBeNull();
+    expect(response.data.createTarget.item.zip5).toBe(newTargetData.zip5);
+
+    const [dbTarget] = await sq.from`targets`.where({
+      id: response.data.createTarget.item.id
+    });
+    expect(dbTarget).toBeDefined();
+    expect(dbTarget.address).toBeNull();
+    expect(dbTarget.city).toBeNull();
+    expect(dbTarget.state).toBeNull();
+    expect(dbTarget.zip5).toBe(newTargetData.zip5);
   });
 });

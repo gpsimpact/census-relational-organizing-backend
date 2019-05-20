@@ -3,6 +3,10 @@ import cors from "cors";
 import jwt from "express-jwt";
 import fs from "fs";
 
+// messaging
+import { PubSub } from "@google-cloud/pubsub";
+import messageHandler from "./pubsubMessageHandlers";
+
 // Logging
 import bunyan from "bunyan";
 import { LoggingBunyan } from "@google-cloud/logging-bunyan";
@@ -50,13 +54,22 @@ const logger = bunyan.createLogger({
   ]
 });
 
+// set up gcloud pubsub messaging
+// Creates a client
+const gcPubsub = new PubSub();
+// References an existing subscription
+const subscription = gcPubsub.subscription(
+  process.env.GCLOUD_PUBSUB_INBOUND_SUBSCRIPTION_NAME
+);
+
 // const isDeployed =
 //   process.env.NODE_ENV === "production" || process.env.NODE_ENV === "staging";
 
 const server = new GraphQLServer({
   typeDefs,
   resolvers,
-  context: ({ request, response }) => context(request, response, logger),
+  context: ({ request, response }) =>
+    context(request, response, logger, gcPubsub),
   middlewares: [
     loggingMW,
     defaultToAuthedUserMW,
@@ -92,9 +105,11 @@ const options = {
   }
 };
 
-server.start(options, ({ port }) =>
+server.start(options, ({ port }) => {
   // Writes some log entries
   logger.info(
     `Server started, listening on port ${port} for incoming requests.`
-  )
-);
+  );
+  // Listen for new messages until timeout is hit
+  subscription.on(`message`, messageHandler);
+});
