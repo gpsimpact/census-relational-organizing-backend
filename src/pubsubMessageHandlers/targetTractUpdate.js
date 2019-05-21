@@ -7,10 +7,10 @@ export default async message => {
   if (
     message.attributes &&
     message.attributes.targetId &&
-    message.attributes.censusTract
+    message.attributes.tract_geoid
   ) {
     await sq`targets`
-      .set({ censusTract: message.attributes.censusTract })
+      .set({ censusTract: message.attributes.tract_geoid })
       .where({ id: message.attributes.targetId });
     // all went well, so ack the message to remove from queue.
     message.ack();

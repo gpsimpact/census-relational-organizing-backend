@@ -201,11 +201,7 @@ describe("Create Target", () => {
     const mockGcPubSub = {
       topic: () => {
         return {
-          publisher: () => {
-            return {
-              publish: mockPublish
-            };
-          }
+          publish: mockPublish
         };
       }
     };
@@ -219,11 +215,11 @@ describe("Create Target", () => {
     );
     debugResponse(response);
     expect(mockPublish).toHaveBeenCalled();
-    const calledWith = JSON.parse(mockPublish.mock.calls[0][0]);
-    expect(calledWith.addressData.address).toBe(newTargetData.address);
-    expect(calledWith.addressData.city).toBe(newTargetData.city);
-    expect(calledWith.addressData.state).toBe(newTargetData.state);
-    expect(calledWith.addressData.zip5).toBe(newTargetData.zip5);
+    const calledWith = mockPublish.mock.calls[0][1];
+    expect(calledWith.address).toBe(newTargetData.address);
+    expect(calledWith.city).toBe(newTargetData.city);
+    expect(calledWith.state).toBe(newTargetData.state);
+    expect(calledWith.zip5).toBe(newTargetData.zip5);
     expect(calledWith.returnTopic).toBe(
       process.env.GCLOUD_PUBSUB_INBOUND_TOPIC
     );

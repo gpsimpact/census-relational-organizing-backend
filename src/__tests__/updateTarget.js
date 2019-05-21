@@ -200,11 +200,7 @@ describe("Update Form", () => {
     const mockGcPubSub = {
       topic: () => {
         return {
-          publisher: () => {
-            return {
-              publish: mockPublish
-            };
-          }
+          publish: mockPublish
         };
       }
     };
@@ -219,18 +215,18 @@ describe("Update Form", () => {
     );
     debugResponse(response);
     expect(mockPublish).toHaveBeenCalled();
-    const calledWith = JSON.parse(mockPublish.mock.calls[0][0]);
-    expect(calledWith.addressData.address).toBe(newData.address);
-    expect(calledWith.addressData.city).toBe(newData.city);
-    expect(calledWith.addressData.state).toBe(newData.state);
-    expect(calledWith.addressData.zip5).toBe(newData.zip5);
+    const calledWith = mockPublish.mock.calls[0][1];
+    expect(calledWith.address).toBe(newData.address);
+    expect(calledWith.city).toBe(newData.city);
+    expect(calledWith.state).toBe(newData.state);
+    expect(calledWith.zip5).toBe(newData.zip5);
     expect(calledWith.returnTopic).toBe(
       process.env.GCLOUD_PUBSUB_INBOUND_TOPIC
     );
     expect(calledWith.targetId).toBe(response.data.updateTarget.item.id);
   });
 
-  test.only("Happy Path, no retain address", async () => {
+  test("Happy Path, no retain address", async () => {
     const user = await createTestUser();
     const team = await createTestTeam();
     const target = await createTestTarget({ userId: user.id, teamId: team.id });

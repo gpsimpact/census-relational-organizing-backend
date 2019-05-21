@@ -80,19 +80,14 @@ export default async (root, args, context) => {
   )(root, writeArgs, context);
 
   if (addressData) {
-    // send to pubsub topic for census encode
-    // In this example, the message is current time
-    const data = {
-      addressData,
-      returnTopic: process.env.GCLOUD_PUBSUB_INBOUND_TOPIC,
-      targetId: target.id
-    };
-    const dataBuffer = Buffer.from(JSON.stringify(data));
     context.gcPubsub &&
       context.gcPubsub
         .topic(process.env.GCLOUD_PUBSUB_NEED_TRACT_TOPIC)
-        .publisher()
-        .publish(dataBuffer);
+        .publish(Buffer.from("TARGET_TRACT_UPDATE"), {
+          ...addressData,
+          returnTopic: process.env.GCLOUD_PUBSUB_INBOUND_TOPIC,
+          targetId: target.id
+        });
   }
 
   return {
