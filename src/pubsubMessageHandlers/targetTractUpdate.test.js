@@ -23,7 +23,12 @@ describe("message function target Census tract update", () => {
       data: "TARGET_TRACT_UPDATE",
       attributes: {
         targetId: target.id,
-        censusTract: "AAAAAAAAA"
+        tract_geoid: "AAAAAAAAA",
+        tract_centlat: "22.44",
+        tract_centlon: "19.88",
+        tract_state: "KS",
+        tract_name: "The Best Tract",
+        tract_county: "Dope County"
       }
     };
     mockMessage.ack = jest.fn();
