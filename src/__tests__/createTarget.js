@@ -201,11 +201,7 @@ describe("Create Target", () => {
     const mockGcPubSub = {
       topic: () => {
         return {
-          publisher: () => {
-            return {
-              publish: mockPublish
-            };
-          }
+          publish: mockPublish
         };
       }
     };

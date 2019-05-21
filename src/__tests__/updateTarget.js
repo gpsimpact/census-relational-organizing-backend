@@ -200,11 +200,7 @@ describe("Update Form", () => {
     const mockGcPubSub = {
       topic: () => {
         return {
-          publisher: () => {
-            return {
-              publish: mockPublish
-            };
-          }
+          publish: mockPublish
         };
       }
     };
