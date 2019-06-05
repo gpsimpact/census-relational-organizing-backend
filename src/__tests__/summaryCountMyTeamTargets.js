@@ -17,7 +17,7 @@ beforeEach(async () => {
   await dbUp();
 });
 
-describe("Summary Count all teams", () => {
+describe("Summary Count orgs targets that user created", () => {
   test("Happy Path", async () => {
     const user = await createAdminUser();
     const team = await createTestTeam();

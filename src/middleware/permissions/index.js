@@ -164,6 +164,7 @@ const userIsTeamAdminofUpdatingTtib = rule(`userIsTeamAdminofUpdatingTtib`, {
 const has_GP_ADMIN = hasGlobalPerm("ADMIN");
 const has_TP_ADMIN = hasTeamPerm("input.teamId", "ADMIN");
 const has_TP_ADMIN_ROOT = hasTeamPerm("id", "ADMIN");
+const has_TP_ADMIN_ROOT_TEAMID = hasTeamPerm("teamId", "ADMIN");
 const has_TP_MEMBER = hasTeamPerm("input.teamId", "MEMBER");
 const has_TP_MEMBER_ROOT = hasTeamPerm("teamId", "MEMBER");
 
@@ -191,7 +192,15 @@ export default shield(
       userTargets: and(isAuthenticated, has_TP_MEMBER_ROOT),
       summaryCountMyTeamTargets: isAuthenticated,
       summaryTotalMyTeamHouseholdSize: isAuthenticated,
-      summaryCountMyTeamTibs: isAuthenticated
+      summaryCountMyTeamTibs: isAuthenticated,
+      summaryCountAllTeamTargets: and(
+        isAuthenticated,
+        or(has_TP_ADMIN_ROOT_TEAMID, has_GP_ADMIN)
+      ),
+      summaryTotalAllTeamHouseholdSize: and(
+        isAuthenticated,
+        or(has_TP_ADMIN_ROOT_TEAMID, has_GP_ADMIN)
+      )
     },
     Mutation: {
       removeUser: and(isAuthenticated, has_GP_ADMIN),
