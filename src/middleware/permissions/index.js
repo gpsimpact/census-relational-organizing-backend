@@ -196,6 +196,10 @@ export default shield(
       summaryCountAllTeamTargets: and(
         isAuthenticated,
         or(has_TP_ADMIN_ROOT_TEAMID, has_GP_ADMIN)
+      ),
+      summaryTotalAllTeamHouseholdSize: and(
+        isAuthenticated,
+        or(has_TP_ADMIN_ROOT_TEAMID, has_GP_ADMIN)
       )
     },
     Mutation: {
