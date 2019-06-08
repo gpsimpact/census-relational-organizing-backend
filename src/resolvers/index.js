@@ -51,6 +51,7 @@ import summaryCountAllTeamTargets from "./query/summaryCountAllTeamTargets";
 import summaryTotalAllTeamHouseholdSize from "./query/summaryTotalAllTeamHouseholdSize";
 import summaryTotalAllHouseholdSize from "./query/summaryTotalAllHouseholdSize";
 import summaryCountAllTargets from "./query/summaryCountAllTargets";
+import summaryCountAllTeamTibs from "./query/summaryCountAllTeamTibs";
 
 export default {
   Query: {
@@ -74,7 +75,8 @@ export default {
     summaryCountAllTeamTargets,
     summaryTotalAllTeamHouseholdSize,
     summaryTotalAllHouseholdSize,
-    summaryCountAllTargets
+    summaryCountAllTargets,
+    summaryCountAllTeamTibs
   },
   Mutation: {
     createUser,
