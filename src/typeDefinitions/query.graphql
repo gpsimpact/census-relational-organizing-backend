@@ -21,4 +21,5 @@ type Query {
   summaryTotalAllHouseholdSize: Int!
   summaryCountAllTargets: Int!
   summaryCountAllTeamTibs(teamId: String!): [TibTotal]!
+  summaryCountAllTibs: [TibTotal]!
 }
