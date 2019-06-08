@@ -201,7 +201,8 @@ export default shield(
         isAuthenticated,
         or(has_TP_ADMIN_ROOT_TEAMID, has_GP_ADMIN)
       ),
-      summaryTotalAllHouseholdSize: and(isAuthenticated, has_GP_ADMIN)
+      summaryTotalAllHouseholdSize: and(isAuthenticated, has_GP_ADMIN),
+      summaryCountAllTargets: and(isAuthenticated, has_GP_ADMIN)
     },
     Mutation: {
       removeUser: and(isAuthenticated, has_GP_ADMIN),
