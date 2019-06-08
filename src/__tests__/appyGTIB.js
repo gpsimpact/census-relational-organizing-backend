@@ -1,5 +1,5 @@
 import { graphqlTestCall } from "../utils/graphqlTestCall";
-import { dbUp } from "../utils/testDbOps";
+import { dbUp, dbDown } from "../utils/testDbOps";
 import {
   createTestTeam,
   createTestGtib,
@@ -30,6 +30,10 @@ const APPLY_GTIB_MUTATION = `
 
 beforeEach(async () => {
   await dbUp();
+});
+
+afterEach(async () => {
+  await dbDown();
 });
 
 describe("Apply GTIB", () => {

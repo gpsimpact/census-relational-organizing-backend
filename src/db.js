@@ -16,7 +16,9 @@ const connectionString =
   environment === "test" ? testDbURL : process.env.DATABASE_URL;
 
 export const pool = new pg.Pool({
-  connectionString: connectionString
+  connectionString: connectionString,
+  min: 1,
+  max: 10
 });
 
 export const sq = sqorn({ pg, pool });
