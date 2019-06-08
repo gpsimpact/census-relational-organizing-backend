@@ -3,6 +3,7 @@ import knex from "./knexInstance";
 import redis from "../redis";
 
 export const dbUp = async () => {
+  // await knex.initialize("test");
   await knex.raw(`
     TRUNCATE TABLE users CASCADE;
     TRUNCATE TABLE teams CASCADE;
@@ -11,6 +12,8 @@ export const dbUp = async () => {
     TRUNCATE TABLE targets CASCADE;
   `);
   await redis.flushdb();
+  await knex.destroy();
+  await knex.initialize("test");
 };
 
 export const dbDown = async () => {
@@ -18,4 +21,5 @@ export const dbDown = async () => {
   //   map(tableList, table => knex.raw(`TRUNCATE TABLE ${table} CASCADE;`)),
   //   redis.flushdb()
   // );
+  // knex.destroy();
 };
