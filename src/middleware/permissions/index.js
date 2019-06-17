@@ -236,7 +236,10 @@ export default shield(
         isAuthenticated,
         or(has_TP_ADMIN, has_GP_ADMIN)
       ),
-      grantTeamPermission: and(isAuthenticated, or(has_TP_ADMIN, has_GP_ADMIN)),
+      toggleTeamPermission: and(
+        isAuthenticated,
+        or(has_TP_ADMIN, has_GP_ADMIN)
+      ),
       createTarget: and(isAuthenticated, or(has_TP_MEMBER, has_GP_ADMIN)),
       updateTarget: and(isAuthenticated, or(has_GP_ADMIN, userOwnsTarget)),
       removeTarget: and(isAuthenticated, or(has_GP_ADMIN, userOwnsTarget))
@@ -279,7 +282,7 @@ export default shield(
     UpdateUserResult: allow,
     RegisterResult: allow,
     RemoveTeamPermissionResult: allow,
-    GrantTeamPermissionResult: allow,
+    ToggleTeamPermissionResult: allow,
     OLTeamPerms: allow,
     OLTeamPermsSummary: allow,
     GlobalPermissionsEnum: allow,
