@@ -1,10 +1,13 @@
 import defaultToAuthedUser from "./defaultToAuthedUser";
 
+const byRootId = defaultToAuthedUser("id");
+const byRootUserId = defaultToAuthedUser("userId");
+
 export default {
   Mutation: {
-    updateUser: defaultToAuthedUser
+    updateUser: byRootId
+  },
+  Query: {
+    userTargets: byRootUserId
   }
-  // Query: {
-  //   userTargets: defaultToAuthedUser
-  // }
 };

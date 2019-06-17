@@ -67,12 +67,12 @@ const isNotAuthenticatedCheck = async (parent, args, ctx) => {
   return true;
 };
 
-const isSelfCheck = async (parent, args, ctx) => {
+const isSelfCheck = argsVarName => async (parent, args, ctx) => {
   // get list of users's global perms
   if (!ctx.user || !ctx.user.id) {
     return false;
   }
-  return args.id === ctx.user.id;
+  return _.get(args, argsVarName) === ctx.user.id;
 };
 
 const isAnyTeamAdminCheck = async (parent, args, ctx) => {
@@ -140,7 +140,12 @@ const isNotAuthenticated = rule({ cache: "contextual" })(
   isNotAuthenticatedCheck
 );
 
-const isSelf = rule(`name-is-self-perm`, { cache: "contextual" })(isSelfCheck);
+const isSelfRootId = rule(`name-is-self-perm-root-id`, { cache: "contextual" })(
+  isSelfCheck("id")
+);
+const isSelfRootUserId = rule(`name-is-self-perm-root-userId`, {
+  cache: "contextual"
+})(isSelfCheck("userId"));
 
 const isAnyTeamAdmin = rule(`is-any-team-admin`, { cache: "contextual" })(
   isAnyTeamAdminCheck
@@ -185,11 +190,16 @@ export default shield(
       team: allow,
       summaryCountTeams: and(isAuthenticated, has_GP_ADMIN),
       gtibs: and(isAuthenticated, or(has_GP_ADMIN, isAnyTeamAdmin)),
-      user: and(isAuthenticated, or(has_GP_ADMIN, isSelf)),
+      user: and(isAuthenticated, or(has_GP_ADMIN, isSelfRootId)),
       teamUsers: and(isAuthenticated, or(has_TP_ADMIN, has_GP_ADMIN)),
       target: and(isAuthenticated, or(has_GP_ADMIN, userOwnsTarget)),
       targets: and(isAuthenticated, has_GP_ADMIN),
-      userTargets: and(isAuthenticated, has_TP_MEMBER_ROOT),
+      // read as must be authenticated AND a member of the team AND one of (is yourself OR admin of specified team.)
+      userTargets: and(
+        isAuthenticated,
+        or(has_TP_MEMBER_ROOT, has_TP_ADMIN_ROOT_TEAMID),
+        or(isSelfRootUserId, has_TP_ADMIN_ROOT_TEAMID)
+      ),
       summaryCountMyTeamTargets: isAuthenticated,
       summaryTotalMyTeamHouseholdSize: isAuthenticated,
       summaryCountMyTeamTibs: isAuthenticated,
@@ -224,13 +234,13 @@ export default shield(
         or(has_GP_ADMIN, userIsTeamAdminofUpdatingTtib)
       ),
       updateTeam: and(isAuthenticated, or(has_TP_ADMIN_ROOT, has_GP_ADMIN)),
-      updateUser: and(isAuthenticated, or(has_GP_ADMIN, isSelf)),
+      updateUser: and(isAuthenticated, or(has_GP_ADMIN, isSelfRootId)),
       applyGtib: and(isAuthenticated, has_GP_ADMIN),
       createTeam: and(isAuthenticated, has_GP_ADMIN),
       confirmLogin: isNotAuthenticated,
       requestTeamMembership: isAuthenticated,
       requestLogin: isNotAuthenticated,
-      updateUser: and(isAuthenticated, or(has_GP_ADMIN, isSelf)),
+      updateUser: and(isAuthenticated, or(has_GP_ADMIN, isSelfRootId)),
       register: isNotAuthenticated,
       removeTeamPermission: and(
         isAuthenticated,
