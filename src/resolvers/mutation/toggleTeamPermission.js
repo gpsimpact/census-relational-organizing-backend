@@ -12,16 +12,22 @@ export default async (root, args, context) => {
     };
   }
 
+  // remove ALL perms before creating new one
+  await context.dataSource.olPerms.remove({
+    userId: args.input.userId,
+    teamId: args.input.teamId
+  });
+
   await context.dataSource.olPerms.create({
     ...args.input
   });
 
   // Remove applicant status if exists
-  await context.dataSource.olPerms.remove({
-    userId: args.input.userId,
-    teamId: args.input.teamId,
-    permission: "APPLICANT"
-  });
+  // await context.dataSource.olPerms.remove({
+  //   userId: args.input.userId,
+  //   teamId: args.input.teamId,
+  //   permission: "APPLICANT"
+  // });
 
   return {
     success: true,

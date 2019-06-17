@@ -11,8 +11,8 @@ import {
 } from "../utils/createTestEntities";
 
 const GRANT_TEAM_PERMISSION_MUTATION = `
-mutation grantTeamPermission($input: GrantTeamPermissionInput!) {
-    grantTeamPermission(input: $input) {
+mutation toggleTeamPermission($input: ToggleTeamPermissionInput!) {
+    toggleTeamPermission(input: $input) {
         code
         success
         message
@@ -39,9 +39,9 @@ describe("User", () => {
       { user: { id: adminUser.id } }
     );
     // console.log(response);
-    expect(response.data.grantTeamPermission.code).toEqual("OK");
-    expect(response.data.grantTeamPermission.success).toEqual(true);
-    expect(response.data.grantTeamPermission.message).toEqual(
+    expect(response.data.toggleTeamPermission.code).toEqual("OK");
+    expect(response.data.toggleTeamPermission.success).toEqual(true);
+    expect(response.data.toggleTeamPermission.message).toEqual(
       "Permission granted."
     );
 
@@ -92,9 +92,9 @@ describe("User", () => {
       },
       { user: { id: grantorUser.id } }
     );
-    expect(response2.data.grantTeamPermission.code).toEqual("OK");
-    expect(response2.data.grantTeamPermission.success).toEqual(true);
-    expect(response2.data.grantTeamPermission.message).toEqual(
+    expect(response2.data.toggleTeamPermission.code).toEqual("OK");
+    expect(response2.data.toggleTeamPermission.success).toEqual(true);
+    expect(response2.data.toggleTeamPermission.message).toEqual(
       "Permission granted."
     );
   });
@@ -125,9 +125,9 @@ describe("User", () => {
       },
       { user: { id: grantorUser.id } }
     );
-    expect(response2.data.grantTeamPermission.code).toEqual("OK");
-    expect(response2.data.grantTeamPermission.success).toEqual(true);
-    expect(response2.data.grantTeamPermission.message).toEqual(
+    expect(response2.data.toggleTeamPermission.code).toEqual("OK");
+    expect(response2.data.toggleTeamPermission.success).toEqual(true);
+    expect(response2.data.toggleTeamPermission.message).toEqual(
       "Permission granted."
     );
   });
@@ -148,9 +148,9 @@ describe("User", () => {
       { user: { id: adminUser.id } }
     );
     // console.log(response);
-    expect(response.data.grantTeamPermission.code).toEqual("DUPLICATE");
-    expect(response.data.grantTeamPermission.success).toEqual(false);
-    expect(response.data.grantTeamPermission.message).toEqual(
+    expect(response.data.toggleTeamPermission.code).toEqual("DUPLICATE");
+    expect(response.data.toggleTeamPermission.success).toEqual(false);
+    expect(response.data.toggleTeamPermission.message).toEqual(
       "User already has this permission."
     );
   });
@@ -170,9 +170,39 @@ describe("User", () => {
       },
       { user: { id: adminUser.id } }
     );
-    expect(response.data.grantTeamPermission.code).toEqual("OK");
-    expect(response.data.grantTeamPermission.success).toEqual(true);
-    expect(response.data.grantTeamPermission.message).toEqual(
+    expect(response.data.toggleTeamPermission.code).toEqual("OK");
+    expect(response.data.toggleTeamPermission.success).toEqual(true);
+    expect(response.data.toggleTeamPermission.message).toEqual(
+      "Permission granted."
+    );
+
+    const dbUserPerms = await sq.from`team_permissions`.where({
+      userId: granteeUser.id,
+      teamId: team.id
+    });
+    expect(dbUserPerms).toHaveLength(1);
+    expect(dbUserPerms[0].permission).toEqual(permission);
+  });
+
+  // check only one at a time.
+  test("User can only have one team perm at a time.", async () => {
+    const adminUser = await createAdminUser();
+    const granteeUser = await createTestUser();
+    const permission = "MEMBER";
+    const team = await createTestTeam();
+
+    await createTestOLPermission(granteeUser.id, team.id, "ADMIN");
+
+    const response = await graphqlTestCall(
+      GRANT_TEAM_PERMISSION_MUTATION,
+      {
+        input: { userId: granteeUser.id, teamId: team.id, permission }
+      },
+      { user: { id: adminUser.id } }
+    );
+    expect(response.data.toggleTeamPermission.code).toEqual("OK");
+    expect(response.data.toggleTeamPermission.success).toEqual(true);
+    expect(response.data.toggleTeamPermission.message).toEqual(
       "Permission granted."
     );
 
