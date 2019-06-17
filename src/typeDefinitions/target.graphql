@@ -80,8 +80,8 @@ input TargetsSort {
 }
 
 input TargetsWhere {
-  OR: [TeamsWhere]
-  AND: [TeamsWhere]
+  OR: [TargetsWhere]
+  AND: [TargetsWhere]
   id: StringWhere
   firstName: StringWhere
   lastName: StringWhere
