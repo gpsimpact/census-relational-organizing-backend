@@ -146,7 +146,7 @@ describe("Update Form", () => {
     const tib2 = await createTestTtib(user.id, team.id);
     const tib3 = await createTestTtib(user.id, team.id);
 
-    await sq`target_true_tibs`.insert({ targetId: target.id, ttibId: tib1.id });
+    await sq`target_true_tibs`.insert({ targetId: target.id, tibId: tib1.id });
 
     const trueTibCheck1 = await sq`target_true_tibs`.where({
       targetId: target.id
@@ -176,7 +176,7 @@ describe("Update Form", () => {
       targetId: target.id
     });
 
-    const trueTibsAfter = _.map(trueTibCheck2, "ttibId");
+    const trueTibsAfter = _.map(trueTibCheck2, "tibId");
 
     expect(_.includes(trueTibsAfter, tib1.id)).toBe(false);
     expect(_.includes(trueTibsAfter, tib2.id)).toBe(true);

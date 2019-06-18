@@ -29,5 +29,5 @@ type UpdateGtibResult {
   code: MutationCodeEnum!
   success: Boolean!
   message: String!
-  item: Gtib!
+  item: Gtib
 }

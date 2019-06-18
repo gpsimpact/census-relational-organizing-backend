@@ -125,17 +125,25 @@ export default (req, res, logger, gcPubsub) => {
       update: updateGDS(sq.from`forms`),
       byIdLoader: simpleSingleLoader(sq.from`forms`, "id")
     },
-    gtib: {
-      create: createGDS(sq.from`gtibs`),
-      update: updateGDS(sq.from`gtibs`),
-      byIdLoader: simpleSingleLoader(sq.from`gtibs`, "id")
-    },
-    ttib: {
-      create: createGDS(sq.from`ttibs`),
-      update: updateGDS(sq.from`ttibs`),
-      byIdLoader: simpleSingleLoader(sq.from`ttibs`, "id"),
-      byGtibLinkIdLoader: simpleSingleLoader(sq.from`ttibs`, "gtib_link"),
-      byTeamIdLoader: simpleManyLoader(sq.from`ttibs`, "teamId")
+    // gtib: {
+    //   // Depreciated
+    //   create: createGDS(sq.from`gtibs`),
+    //   update: updateGDS(sq.from`gtibs`),
+    //   byIdLoader: simpleSingleLoader(sq.from`gtibs`, "id")
+    // },
+    // ttib: {
+    //   // Depreciated
+    //   create: createGDS(sq.from`ttibs`),
+    //   update: updateGDS(sq.from`ttibs`),
+    //   byIdLoader: simpleSingleLoader(sq.from`ttibs`, "id"),
+    //   byGtibLinkIdLoader: simpleSingleLoader(sq.from`ttibs`, "gtib_link"),
+    //   byTeamIdLoader: simpleManyLoader(sq.from`ttibs`, "teamId")
+    // },
+    tib: {
+      create: createGDS(sq.from`tibs`),
+      update: updateGDS(sq.from`tibs`),
+      byIdLoader: simpleSingleLoader(sq.from`tibs`, "id"),
+      byTeamIdLoader: simpleManyLoader(sq.from`tibs`, "teamId")
     },
     target: {
       create: createGDS(sq.from`targets`),

@@ -177,10 +177,11 @@ export const createTestForm = async userId => {
 export const createTestGtib = async userId => {
   const data = {
     text: faker.random.words(5),
+    isGlobal: true,
     userId
   };
 
-  return createGDS(sq.from`gtibs`)(data);
+  return createGDS(sq.from`tibs`)(data);
 };
 
 export const createTestTtib = async (userId, teamId) => {
@@ -190,7 +191,7 @@ export const createTestTtib = async (userId, teamId) => {
     teamId
   };
 
-  return createGDS(sq.from`ttibs`)(data);
+  return createGDS(sq.from`tibs`)(data);
 };
 
 export const createAdminUser = async data => {

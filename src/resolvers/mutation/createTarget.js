@@ -57,7 +57,7 @@ export default async (root, args, context) => {
   // now apply activeTibs
   if (activeTibs.length > 0) {
     const writeTibs = _.map(activeTibs, x => {
-      return { targetId: target.id, ttibId: x };
+      return { targetId: target.id, tibId: x };
     });
 
     await context.sq`target_true_tibs`.insert(writeTibs);

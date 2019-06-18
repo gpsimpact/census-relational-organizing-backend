@@ -84,7 +84,7 @@ const isAnyTeamAdminCheck = async (parent, args, ctx) => {
 
 const userIsTeamAdminofUpdatingTtibCheck = async (parent, args, ctx) => {
   // get ttbid details
-  const dbTtib = await ctx.dataSource.ttib.byIdLoader.load(args.id);
+  const dbTtib = await ctx.dataSource.tib.byIdLoader.load(args.id);
   // IS user admin?
   const existingTeamAdminPerm = await ctx.dataSource.olPerms.loadOne.load({
     userId: ctx.user.id,
@@ -235,7 +235,6 @@ export default shield(
       ),
       updateTeam: and(isAuthenticated, or(has_TP_ADMIN_ROOT, has_GP_ADMIN)),
       updateUser: and(isAuthenticated, or(has_GP_ADMIN, isSelfRootId)),
-      applyGtib: and(isAuthenticated, has_GP_ADMIN),
       createTeam: and(isAuthenticated, has_GP_ADMIN),
       confirmLogin: isNotAuthenticated,
       requestTeamMembership: isAuthenticated,
@@ -283,7 +282,6 @@ export default shield(
     Team: allow,
     UpdateUserResult: allow,
     UsersResults: allow,
-    ApplyGtibResult: allow,
     CreateTeamResult: allow,
     ConfirmLoginResult: allow,
     RequestTeamMembershipResult: allow,

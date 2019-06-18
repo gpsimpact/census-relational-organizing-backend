@@ -3,7 +3,7 @@ export default async (root, { input }, context) => {
     userId: context.user.id
   });
 
-  const dbData = await context.dataSource.ttib.create(data);
+  const dbData = await context.dataSource.tib.create(data);
 
   return {
     code: "OK",

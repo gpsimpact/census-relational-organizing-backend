@@ -1,7 +1,7 @@
 import _ from "lodash";
 export default async (root, args, ctx) => {
   // get all team ttibs
-  const teamTibs = await ctx.dataSource.ttib.byTeamIdLoader.load(root.teamId);
+  const teamTibs = await ctx.dataSource.tib.byTeamIdLoader.load(root.teamId);
   // get target true tibs
   const targetTrueTibs = await ctx.dataSource.target.trueTibsLoader.load(
     root.id
@@ -11,8 +11,8 @@ export default async (root, args, ctx) => {
   const trueTibsTimestampLookupHash = {};
 
   _.forEach(targetTrueTibs, x => {
-    trueTibs.push(x.ttibId);
-    trueTibsTimestampLookupHash[x.ttibId] = x.createdAt;
+    trueTibs.push(x.tibId);
+    trueTibsTimestampLookupHash[x.tibId] = x.createdAt;
   });
 
   // zip / construct

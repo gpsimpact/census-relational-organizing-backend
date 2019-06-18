@@ -135,11 +135,11 @@ describe("Create Target", () => {
     );
     debugResponse(response);
 
-    const dbTibs = await sq.from`target_true_tibs`.return(`ttib_id`).where({
+    const dbTibs = await sq.from`target_true_tibs`.return(`tib_id`).where({
       targetId: response.data.createTarget.item.id
     });
     expect(dbTibs.length).toBe(2);
-    const activeTibIds = _.map(dbTibs, "ttibId");
+    const activeTibIds = _.map(dbTibs, "tibId");
     expect(_.includes(activeTibIds, tib1.id)).toBe(true);
     expect(_.includes(activeTibIds, tib2.id)).toBe(true);
     expect(_.includes(activeTibIds, tib3.id)).toBe(false);

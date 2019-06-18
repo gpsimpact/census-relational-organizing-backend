@@ -31,7 +31,7 @@ type UpdateTtibResult {
   code: MutationCodeEnum!
   success: Boolean!
   message: String!
-  item: Ttib!
+  item: Ttib
 }
 
 input TtibsInput {

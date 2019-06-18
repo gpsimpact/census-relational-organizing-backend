@@ -40,7 +40,7 @@ describe("GTIBS", () => {
     // where only input
     expect(response.data.gtibs.length).toBe(3);
 
-    await sq`gtibs`.set({ visible: false }).where({ id: gtib3.id });
+    await sq`tibs`.set({ visible: false }).where({ id: gtib3.id });
 
     const response2 = await graphqlTestCall(GET_ALL_GTIBS_QUERY, null, {
       user: { id: adminUser.id }
@@ -64,7 +64,7 @@ describe("GTIBS", () => {
     // where only input
     expect(response.data.gtibs.length).toBe(3);
 
-    await sq`gtibs`.set({ visible: false }).where({ id: gtib3.id });
+    await sq`tibs`.set({ visible: false }).where({ id: gtib3.id });
 
     const response2 = await graphqlTestCall(GET_ALL_GTIBS_QUERY, null, {
       user: { id: user.id }
