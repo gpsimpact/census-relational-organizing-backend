@@ -1,4 +1,4 @@
-import { graphqlTestCall } from "../utils/graphqlTestCall";
+import { graphqlTestCall, debugResponse } from "../utils/graphqlTestCall";
 import { dbUp } from "../utils/testDbOps";
 import {
   createTestUser,
@@ -31,7 +31,7 @@ beforeEach(async () => {
   await dbUp();
 });
 
-describe("RequestLoginResolver", () => {
+describe("UpdateTTib Resovler", () => {
   test("happy path as global admin", async () => {
     const user = await createTestUser();
     const adminUser = await createAdminUser();
@@ -49,13 +49,13 @@ describe("RequestLoginResolver", () => {
       },
       { user: { id: adminUser.id } }
     );
-    // console.log(JSON.stringify(response));
+    debugResponse(response);
     expect(response.data.updateTtib.code).toBe("OK");
     expect(response.data.updateTtib.message).toBe("TTIB has been updated.");
     expect(response.data.updateTtib.success).toBe(true);
     expect(response.data.updateTtib.item.userId).toBe(adminUser.id);
     expect(response.data.updateTtib.item.text).toBe(updateData.text);
-    const [dbTTIB] = await sq.from`ttibs`.where({
+    const [dbTTIB] = await sq.from`tibs`.where({
       id: response.data.updateTtib.item.id
     });
     expect(dbTTIB).not.toBeNull();
@@ -82,13 +82,13 @@ describe("RequestLoginResolver", () => {
       },
       { user: { id: user.id } }
     );
-    // console.log(JSON.stringify(response));
+    debugResponse(response);
     expect(response.data.updateTtib.code).toBe("OK");
     expect(response.data.updateTtib.message).toBe("TTIB has been updated.");
     expect(response.data.updateTtib.success).toBe(true);
     expect(response.data.updateTtib.item.userId).toBe(user.id);
     expect(response.data.updateTtib.item.text).toBe(updateData.text);
-    const [dbTTIB] = await sq.from`ttibs`.where({
+    const [dbTTIB] = await sq.from`tibs`.where({
       id: response.data.updateTtib.item.id
     });
     expect(dbTTIB).not.toBeNull();
@@ -114,7 +114,7 @@ describe("RequestLoginResolver", () => {
       },
       { user: { id: user.id } }
     );
-    // console.log(JSON.stringify(response));
+    debugResponse(response);
     expect(response.data).toBeNull();
     expect(response.errors.length).toEqual(1);
     expect(response.errors[0].message).toEqual("Not Authorized!");
@@ -127,7 +127,7 @@ describe("RequestLoginResolver", () => {
     const adminUser = await createAdminUser();
 
     // update timestamp of ttib to 10 mins ago.
-    await sq.from`ttibs`
+    await sq.from`tibs`
       .where({ id: ttib.id })
       .set({ createdAt: sq.raw("NOW() - INTERVAL '10 MINUTES'") });
 
@@ -143,10 +143,39 @@ describe("RequestLoginResolver", () => {
       },
       { user: { id: adminUser.id } }
     );
-    // console.log(response);
+    debugResponse(response);
     expect(response.data.updateTtib.code).toBe("EXPIRED");
     expect(response.data.updateTtib.message).toBe(
       "You can only update the text of a ttib for 5 minutes after creation. Try deleting and creating a new one."
+    );
+    expect(response.data.updateTtib.success).toBe(false);
+  });
+
+  test("check - updateTTIB can't update global", async () => {
+    const user = await createTestUser();
+    const team = await createTestTeam();
+    const ttib = await createTestTtib(user.id, team.id);
+    const adminUser = await createAdminUser();
+
+    // update timestamp of ttib to 10 mins ago.
+    await sq.from`tibs`.where({ id: ttib.id }).set({ isGlobal: true });
+
+    const updateData = {
+      text: "I am text!"
+    };
+
+    const response = await graphqlTestCall(
+      UPDATE_TTIB_MUTATION,
+      {
+        id: ttib.id,
+        input: updateData
+      },
+      { user: { id: adminUser.id } }
+    );
+    debugResponse(response);
+    expect(response.data.updateTtib.code).toBe("INPUT_ERROR");
+    expect(response.data.updateTtib.message).toBe(
+      "You are attempting to update a GTIB. Not allowed."
     );
     expect(response.data.updateTtib.success).toBe(false);
   });

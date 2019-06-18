@@ -10,12 +10,22 @@ export default async (root, args, context) => {
     };
   }
   // check if email already exists
-  const existing = await context.dataSource.gtib.byIdLoader.load(args.id);
+  const existing = await context.dataSource.tib.byIdLoader.load(args.id);
   if (!existing) {
     return {
       success: false,
       code: "DOES_NOT_EXIST",
       message: "No gtib with this id exists.",
+      item: null
+    };
+  }
+
+  // don't allow update non globals
+  if (!existing.isGlobal) {
+    return {
+      success: false,
+      code: "INPUT_ERROR",
+      message: "You are attempting to update a TTIB. Not allowed.",
       item: null
     };
   }
@@ -37,7 +47,7 @@ export default async (root, args, context) => {
   const writeArgs = Object.assign({}, args, { input: writeInput });
 
   const gtib = await updateOneHOR(
-    "dataSource.gtib.update",
+    "dataSource.tib.update",
     "input",
     "id",
     "UPDATE_GTIB"

@@ -5,16 +5,16 @@ export default async (root, args, context) => {
     .limit(1);
 
   const counts = await context.sq.from`target_true_tibs`
-    .return(`ttib_id, count(*) as true_count`)
-    .where(context.sq.txt`(EXISTS ${existsQuery})`).groupBy`ttib_id`;
+    .return(`tib_id, count(*) as true_count`)
+    .where(context.sq.txt`(EXISTS ${existsQuery})`).groupBy`tib_id`;
 
   const countsLookupHash = {};
 
   _.forEach(counts, x => {
-    countsLookupHash[x.ttibId] = x.trueCount;
+    countsLookupHash[x.tibId] = x.trueCount;
   });
 
-  const tibs = await context.sq`ttibs`;
+  const tibs = await context.sq`tibs`;
 
   const withCounts = _.map(tibs, x => {
     return {

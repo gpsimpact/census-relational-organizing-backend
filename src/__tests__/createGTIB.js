@@ -48,12 +48,14 @@ describe("RequestLoginResolver", () => {
     expect(response.data.createGtib.success).toBe(true);
     expect(response.data.createGtib.item.userId).toBe(user.id);
     expect(response.data.createGtib.item.text).toBe(newData.text);
-    const [dbGTIB] = await sq.from`gtibs`.where({
+    const [dbGTIB] = await sq.from`tibs`.where({
       id: response.data.createGtib.item.id
     });
     expect(dbGTIB).not.toBeNull();
     expect(dbGTIB.active).toBe(true);
     expect(dbGTIB.visible).toBe(true);
+    expect(dbGTIB.isGlobal).toBe(true);
+    expect(dbGTIB.teamId).toBeNull();
     expect(dbGTIB.userId).toBe(user.id);
   });
 });

@@ -8,17 +8,17 @@ export default async (root, args, context) => {
     .limit(1);
 
   const counts = await context.sq.from`target_true_tibs`
-    .return(`ttib_id, count(*) as true_count`)
-    .where(context.sq.txt`(EXISTS ${existsQuery})`).groupBy`ttib_id`;
+    .return(`tib_id, count(*) as true_count`)
+    .where(context.sq.txt`(EXISTS ${existsQuery})`).groupBy`tib_id`;
 
   const countsLookupHash = {};
 
   _.forEach(counts, x => {
-    countsLookupHash[x.ttibId] = x.trueCount;
+    countsLookupHash[x.tibId] = x.trueCount;
   });
 
   // get all team ttibs
-  const teamTibs = await context.dataSource.ttib.byTeamIdLoader.load(
+  const teamTibs = await context.dataSource.tib.byTeamIdLoader.load(
     args.teamId
   );
 

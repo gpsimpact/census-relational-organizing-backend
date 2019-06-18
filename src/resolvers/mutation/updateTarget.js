@@ -51,7 +51,7 @@ export default async (root, args, context) => {
   // now apply activeTibs
   if (activeTibs.length > 0) {
     const writeTibs = _.map(activeTibs, x => {
-      return { targetId: existing.id, ttibId: x };
+      return { targetId: existing.id, tibId: x };
     });
     // delete all true_tibs for target
     await context.sq.delete.from`target_true_tibs`.where({

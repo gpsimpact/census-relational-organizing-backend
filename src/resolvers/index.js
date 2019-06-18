@@ -35,7 +35,6 @@ import gtibs from "./query/gtibs";
 import createTtib from "./mutation/createTtib";
 import updateTtib from "./mutation/updateTtib";
 import ttibs from "./query/ttibs";
-import applyGtib from "./mutation/applyGtib";
 import teamUsers from "./query/teamUsers";
 import createTarget from "./mutation/createTarget";
 import target from "./query/target";
@@ -100,7 +99,6 @@ export default {
     updateGtib,
     createTtib,
     updateTtib,
-    applyGtib,
     createTarget,
     updateTarget,
     removeTarget

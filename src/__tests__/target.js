@@ -80,7 +80,7 @@ describe("TARGET", () => {
     const target = await createTestTarget({ userId: user.id, teamId: team.id });
 
     await sq.from`target_true_tibs`.insert({
-      ttibId: tib1.id,
+      tibId: tib1.id,
       targetId: target.id
     });
 

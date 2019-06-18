@@ -49,7 +49,7 @@ describe("TTIBS", () => {
     );
     expect(response.data.ttibs.length).toBe(3);
 
-    await sq`ttibs`.set({ visible: false }).where({ id: ttib3.id });
+    await sq`tibs`.set({ visible: false }).where({ id: ttib3.id });
 
     const response2 = await graphqlTestCall(
       GET_ALL_TTIBS_QUERY,

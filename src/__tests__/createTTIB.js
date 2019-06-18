@@ -52,7 +52,7 @@ describe("RequestLoginResolver", () => {
     expect(response.data.createTtib.success).toBe(true);
     expect(response.data.createTtib.item.userId).toBe(user.id);
     expect(response.data.createTtib.item.text).toBe(newData.text);
-    const [dbTTIB] = await sq.from`ttibs`.where({
+    const [dbTTIB] = await sq.from`tibs`.where({
       id: response.data.createTtib.item.id
     });
     expect(dbTTIB).not.toBeNull();
@@ -83,7 +83,7 @@ describe("RequestLoginResolver", () => {
     expect(response.data.createTtib.success).toBe(true);
     expect(response.data.createTtib.item.userId).toBe(user.id);
     expect(response.data.createTtib.item.text).toBe(newData.text);
-    const [dbTTIB] = await sq.from`ttibs`.where({
+    const [dbTTIB] = await sq.from`tibs`.where({
       id: response.data.createTtib.item.id
     });
     expect(dbTTIB).not.toBeNull();

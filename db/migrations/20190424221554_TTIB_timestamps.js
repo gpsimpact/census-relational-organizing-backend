@@ -1,12 +1,12 @@
-const {
-  addTimeStamps,
-  removeTimeStampsColumns
-} = require("../utils/timestamps");
+// const {
+//   addTimeStamps,
+//   removeTimeStampsColumns
+// } = require("../utils/timestamps");
 
-exports.up = (knex, Promise) => {
-  return Promise.all([addTimeStamps(knex, "ttibs")]);
+exports.up = () => {
+  // return Promise.all([addTimeStamps(knex, "ttibs")]);
 };
 
-exports.down = (knex, Promise) => {
-  return Promise.all([removeTimeStampsColumns(knex, "ttibs")]);
+exports.down = () => {
+  // return Promise.all([removeTimeStampsColumns(knex, "ttibs")]);
 };

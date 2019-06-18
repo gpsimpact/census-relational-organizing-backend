@@ -44,19 +44,19 @@ describe("Summary Count all tibs across all users in one team", () => {
     const tib3 = await createTestTtib(user.id, team2.id);
     const tib4 = await createTestTtib(user.id, team.id);
 
-    await sq`ttibs`.set({ active: false }).where({ id: tib4.id });
+    await sq`tibs`.set({ active: false }).where({ id: tib4.id });
 
     await sq.from`target_true_tibs`.insert([
       {
-        ttibId: tib1.id,
+        tibId: tib1.id,
         targetId: target1.id
       },
       {
-        ttibId: tib1.id,
+        tibId: tib1.id,
         targetId: target2.id
       },
       {
-        ttibId: tib2.id,
+        tibId: tib2.id,
         targetId: target1.id
       }
     ]);
