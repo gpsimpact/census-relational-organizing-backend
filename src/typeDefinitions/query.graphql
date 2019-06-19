@@ -7,7 +7,7 @@ type Query {
   teams(input: TeamsInput): TeamsResult!
   summaryCountTeams: Int!
   form(id: String!): Form
-  gtibs(visible: Boolean = true): [Gtib]
+  gtibs(input: GtibsInput): [Gtib]
   ttibs(input: TtibsInput!): [Ttib]
   teamUsers(input: TeamUsersInput!): TeamUsersResult!
   target(id: String!): Target
