@@ -31,3 +31,8 @@ type UpdateGtibResult {
   message: String!
   item: Gtib
 }
+
+input GtibsInput {
+  visible: Boolean = true
+  active: Boolean = true
+}

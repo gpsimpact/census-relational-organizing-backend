@@ -10,8 +10,8 @@ import {
 import { sq } from "../db";
 
 const GET_ALL_GTIBS_QUERY = `
-query Gtibs($visible: Boolean) {
-    gtibs(visible: $visible) {
+query Gtibs($input: GtibsInput) {
+    gtibs(input: $input) {
         id
         text
         createdAt
