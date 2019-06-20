@@ -1,7 +1,10 @@
 import _ from "lodash";
 export default async (root, args, ctx) => {
-  // get all team ttibs
-  const teamTibs = await ctx.dataSource.tib.byTeamIdLoader.load(root.teamId);
+  // get all team relevant tibs
+  const tibs = await ctx.sq`tibs`
+    .where({ active: true, visible: true })
+    .where(ctx.sq.e`is_global`.eq(true).or(ctx.sq.e`team_id`.eq(root.teamId)));
+
   // get target true tibs
   const targetTrueTibs = await ctx.dataSource.target.trueTibsLoader.load(
     root.id
@@ -16,7 +19,7 @@ export default async (root, args, ctx) => {
   });
 
   // zip / construct
-  return _.map(teamTibs, x => {
+  return _.map(tibs, x => {
     return {
       id: x.id,
       text: x.text,

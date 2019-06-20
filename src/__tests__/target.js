@@ -4,6 +4,7 @@ import { dbUp } from "../utils/testDbOps";
 import {
   createTestUser,
   createTestTtib,
+  createTestGtib,
   createTestTarget,
   createTestTeam
 } from "../utils/createTestEntities";
@@ -76,6 +77,7 @@ describe("TARGET", () => {
     const tib1 = await createTestTtib(user.id, team.id);
     await createTestTtib(user.id, team.id);
     await createTestTtib(user.id, team.id);
+    await createTestGtib(user.id);
 
     const target = await createTestTarget({ userId: user.id, teamId: team.id });
 
@@ -90,7 +92,7 @@ describe("TARGET", () => {
       { user: { id: user.id } }
     );
     debugResponse(response);
-    expect(response.data.target.tibs.length).toEqual(3);
+    expect(response.data.target.tibs.length).toEqual(4);
     const activeTibs = _.filter(response.data.target.tibs, x => x.isApplied);
     expect(activeTibs.length).toBe(1);
     expect(activeTibs[0].id).toBe(tib1.id);
