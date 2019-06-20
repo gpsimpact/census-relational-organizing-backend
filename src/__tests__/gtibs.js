@@ -86,4 +86,36 @@ describe("GTIBS", () => {
     expect(response.errors.length).toEqual(1);
     expect(response.errors[0].message).toEqual("Not Authorized!");
   });
+
+  test("active works", async () => {
+    const adminUser = await createAdminUser();
+    await createTestGtib(adminUser.id);
+    await createTestGtib(adminUser.id);
+    const gtib3 = await createTestGtib(adminUser.id);
+
+    // no input
+    const response = await graphqlTestCall(GET_ALL_GTIBS_QUERY, null, {
+      user: { id: adminUser.id }
+    });
+    // where only input
+    expect(response.data.gtibs.length).toBe(3);
+
+    await sq`tibs`.set({ active: false }).where({ id: gtib3.id });
+
+    const response2 = await graphqlTestCall(GET_ALL_GTIBS_QUERY, null, {
+      user: { id: adminUser.id }
+    });
+    // where only input
+    expect(response2.data.gtibs.length).toBe(2);
+
+    const response3 = await graphqlTestCall(
+      GET_ALL_GTIBS_QUERY,
+      { input: { active: false } },
+      {
+        user: { id: adminUser.id }
+      }
+    );
+    // where only input
+    expect(response3.data.gtibs.length).toBe(1);
+  });
 });
