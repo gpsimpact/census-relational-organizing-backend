@@ -33,6 +33,6 @@ type UpdateGtibResult {
 }
 
 input GtibsInput {
-  visible: Boolean = true
+  visible: Boolean
   active: Boolean = true
 }
