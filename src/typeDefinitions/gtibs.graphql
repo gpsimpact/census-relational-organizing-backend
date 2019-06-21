@@ -4,6 +4,7 @@ type Gtib {
   active: Boolean!
   visible: Boolean!
   userId: String!
+  tibType: TibType!
   createdAt: GraphQLDateTime!
   updatedAt: GraphQLDateTime!
 }
@@ -35,4 +36,5 @@ type UpdateGtibResult {
 input GtibsInput {
   visible: Boolean
   active: Boolean = true
+  tibType: TibType = QUESTION
 }

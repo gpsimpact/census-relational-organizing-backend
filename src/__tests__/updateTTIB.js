@@ -21,7 +21,7 @@ const UPDATE_TTIB_MUTATION = `
                 userId
                 createdAt
                 updatedAt
-                gtibLink
+                tibType
             }
         }
     }

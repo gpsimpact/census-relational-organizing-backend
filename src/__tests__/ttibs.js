@@ -1,4 +1,4 @@
-import { graphqlTestCall } from "../utils/graphqlTestCall";
+import { graphqlTestCall, debugResponse } from "../utils/graphqlTestCall";
 import { dbUp } from "../utils/testDbOps";
 import {
   createTestUser,
@@ -17,7 +17,7 @@ query Ttibs($input: TtibsInput!) {
         updatedAt
         active
         visible
-        gtibLink
+        tibType
     }
 }
 `;
@@ -47,6 +47,7 @@ describe("TTIBS", () => {
       },
       { user: { id: user.id } }
     );
+    debugResponse(response);
     expect(response.data.ttibs.length).toBe(3);
 
     await sq`tibs`.set({ active: false }).where({ id: ttib3.id });
@@ -58,7 +59,42 @@ describe("TTIBS", () => {
       },
       { user: { id: user.id } }
     );
+    debugResponse(response2);
     // where only input
     expect(response2.data.ttibs.length).toBe(2);
+  });
+
+  test("Can grab only ACTION tibtypes", async () => {
+    const user = await createTestUser();
+    const team = await createTestTeam();
+    await createTestOLPermission(user.id, team.id, "MEMBER");
+    await createTestTtib(user.id, team.id);
+    await createTestTtib(user.id, team.id);
+    const ttib3 = await createTestTtib(user.id, team.id);
+    // set one as action
+    await sq`tibs`.set({ tibType: "ACTION" }).where({ id: ttib3.id });
+
+    // no input
+    const response = await graphqlTestCall(
+      GET_ALL_TTIBS_QUERY,
+      {
+        input: { teamId: team.id }
+      },
+      { user: { id: user.id } }
+    );
+    debugResponse(response);
+    expect(response.data.ttibs.length).toBe(2);
+
+    const response2 = await graphqlTestCall(
+      GET_ALL_TTIBS_QUERY,
+      {
+        input: { teamId: team.id, tibType: "ACTION" }
+      },
+      { user: { id: user.id } }
+    );
+    debugResponse(response2);
+    // where only input
+    expect(response2.data.ttibs.length).toBe(1);
+    expect(response2.data.ttibs[0].id).toBe(ttib3.id);
   });
 });
