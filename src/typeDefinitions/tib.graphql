@@ -10,3 +10,8 @@ type TibTotal {
   text: String!
   count: Int!
 }
+
+enum TibType {
+  QUESTION
+  ACTION
+}

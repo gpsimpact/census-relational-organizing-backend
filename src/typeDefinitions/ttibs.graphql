@@ -4,7 +4,7 @@ type Ttib {
   active: Boolean!
   visible: Boolean!
   userId: String!
-  gtibLink: String
+  tibType: TibType!
   createdAt: GraphQLDateTime!
   updatedAt: GraphQLDateTime!
 }
@@ -38,4 +38,5 @@ input TtibsInput {
   teamId: String!
   visible: Boolean
   active: Boolean = true
+  tibType: TibType = QUESTION
 }
