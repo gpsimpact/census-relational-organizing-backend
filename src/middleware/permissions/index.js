@@ -217,7 +217,11 @@ export default shield(
         isAuthenticated,
         or(has_TP_ADMIN_ROOT_TEAMID, has_GP_ADMIN)
       ),
-      summaryCountAllTibs: and(isAuthenticated, has_GP_ADMIN)
+      summaryCountAllTibs: and(isAuthenticated, has_GP_ADMIN),
+      summaryCountAllTeamUsers: and(
+        isAuthenticated,
+        or(has_TP_ADMIN_ROOT_TEAMID, has_GP_ADMIN)
+      )
     },
     Mutation: {
       removeUser: and(isAuthenticated, has_GP_ADMIN),
