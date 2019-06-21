@@ -221,7 +221,8 @@ export default shield(
       summaryCountAllTeamUsers: and(
         isAuthenticated,
         or(has_TP_ADMIN_ROOT_TEAMID, has_GP_ADMIN)
-      )
+      ),
+      summaryCountAllUsers: and(isAuthenticated, has_GP_ADMIN)
     },
     Mutation: {
       removeUser: and(isAuthenticated, has_GP_ADMIN),

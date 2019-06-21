@@ -9,8 +9,8 @@ import {
 } from "../utils/createTestEntities";
 
 const QUERY = `
-query summaryCountAllTeamUsers($teamId: String!) {
-  summaryCountAllTeamUsers(teamId: $teamId)
+query summaryCountAllUsers {
+  summaryCountAllUsers
 }
 `;
 
@@ -25,6 +25,7 @@ describe("Summary Count orgs users", () => {
     const user3 = await createTestUser();
     const user4 = await createTestUser();
     const user5 = await createTestUser();
+    const user6 = await createTestUser();
     const team = await createTestTeam();
     const team2 = await createTestTeam();
 
@@ -32,7 +33,8 @@ describe("Summary Count orgs users", () => {
     await createTestOLPermission(user2.id, team.id, "MEMBER");
     await createTestOLPermission(user3.id, team.id, "MEMBER");
     await createTestOLPermission(user4.id, team.id, "MEMBER");
-    await createTestOLPermission(user5.id, team2.id, "MEMBER"); // holdout
+    await createTestOLPermission(user5.id, team2.id, "MEMBER");
+    await createTestOLPermission(user6.id, team2.id, "APPLICANT"); // holdout
 
     const response = await graphqlTestCall(
       QUERY,
@@ -40,7 +42,7 @@ describe("Summary Count orgs users", () => {
       { user: { id: adminUser.id } }
     );
     debugResponse(response);
-    expect(response.data.summaryCountAllTeamUsers).toEqual(4);
+    expect(response.data.summaryCountAllUsers).toEqual(5);
   });
 
   // Must be team admin or app admin
