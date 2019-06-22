@@ -3,6 +3,7 @@ type TibApplication {
   text: String!
   isApplied: Boolean!
   appliedAt: GraphQLDateTime
+  tibType: TibType!
 }
 
 type TibTotal {

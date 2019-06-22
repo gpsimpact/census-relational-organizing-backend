@@ -30,6 +30,7 @@ query target($id: String!) {
         text
         isApplied
         appliedAt
+        tibType
       }
     }
 }
@@ -96,5 +97,6 @@ describe("TARGET", () => {
     const activeTibs = _.filter(response.data.target.tibs, x => x.isApplied);
     expect(activeTibs.length).toBe(1);
     expect(activeTibs[0].id).toBe(tib1.id);
+    expect(activeTibs[0].tibType).toBe("QUESTION");
   });
 });

@@ -26,6 +26,7 @@ input UpdateTtibInput {
   text: String
   active: Boolean
   visible: Boolean
+  tibType: TibType
 }
 
 type UpdateTtibResult {

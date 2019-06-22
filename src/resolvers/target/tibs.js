@@ -24,7 +24,8 @@ export default async (root, args, ctx) => {
       id: x.id,
       text: x.text,
       isApplied: _.includes(trueTibs, x.id),
-      appliedAt: trueTibsTimestampLookupHash[x.id] || null
+      appliedAt: trueTibsTimestampLookupHash[x.id] || null,
+      tibType: x.tibType
     };
   });
 };
