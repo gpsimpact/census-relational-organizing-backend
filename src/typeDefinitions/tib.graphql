@@ -9,7 +9,9 @@ type TibApplication {
 type TibTotal {
   id: String!
   text: String!
-  count: Int!
+  appliedCount: Int!
+  unappliedCount: Int!
+  tibType: TibType!
 }
 
 enum TibType {
