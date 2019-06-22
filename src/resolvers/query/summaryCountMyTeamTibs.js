@@ -14,6 +14,13 @@ export default async (root, args, context) => {
     .return(`tib_id, count(*) as true_count`)
     .where(context.sq.txt`(EXISTS ${existsQuery})`).groupBy`tib_id`;
 
+  // get total count of targets in this window
+  const targetCount = await context.sq`targets`.return`count(*) as count`
+    .where({ teamId: args.teamId, userId: context.user.id })
+    .one();
+
+  const eligibleCount = targetCount.count;
+
   const countsLookupHash = {};
 
   _.forEach(counts, x => {
@@ -21,16 +28,27 @@ export default async (root, args, context) => {
   });
 
   // get all team ttibs
-  const teamTibs = await context.dataSource.tib.byTeamIdLoader.load(
-    args.teamId
-  );
+  // const teamTibs = await context.dataSource.tib.byTeamIdLoader.load(
+  //   args.teamId
+  // );
 
-  const withCounts = _.map(teamTibs, x => {
+  const tibType = args.tibType || "QUESTION";
+
+  const tibs = await context.sq`tibs`
+    .where({ active: true, visible: true, tibType })
+    .where(
+      context.sq.e`is_global`.eq(true).or(context.sq.e`team_id`.eq(args.teamId))
+    );
+
+  const withCounts = _.map(tibs, x => {
+    const appliedCount = _.get(countsLookupHash, x.id, 0);
     return {
       id: x.id,
       text: x.text,
-      count: _.get(countsLookupHash, x.id, 0),
-      active: x.active
+      appliedCount,
+      unappliedCount: eligibleCount - appliedCount,
+      active: x.active,
+      tibType: x.tibType
     };
   });
 

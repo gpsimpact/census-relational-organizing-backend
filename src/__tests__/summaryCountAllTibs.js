@@ -15,7 +15,9 @@ query summaryCountAllTibs {
   summaryCountAllTibs {
     id
     text
-    count
+    appliedCount
+    unappliedCount
+    tibType
   }
 }
 `;
@@ -82,9 +84,12 @@ describe("Summary Count all tibs across all users in one team", () => {
       response.data.summaryCountAllTibs,
       x => x.id == tib4.id
     );
-    expect(tib1Response.count).toEqual(2);
-    expect(tib2Response.count).toEqual(1);
-    expect(tib3Response.count).toEqual(0);
+    expect(tib1Response.appliedCount).toEqual(2);
+    expect(tib1Response.unappliedCount).toEqual(0);
+    expect(tib2Response.appliedCount).toEqual(1);
+    expect(tib2Response.unappliedCount).toEqual(1);
+    expect(tib3Response.appliedCount).toEqual(0);
+    expect(tib3Response.unappliedCount).toEqual(2);
     expect(tib4Response).toBeUndefined();
   });
 });

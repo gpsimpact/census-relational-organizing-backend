@@ -19,13 +19,13 @@ type Query {
   ): TargetsResult!
   summaryCountMyTeamTargets(teamId: String!): Int!
   summaryTotalMyTeamHouseholdSize(teamId: String!): Int!
-  summaryCountMyTeamTibs(teamId: String!): [TibTotal]!
+  summaryCountMyTeamTibs(teamId: String!, tibType: TibType): [TibTotal]!
   summaryCountAllTeamTargets(teamId: String!): Int!
   summaryTotalAllTeamHouseholdSize(teamId: String!): Int!
   summaryTotalAllHouseholdSize: Int!
   summaryCountAllTargets: Int!
-  summaryCountAllTeamTibs(teamId: String!): [TibTotal]!
-  summaryCountAllTibs: [TibTotal]!
+  summaryCountAllTeamTibs(teamId: String!, tibType: TibType): [TibTotal]!
+  summaryCountAllTibs(tibType: TibType): [TibTotal]!
   summaryCountAllTeamUsers(teamId: String!): Int!
   summaryCountAllUsers: Int!
 }
