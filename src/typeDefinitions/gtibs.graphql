@@ -11,6 +11,7 @@ type Gtib {
 
 input CreateGtibInput {
   text: String!
+  tibType: TibType = "QUESTION"
 }
 
 type CreateGtibResponse {
@@ -24,6 +25,7 @@ input UpdateGtibInput {
   text: String
   active: Boolean
   visible: Boolean
+  tibType: TibType
 }
 
 type UpdateGtibResult {

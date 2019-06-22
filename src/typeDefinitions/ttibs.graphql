@@ -12,6 +12,7 @@ type Ttib {
 input CreateTtibInput {
   text: String!
   teamId: String!
+  tibType: TibType = "QUESTION"
 }
 
 type CreateTtibResult {
