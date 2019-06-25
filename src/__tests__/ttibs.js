@@ -43,7 +43,12 @@ describe("TTIBS", () => {
     const response = await graphqlTestCall(
       GET_ALL_TTIBS_QUERY,
       {
-        input: { teamId: team.id }
+        input: {
+          teamId: team.id,
+          active: true,
+          visible: true,
+          tibType: "QUESTION"
+        }
       },
       { user: { id: user.id } }
     );
@@ -55,7 +60,12 @@ describe("TTIBS", () => {
     const response2 = await graphqlTestCall(
       GET_ALL_TTIBS_QUERY,
       {
-        input: { teamId: team.id }
+        input: {
+          teamId: team.id,
+          active: true,
+          visible: true,
+          tibType: "QUESTION"
+        }
       },
       { user: { id: user.id } }
     );
@@ -78,7 +88,12 @@ describe("TTIBS", () => {
     const response = await graphqlTestCall(
       GET_ALL_TTIBS_QUERY,
       {
-        input: { teamId: team.id }
+        input: {
+          teamId: team.id,
+          active: true,
+          visible: true,
+          tibType: "QUESTION"
+        }
       },
       { user: { id: user.id } }
     );
@@ -88,7 +103,12 @@ describe("TTIBS", () => {
     const response2 = await graphqlTestCall(
       GET_ALL_TTIBS_QUERY,
       {
-        input: { teamId: team.id, tibType: "ACTION" }
+        input: {
+          teamId: team.id,
+          tibType: "ACTION",
+          active: true,
+          visible: true
+        }
       },
       { user: { id: user.id } }
     );

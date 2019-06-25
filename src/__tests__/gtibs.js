@@ -1,4 +1,4 @@
-import { graphqlTestCall } from "../utils/graphqlTestCall";
+import { graphqlTestCall, debugResponse } from "../utils/graphqlTestCall";
 import { dbUp } from "../utils/testDbOps";
 import {
   createTestGtib,
@@ -10,7 +10,7 @@ import {
 import { sq } from "../db";
 
 const GET_ALL_GTIBS_QUERY = `
-query Gtibs($input: GtibsInput) {
+query Gtibs($input: GtibsInput!) {
     gtibs(input: $input) {
         id
         text
@@ -34,18 +34,26 @@ describe("GTIBS", () => {
     const gtib3 = await createTestGtib(adminUser.id);
 
     // no input
-    const response = await graphqlTestCall(GET_ALL_GTIBS_QUERY, null, {
-      user: { id: adminUser.id }
-    });
-    // where only input
+    const response = await graphqlTestCall(
+      GET_ALL_GTIBS_QUERY,
+      { input: { active: true, visible: true, tibType: "QUESTION" } },
+      {
+        user: { id: adminUser.id }
+      }
+    );
+    debugResponse(response);
     expect(response.data.gtibs.length).toBe(3);
 
     await sq`tibs`.set({ visible: false }).where({ id: gtib3.id });
 
-    const response2 = await graphqlTestCall(GET_ALL_GTIBS_QUERY, null, {
-      user: { id: adminUser.id }
-    });
-    // where only input
+    const response2 = await graphqlTestCall(
+      GET_ALL_GTIBS_QUERY,
+      { input: { active: true, visible: true, tibType: "QUESTION" } },
+      {
+        user: { id: adminUser.id }
+      }
+    );
+    debugResponse(response2);
     expect(response2.data.gtibs.length).toBe(2);
   });
 
@@ -58,17 +66,25 @@ describe("GTIBS", () => {
     const gtib3 = await createTestGtib(user.id);
 
     // no input
-    const response = await graphqlTestCall(GET_ALL_GTIBS_QUERY, null, {
-      user: { id: user.id }
-    });
+    const response = await graphqlTestCall(
+      GET_ALL_GTIBS_QUERY,
+      { input: { active: true, visible: true, tibType: "QUESTION" } },
+      {
+        user: { id: user.id }
+      }
+    );
     // where only input
     expect(response.data.gtibs.length).toBe(3);
 
     await sq`tibs`.set({ visible: false }).where({ id: gtib3.id });
 
-    const response2 = await graphqlTestCall(GET_ALL_GTIBS_QUERY, null, {
-      user: { id: user.id }
-    });
+    const response2 = await graphqlTestCall(
+      GET_ALL_GTIBS_QUERY,
+      { input: { active: true, visible: true, tibType: "QUESTION" } },
+      {
+        user: { id: user.id }
+      }
+    );
     // where only input
     expect(response2.data.gtibs.length).toBe(2);
   });
@@ -80,9 +96,13 @@ describe("GTIBS", () => {
     await createTestGtib(user.id);
 
     // no input
-    const response = await graphqlTestCall(GET_ALL_GTIBS_QUERY, null, {
-      user: { id: user.id }
-    });
+    const response = await graphqlTestCall(
+      GET_ALL_GTIBS_QUERY,
+      { input: { active: true, visible: true, tibType: "QUESTION" } },
+      {
+        user: { id: user.id }
+      }
+    );
     expect(response.errors.length).toEqual(1);
     expect(response.errors[0].message).toEqual("Not Authorized!");
   });
@@ -94,23 +114,31 @@ describe("GTIBS", () => {
     const gtib3 = await createTestGtib(adminUser.id);
 
     // no input
-    const response = await graphqlTestCall(GET_ALL_GTIBS_QUERY, null, {
-      user: { id: adminUser.id }
-    });
+    const response = await graphqlTestCall(
+      GET_ALL_GTIBS_QUERY,
+      { input: { active: true, visible: true, tibType: "QUESTION" } },
+      {
+        user: { id: adminUser.id }
+      }
+    );
     // where only input
     expect(response.data.gtibs.length).toBe(3);
 
     await sq`tibs`.set({ active: false }).where({ id: gtib3.id });
 
-    const response2 = await graphqlTestCall(GET_ALL_GTIBS_QUERY, null, {
-      user: { id: adminUser.id }
-    });
+    const response2 = await graphqlTestCall(
+      GET_ALL_GTIBS_QUERY,
+      { input: { active: true, visible: true, tibType: "QUESTION" } },
+      {
+        user: { id: adminUser.id }
+      }
+    );
     // where only input
     expect(response2.data.gtibs.length).toBe(2);
 
     const response3 = await graphqlTestCall(
       GET_ALL_GTIBS_QUERY,
-      { input: { active: false } },
+      { input: { active: false, visible: true, tibType: "QUESTION" } },
       {
         user: { id: adminUser.id }
       }
