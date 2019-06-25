@@ -38,7 +38,7 @@ type UpdateTtibResult {
 
 input TtibsInput {
   teamId: String!
-  visible: Boolean!
-  active: Boolean!
-  tibType: TibType!
+  visible: Boolean
+  active: Boolean
+  tibType: TibType
 }

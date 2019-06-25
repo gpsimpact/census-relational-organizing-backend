@@ -46,7 +46,6 @@ describe("TTIBS", () => {
         input: {
           teamId: team.id,
           active: true,
-          visible: true,
           tibType: "QUESTION"
         }
       },
@@ -63,7 +62,6 @@ describe("TTIBS", () => {
         input: {
           teamId: team.id,
           active: true,
-          visible: true,
           tibType: "QUESTION"
         }
       },
