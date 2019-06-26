@@ -67,4 +67,14 @@ describe("Summary Count all HH size - all users, all teams", () => {
     expect(response.errors.length).toEqual(1);
     expect(response.errors[0].message).toEqual("Not Authorized!");
   });
+
+  test("Zero bug", async () => {
+    const user = await createAdminUser();
+
+    const response = await graphqlTestCall(SUMMARY_COUNT_ALL_HH_QUERY, null, {
+      user: { id: user.id }
+    });
+    debugResponse(response);
+    expect(response.data.summaryTotalAllHouseholdSize).toEqual(0);
+  });
 });
