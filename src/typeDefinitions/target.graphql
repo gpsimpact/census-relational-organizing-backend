@@ -15,6 +15,7 @@ type Target {
   createdAt: GraphQLDateTime!
   updatedAt: GraphQLDateTime!
   active: Boolean!
+  retainAddress: Boolean!
 }
 
 input CreateTargetInput {

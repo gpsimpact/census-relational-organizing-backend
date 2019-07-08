@@ -265,5 +265,6 @@ describe("Update Form", () => {
     expect(dbTarget.city).toBeNull();
     expect(dbTarget.state).toBeNull();
     expect(dbTarget.zip5).toBe(newData.zip5);
+    expect(dbTarget.retainAddress).toBe(false);
   });
 });
