@@ -32,6 +32,7 @@ query target($id: String!) {
         appliedAt
         tibType
       }
+      retainAddress
     }
 }
 `;
@@ -52,6 +53,7 @@ describe("TARGET", () => {
     );
     debugResponse(response);
     expect(response.data.target.id).toEqual(target.id);
+    expect(response.data.target.retainAddress).toBe(true);
   });
 
   // test must be user's target
