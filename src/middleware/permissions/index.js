@@ -182,7 +182,10 @@ const has_TP_MEMBER_ROOT = hasTeamPerm("teamId", "MEMBER");
 export default shield(
   {
     Query: {
-      ttibs: and(isAuthenticated, or(has_TP_MEMBER, has_GP_ADMIN)),
+      ttibs: and(
+        isAuthenticated,
+        or(or(has_TP_MEMBER, has_TP_ADMIN), has_GP_ADMIN)
+      ),
       me: allow,
       form: and(isAuthenticated, has_GP_ADMIN),
       users: and(isAuthenticated, has_GP_ADMIN),
