@@ -197,8 +197,8 @@ export default shield(
       // read as must be authenticated AND a member of the team AND one of (is yourself OR admin of specified team.)
       userTargets: and(
         isAuthenticated,
-        or(has_TP_MEMBER_ROOT, has_TP_ADMIN_ROOT_TEAMID),
-        or(isSelfRootUserId, has_TP_ADMIN_ROOT_TEAMID)
+        or(has_TP_MEMBER_ROOT, has_TP_ADMIN_ROOT_TEAMID, has_GP_ADMIN),
+        or(isSelfRootUserId, has_TP_ADMIN_ROOT_TEAMID, has_GP_ADMIN)
       ),
       summaryCountMyTeamTargets: isAuthenticated,
       summaryTotalMyTeamHouseholdSize: isAuthenticated,
