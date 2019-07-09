@@ -82,6 +82,13 @@ const isAnyTeamAdminCheck = async (parent, args, ctx) => {
   return q && q.count && q.count > 0;
 };
 
+const isAnyTeamMemberCheck = async (parent, args, ctx) => {
+  const q = await ctx.sq`team_permissions`.return`count(*)`
+    .where({ userId: ctx.user.id, permission: "MEMBER" })
+    .one();
+  return q && q.count && q.count > 0;
+};
+
 const userIsTeamAdminofUpdatingTtibCheck = async (parent, args, ctx) => {
   // get ttbid details
   const dbTtib = await ctx.dataSource.tib.byIdLoader.load(args.id);
@@ -151,6 +158,10 @@ const isAnyTeamAdmin = rule(`is-any-team-admin`, { cache: "contextual" })(
   isAnyTeamAdminCheck
 );
 
+const isAnyTeamMember = rule(`is-any-team-member`, { cache: "contextual" })(
+  isAnyTeamMemberCheck
+);
+
 const userIsTeamAdminofUpdatingTtib = rule(`userIsTeamAdminofUpdatingTtib`, {
   cache: "contextual"
 })(userIsTeamAdminofUpdatingTtibCheck);
@@ -192,7 +203,10 @@ export default shield(
       teams: allow,
       team: allow,
       summaryCountTeams: and(isAuthenticated, has_GP_ADMIN),
-      gtibs: and(isAuthenticated, or(has_GP_ADMIN, isAnyTeamAdmin)),
+      gtibs: and(
+        isAuthenticated,
+        or(has_GP_ADMIN, isAnyTeamAdmin, isAnyTeamMember)
+      ),
       user: and(isAuthenticated, or(has_GP_ADMIN, isSelfRootId)),
       teamUsers: and(isAuthenticated, or(has_TP_ADMIN, has_GP_ADMIN)),
       target: and(isAuthenticated, or(has_GP_ADMIN, userOwnsTarget)),
@@ -257,7 +271,10 @@ export default shield(
         isAuthenticated,
         or(has_TP_ADMIN, has_GP_ADMIN)
       ),
-      createTarget: and(isAuthenticated, or(has_TP_MEMBER, has_GP_ADMIN)),
+      createTarget: and(
+        isAuthenticated,
+        or(or(has_TP_MEMBER, has_TP_ADMIN), has_GP_ADMIN)
+      ),
       updateTarget: and(isAuthenticated, or(has_GP_ADMIN, userOwnsTarget)),
       removeTarget: and(isAuthenticated, or(has_GP_ADMIN, userOwnsTarget))
     },
