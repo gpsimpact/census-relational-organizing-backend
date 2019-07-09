@@ -82,6 +82,13 @@ const isAnyTeamAdminCheck = async (parent, args, ctx) => {
   return q && q.count && q.count > 0;
 };
 
+const isAnyTeamMemberCheck = async (parent, args, ctx) => {
+  const q = await ctx.sq`team_permissions`.return`count(*)`
+    .where({ userId: ctx.user.id, permission: "MEMBER" })
+    .one();
+  return q && q.count && q.count > 0;
+};
+
 const userIsTeamAdminofUpdatingTtibCheck = async (parent, args, ctx) => {
   // get ttbid details
   const dbTtib = await ctx.dataSource.tib.byIdLoader.load(args.id);
@@ -151,6 +158,10 @@ const isAnyTeamAdmin = rule(`is-any-team-admin`, { cache: "contextual" })(
   isAnyTeamAdminCheck
 );
 
+const isAnyTeamMember = rule(`is-any-team-member`, { cache: "contextual" })(
+  isAnyTeamMemberCheck
+);
+
 const userIsTeamAdminofUpdatingTtib = rule(`userIsTeamAdminofUpdatingTtib`, {
   cache: "contextual"
 })(userIsTeamAdminofUpdatingTtibCheck);
@@ -182,14 +193,20 @@ const has_TP_MEMBER_ROOT = hasTeamPerm("teamId", "MEMBER");
 export default shield(
   {
     Query: {
-      ttibs: and(isAuthenticated, or(has_TP_MEMBER, has_GP_ADMIN)),
+      ttibs: and(
+        isAuthenticated,
+        or(or(has_TP_MEMBER, has_TP_ADMIN), has_GP_ADMIN)
+      ),
       me: allow,
       form: and(isAuthenticated, has_GP_ADMIN),
       users: and(isAuthenticated, has_GP_ADMIN),
       teams: allow,
       team: allow,
       summaryCountTeams: and(isAuthenticated, has_GP_ADMIN),
-      gtibs: and(isAuthenticated, or(has_GP_ADMIN, isAnyTeamAdmin)),
+      gtibs: and(
+        isAuthenticated,
+        or(has_GP_ADMIN, isAnyTeamAdmin, isAnyTeamMember)
+      ),
       user: and(isAuthenticated, or(has_GP_ADMIN, isSelfRootId)),
       teamUsers: and(isAuthenticated, or(has_TP_ADMIN, has_GP_ADMIN)),
       target: and(isAuthenticated, or(has_GP_ADMIN, userOwnsTarget)),
@@ -197,8 +214,8 @@ export default shield(
       // read as must be authenticated AND a member of the team AND one of (is yourself OR admin of specified team.)
       userTargets: and(
         isAuthenticated,
-        or(has_TP_MEMBER_ROOT, has_TP_ADMIN_ROOT_TEAMID),
-        or(isSelfRootUserId, has_TP_ADMIN_ROOT_TEAMID)
+        or(has_TP_MEMBER_ROOT, has_TP_ADMIN_ROOT_TEAMID, has_GP_ADMIN),
+        or(isSelfRootUserId, has_TP_ADMIN_ROOT_TEAMID, has_GP_ADMIN)
       ),
       summaryCountMyTeamTargets: isAuthenticated,
       summaryTotalMyTeamHouseholdSize: isAuthenticated,
@@ -254,7 +271,10 @@ export default shield(
         isAuthenticated,
         or(has_TP_ADMIN, has_GP_ADMIN)
       ),
-      createTarget: and(isAuthenticated, or(has_TP_MEMBER, has_GP_ADMIN)),
+      createTarget: and(
+        isAuthenticated,
+        or(or(has_TP_MEMBER, has_TP_ADMIN), has_GP_ADMIN)
+      ),
       updateTarget: and(isAuthenticated, or(has_GP_ADMIN, userOwnsTarget)),
       removeTarget: and(isAuthenticated, or(has_GP_ADMIN, userOwnsTarget))
     },
