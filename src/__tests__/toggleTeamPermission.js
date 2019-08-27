@@ -16,6 +16,15 @@ mutation toggleTeamPermission($input: ToggleTeamPermissionInput!) {
         code
         success
         message
+        item {
+          id
+          teamPermissions {
+            team {
+              id
+            }
+            permissions
+          }
+        }
     }
 }
 `;
@@ -44,6 +53,17 @@ describe("User", () => {
     expect(response.data.toggleTeamPermission.message).toEqual(
       "Permission granted."
     );
+    expect(response.data.toggleTeamPermission.item).toEqual({
+      id: granteeUser.id,
+      teamPermissions: [
+        {
+          permissions: [permission],
+          team: {
+            id: team.id
+          }
+        }
+      ]
+    });
 
     const dbUserPerms = await sq.from`team_permissions`.where({
       userId: granteeUser.id,

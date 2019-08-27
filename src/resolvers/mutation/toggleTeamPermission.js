@@ -32,6 +32,7 @@ export default async (root, args, context) => {
   return {
     success: true,
     code: "OK",
-    message: "Permission granted."
+    message: "Permission granted.",
+    item: context.dataSource.user.byIdLoader.load(args.input.userId)
   };
 };
