@@ -13,6 +13,7 @@ import createUser from "./mutation/createUser";
 import updateUser from "./mutation/updateUser";
 import removeUser from "./mutation/removeUser";
 import requestTeamMembership from "./mutation/requestTeamMembership";
+import cancelTeamMembershipRequest from "./mutation/cancelTeamMembershipRequest";
 import toggleTeamPermission from "./mutation/toggleTeamPermission";
 import removeTeamPermission from "./mutation/removeTeamPermission";
 import globalPermissions from "./user/globalPermissions";
@@ -94,6 +95,7 @@ export default {
     register,
     confirmLogin,
     requestTeamMembership,
+    cancelTeamMembershipRequest,
     toggleTeamPermission,
     removeTeamPermission,
     writeFormValues,

@@ -16,6 +16,15 @@ mutation toggleTeamPermission($input: ToggleTeamPermissionInput!) {
         code
         success
         message
+        item {
+          id
+          teamPermissions {
+            team {
+              id
+            }
+            permissions
+          }
+        }
     }
 }
 `;
@@ -44,6 +53,17 @@ describe("User", () => {
     expect(response.data.toggleTeamPermission.message).toEqual(
       "Permission granted."
     );
+    expect(response.data.toggleTeamPermission.item).toEqual({
+      id: granteeUser.id,
+      teamPermissions: [
+        {
+          permissions: [permission],
+          team: {
+            id: team.id
+          }
+        }
+      ]
+    });
 
     const dbUserPerms = await sq.from`team_permissions`.where({
       userId: granteeUser.id,
@@ -205,6 +225,45 @@ describe("User", () => {
     expect(response.data.toggleTeamPermission.message).toEqual(
       "Permission granted."
     );
+
+    const dbUserPerms = await sq.from`team_permissions`.where({
+      userId: granteeUser.id,
+      teamId: team.id
+    });
+    expect(dbUserPerms).toHaveLength(1);
+    expect(dbUserPerms[0].permission).toEqual(permission);
+  });
+
+  test("Can Deny", async () => {
+    const adminUser = await createAdminUser();
+    const granteeUser = await createTestUser();
+    const permission = "DENIED";
+    const team = await createTestTeam();
+
+    const response = await graphqlTestCall(
+      GRANT_TEAM_PERMISSION_MUTATION,
+      {
+        input: { userId: granteeUser.id, teamId: team.id, permission }
+      },
+      { user: { id: adminUser.id } }
+    );
+    // console.log(response);
+    expect(response.data.toggleTeamPermission.code).toEqual("OK");
+    expect(response.data.toggleTeamPermission.success).toEqual(true);
+    expect(response.data.toggleTeamPermission.message).toEqual(
+      "Permission granted."
+    );
+    expect(response.data.toggleTeamPermission.item).toEqual({
+      id: granteeUser.id,
+      teamPermissions: [
+        {
+          permissions: [permission],
+          team: {
+            id: team.id
+          }
+        }
+      ]
+    });
 
     const dbUserPerms = await sq.from`team_permissions`.where({
       userId: granteeUser.id,

@@ -33,6 +33,7 @@ query target($id: String!) {
         tibType
       }
       retainAddress
+      censusTract
     }
 }
 `;
@@ -54,6 +55,25 @@ describe("TARGET", () => {
     debugResponse(response);
     expect(response.data.target.id).toEqual(target.id);
     expect(response.data.target.retainAddress).toBe(true);
+    expect(response.data.target.censusTract).toBe(null);
+  });
+
+  test("Gives Tract ", async () => {
+    const user = await createTestUser();
+    const team = await createTestTeam();
+    const target = await createTestTarget({ userId: user.id, teamId: team.id });
+    await sq.from`targets`.set`census_tract = ${"foo"}`.where({
+      id: target.id
+    });
+    const response = await graphqlTestCall(
+      GET_TARGET_QUERY,
+      { id: target.id },
+      { user: { id: user.id } }
+    );
+    debugResponse(response);
+    expect(response.data.target.id).toEqual(target.id);
+    expect(response.data.target.retainAddress).toBe(true);
+    expect(response.data.target.censusTract).toBe("foo");
   });
 
   // test must be user's target

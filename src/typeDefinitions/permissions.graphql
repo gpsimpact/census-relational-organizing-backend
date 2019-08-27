@@ -6,4 +6,5 @@ enum ObjectLevelPermissionEnum {
   APPLICANT
   MEMBER
   ADMIN
+  DENIED
 }

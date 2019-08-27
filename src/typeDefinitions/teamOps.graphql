@@ -20,6 +20,7 @@ type RemoveTeamResult {
 input UpdateTeamInput {
   name: String
   description: String
+  active: Boolean
 }
 
 type UpdateTeamResult {
