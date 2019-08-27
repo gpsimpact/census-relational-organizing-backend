@@ -16,6 +16,7 @@ type Target {
   updatedAt: GraphQLDateTime!
   active: Boolean!
   retainAddress: Boolean!
+  censusTract: String
 }
 
 input CreateTargetInput {
