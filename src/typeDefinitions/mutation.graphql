@@ -9,6 +9,9 @@ type Mutation {
   register(input: RegisterInput!): RegisterResult!
   confirmLogin(token: String!): ConfirmLoginResult!
   requestTeamMembership(teamId: String!): RequestTeamMembershipResult!
+  cancelTeamMembershipRequest(
+    teamId: String!
+  ): CancelTeamMembershipRequestResult!
   toggleTeamPermission(
     input: ToggleTeamPermissionInput!
   ): ToggleTeamPermissionResult!
