@@ -1,10 +1,10 @@
-exports.up = knex => {
+exports.down = knex => {
   return knex.raw(`
                 DROP TABLE IF EXISTS target_notes;
             `);
 };
 
-exports.down = knex => {
+exports.up = knex => {
   return knex.raw(`
             CREATE TABLE target_notes (
                   id uuid DEFAULT uuid_generate_v4() PRIMARY KEY,

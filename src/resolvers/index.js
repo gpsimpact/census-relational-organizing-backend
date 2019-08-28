@@ -55,6 +55,7 @@ import summaryCountAllTeamTibs from "./query/summaryCountAllTeamTibs";
 import summaryCountAllTibs from "./query/summaryCountAllTibs";
 import summaryCountAllTeamUsers from "./query/summaryCountAllTeamUsers";
 import summaryCountAllUsers from "./query/summaryCountAllUsers";
+import createTargetNote from "./mutation/createTargetNote";
 
 export default {
   Query: {
@@ -107,7 +108,8 @@ export default {
     updateTtib,
     createTarget,
     updateTarget,
-    removeTarget
+    removeTarget,
+    createTargetNote
   },
   User: {
     globalPermissions,

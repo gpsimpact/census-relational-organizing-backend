@@ -1,0 +1,22 @@
+type TargetNote {
+  id: String!
+  createdAt: GraphQLDateTime!
+  updatedAt: GraphQLDateTime!
+  active: Boolean!
+  target: Target!
+  createdBy: User!
+  lastEditedBy: User
+  content: String!
+}
+
+input CreateTargetNoteInput {
+  targetId: String!
+  content: String!
+}
+
+type CreateTargetNoteResult {
+  code: MutationCodeEnum!
+  success: Boolean!
+  message: String!
+  item: TargetNote
+}

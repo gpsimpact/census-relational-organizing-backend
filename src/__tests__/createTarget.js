@@ -12,7 +12,7 @@ import { sq } from "../db";
 
 require("dotenv").config();
 
-const CREATE_USER_MUTATION = `
+const CREATE_TARGET_MUTATION = `
   mutation createTarget($input: CreateTargetInput!) {
      createTarget(input:$input) {
       code
@@ -68,7 +68,7 @@ describe("Create Target", () => {
     };
 
     const response = await graphqlTestCall(
-      CREATE_USER_MUTATION,
+      CREATE_TARGET_MUTATION,
       {
         input: newTargetData
       },
@@ -127,7 +127,7 @@ describe("Create Target", () => {
 
     // no input
     const response = await graphqlTestCall(
-      CREATE_USER_MUTATION,
+      CREATE_TARGET_MUTATION,
       {
         input: newTargetData
       },
@@ -157,7 +157,7 @@ describe("Create Target", () => {
 
     // no input
     const response = await graphqlTestCall(
-      CREATE_USER_MUTATION,
+      CREATE_TARGET_MUTATION,
       {
         input: newTargetData
       },
@@ -207,7 +207,7 @@ describe("Create Target", () => {
     };
 
     const response = await graphqlTestCall(
-      CREATE_USER_MUTATION,
+      CREATE_TARGET_MUTATION,
       {
         input: newTargetData
       },
@@ -254,7 +254,7 @@ describe("Create Target", () => {
     };
 
     const response = await graphqlTestCall(
-      CREATE_USER_MUTATION,
+      CREATE_TARGET_MUTATION,
       {
         input: newTargetData
       },

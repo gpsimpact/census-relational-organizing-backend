@@ -5,11 +5,21 @@ import _ from "lodash";
   CHECKS - isolated testable logic 
 ************************************************************************* */
 
-const userOwnsTargetCheck = async (parent, args, ctx) => {
+const userOwnsTargetCheckRoot = async (parent, args, ctx) => {
   if (!ctx.user || !ctx.user.id) {
     return false;
   }
   const target = await ctx.dataSource.target.byIdLoader.load(args.id);
+  return target && target.userId && ctx.user.id === target.userId;
+};
+
+const userOwnsTargetCheck = async (parent, args, ctx) => {
+  if (!ctx.user || !ctx.user.id) {
+    return false;
+  }
+  const target = await ctx.dataSource.target.byIdLoader.load(
+    args.input.targetId
+  );
   return target && target.userId && ctx.user.id === target.userId;
 };
 
@@ -127,6 +137,10 @@ const userIsTeamAdminofUpdatingTtibCheck = async (parent, args, ctx) => {
   RULE DEFINITIONS- turns checks into GRAPHQL-SHIELD rules
 ************************************************************************* */
 
+const userOwnsTargetRoot = rule(`user-owns-target-root`, {
+  cache: "contextual"
+})(userOwnsTargetCheckRoot);
+
 const userOwnsTarget = rule(`user-owns-target`, { cache: "contextual" })(
   userOwnsTargetCheck
 );
@@ -209,7 +223,7 @@ export default shield(
       ),
       user: and(isAuthenticated, or(has_GP_ADMIN, isSelfRootId)),
       teamUsers: and(isAuthenticated, or(has_TP_ADMIN, has_GP_ADMIN)),
-      target: and(isAuthenticated, or(has_GP_ADMIN, userOwnsTarget)),
+      target: and(isAuthenticated, or(has_GP_ADMIN, userOwnsTargetRoot)),
       targets: and(isAuthenticated, has_GP_ADMIN),
       // read as must be authenticated AND a member of the team AND one of (is yourself OR admin of specified team.)
       userTargets: and(
@@ -276,8 +290,9 @@ export default shield(
         isAuthenticated,
         or(or(has_TP_MEMBER, has_TP_ADMIN), has_GP_ADMIN)
       ),
-      updateTarget: and(isAuthenticated, or(has_GP_ADMIN, userOwnsTarget)),
-      removeTarget: and(isAuthenticated, or(has_GP_ADMIN, userOwnsTarget))
+      updateTarget: and(isAuthenticated, or(has_GP_ADMIN, userOwnsTargetRoot)),
+      removeTarget: and(isAuthenticated, or(has_GP_ADMIN, userOwnsTargetRoot)),
+      createTargetNote: and(isAuthenticated, or(has_GP_ADMIN, userOwnsTarget))
     },
     Team: {
       userPermissions: allow, // <- Make this go away soon in favor of own root query
@@ -330,7 +345,9 @@ export default shield(
     UpdateTargetResult: allow,
     TargetsResult: allow,
     RemoveTargetResult: allow,
-    TibTotal: allow
+    TibTotal: allow,
+    TargetNote: allow,
+    CreateTargetNoteResult: allow
   },
   {
     fallbackError: "Not Authorized!", // default error spelling is Authorised.
