@@ -29,9 +29,6 @@ export default async (root, args, context) => {
     "CREATE_TARGET_NOTE"
   )(root, writeArgs, context);
 
-  targetNote.target = existingTarget;
-  targetNote.createdBy = context.user;
-
   return {
     success: true,
     code: "OK",

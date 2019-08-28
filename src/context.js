@@ -153,7 +153,9 @@ export default (req, res, logger, gcPubsub) => {
       remove: setInactiveDataSource(sq.from`targets`)
     },
     targetNote: {
-      create: createGDS(sq.from`target_notes`)
+      create: createGDS(sq.from`target_notes`),
+      update: updateGDS(sq.from`target_notes`),
+      byIdLoader: simpleSingleLoader(sq.from`target_notes`, "id")
     }
   };
 

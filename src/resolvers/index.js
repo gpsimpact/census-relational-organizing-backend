@@ -56,6 +56,10 @@ import summaryCountAllTibs from "./query/summaryCountAllTibs";
 import summaryCountAllTeamUsers from "./query/summaryCountAllTeamUsers";
 import summaryCountAllUsers from "./query/summaryCountAllUsers";
 import createTargetNote from "./mutation/createTargetNote";
+import updateTargetNote from "./mutation/updateTargetNote";
+import targetNoteCreatedBy from "./targetNote/createdBy";
+import targetNoteLastEditedBy from "./targetNote/lastEditedBy";
+import targetNoteTarget from "./targetNote/target";
 
 export default {
   Query: {
@@ -109,7 +113,8 @@ export default {
     createTarget,
     updateTarget,
     removeTarget,
-    createTargetNote
+    createTargetNote,
+    updateTargetNote
   },
   User: {
     globalPermissions,
@@ -133,5 +138,10 @@ export default {
   },
   Target: {
     tibs
+  },
+  TargetNote: {
+    createdBy: targetNoteCreatedBy,
+    lastEditedBy: targetNoteLastEditedBy,
+    target: targetNoteTarget
   }
 };

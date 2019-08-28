@@ -29,4 +29,8 @@ type Mutation {
   updateTarget(id: String!, input: UpdateTargetInput!): UpdateTargetResult!
   removeTarget(id: String!): RemoveTargetResult!
   createTargetNote(input: CreateTargetNoteInput!): CreateTargetNoteResult!
+  updateTargetNote(
+    id: String!
+    input: UpdateTargetNoteInput!
+  ): UpdateTargetNoteResult!
 }

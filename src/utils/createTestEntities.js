@@ -199,3 +199,12 @@ export const createAdminUser = async data => {
   await createTestGlobalPerm(user.id, "ADMIN");
   return user;
 };
+
+export const createTestTargetNote = async (userId, targetId) => {
+  const data = {
+    targetId,
+    createdBy: userId,
+    content: faker.lorem.paragraph()
+  };
+  return createGDS(sq.from`target_notes`)(data);
+};

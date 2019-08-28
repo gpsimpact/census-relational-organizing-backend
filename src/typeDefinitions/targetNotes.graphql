@@ -20,3 +20,15 @@ type CreateTargetNoteResult {
   message: String!
   item: TargetNote
 }
+
+type UpdateTargetNoteResult {
+  code: MutationCodeEnum!
+  success: Boolean!
+  message: String!
+  item: TargetNote
+}
+
+input UpdateTargetNoteInput {
+  content: String
+  active: Boolean
+}

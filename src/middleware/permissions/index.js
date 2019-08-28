@@ -23,6 +23,20 @@ const userOwnsTargetCheck = async (parent, args, ctx) => {
   return target && target.userId && ctx.user.id === target.userId;
 };
 
+const userOwnsTargetNoteSubjectCheck = async (parent, args, ctx) => {
+  if (!ctx.user || !ctx.user.id) {
+    return false;
+  }
+  const targetNote = await ctx.dataSource.targetNote.byIdLoader.load(args.id);
+  if (!targetNote) {
+    return false;
+  }
+  const target = await ctx.dataSource.target.byIdLoader.load(
+    targetNote.targetId
+  );
+  return target && target.userId && ctx.user.id === target.userId;
+};
+
 const hasGlobalPermCheck = requiredGP => async (parent, args, ctx) => {
   // get list of users's global perms
   if (!ctx.user || !ctx.user.id) {
@@ -144,6 +158,10 @@ const userOwnsTargetRoot = rule(`user-owns-target-root`, {
 const userOwnsTarget = rule(`user-owns-target`, { cache: "contextual" })(
   userOwnsTargetCheck
 );
+
+const userOwnsTargetNoteSubject = rule(`user-owns-target-note-subject`, {
+  cache: "contextual"
+})(userOwnsTargetNoteSubjectCheck);
 
 const hasGlobalPerm = requiredGP =>
   rule(`name-has-global-perm-${requiredGP}`, { cache: "contextual" })(
@@ -292,7 +310,11 @@ export default shield(
       ),
       updateTarget: and(isAuthenticated, or(has_GP_ADMIN, userOwnsTargetRoot)),
       removeTarget: and(isAuthenticated, or(has_GP_ADMIN, userOwnsTargetRoot)),
-      createTargetNote: and(isAuthenticated, or(has_GP_ADMIN, userOwnsTarget))
+      createTargetNote: and(isAuthenticated, or(has_GP_ADMIN, userOwnsTarget)),
+      updateTargetNote: and(
+        isAuthenticated,
+        or(has_GP_ADMIN, userOwnsTargetNoteSubject)
+      )
     },
     Team: {
       userPermissions: allow, // <- Make this go away soon in favor of own root query
@@ -347,7 +369,8 @@ export default shield(
     RemoveTargetResult: allow,
     TibTotal: allow,
     TargetNote: allow,
-    CreateTargetNoteResult: allow
+    CreateTargetNoteResult: allow,
+    UpdateTargetNoteResult: allow
   },
   {
     fallbackError: "Not Authorized!", // default error spelling is Authorised.
