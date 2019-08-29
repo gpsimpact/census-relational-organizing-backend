@@ -271,7 +271,11 @@ export default shield(
         isAuthenticated,
         or(has_TP_ADMIN_ROOT_TEAMID, has_GP_ADMIN)
       ),
-      summaryCountAllUsers: and(isAuthenticated, has_GP_ADMIN)
+      summaryCountAllUsers: and(isAuthenticated, has_GP_ADMIN),
+      targetNote: and(
+        isAuthenticated,
+        or(has_GP_ADMIN, userOwnsTargetNoteSubject)
+      )
     },
     Mutation: {
       removeUser: and(isAuthenticated, has_GP_ADMIN),

@@ -60,6 +60,7 @@ import updateTargetNote from "./mutation/updateTargetNote";
 import targetNoteCreatedBy from "./targetNote/createdBy";
 import targetNoteLastEditedBy from "./targetNote/lastEditedBy";
 import targetNoteTarget from "./targetNote/target";
+import targetNote from "./query/targetNote";
 
 export default {
   Query: {
@@ -87,7 +88,8 @@ export default {
     summaryCountAllTeamTibs,
     summaryCountAllTibs,
     summaryCountAllTeamUsers,
-    summaryCountAllUsers
+    summaryCountAllUsers,
+    targetNote
   },
   Mutation: {
     createUser,
