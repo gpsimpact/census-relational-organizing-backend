@@ -32,3 +32,33 @@ input UpdateTargetNoteInput {
   content: String
   active: Boolean
 }
+
+input TargetNotesInput {
+  targetId: String!
+  where: TargetNotesWhere
+  limit: Int
+  offset: Int
+  sort: TargetNotesSort
+}
+
+input TargetNotesSort {
+  id: SortDirection
+  createdAt: SortDirection
+  updatedAt: SortDirection
+}
+
+input TargetNotesWhere {
+  OR: [TargetNotesWhere]
+  AND: [TargetNotesWhere]
+  id: StringWhere
+  content: StringWhere
+  createdAt: DateTimeWhere
+  updatedAt: DateTimeWhere
+  active: BooleanWhere
+}
+
+type TargetNotesResult {
+  hasMore: Boolean!
+  totalCount: Int!
+  items: [TargetNote]!
+}

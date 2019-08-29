@@ -275,7 +275,8 @@ export default shield(
       targetNote: and(
         isAuthenticated,
         or(has_GP_ADMIN, userOwnsTargetNoteSubject)
-      )
+      ),
+      targetNotes: and(isAuthenticated, or(has_GP_ADMIN, userOwnsTarget))
     },
     Mutation: {
       removeUser: and(isAuthenticated, has_GP_ADMIN),
@@ -374,7 +375,8 @@ export default shield(
     TibTotal: allow,
     TargetNote: allow,
     CreateTargetNoteResult: allow,
-    UpdateTargetNoteResult: allow
+    UpdateTargetNoteResult: allow,
+    TargetNotesResult: allow
   },
   {
     fallbackError: "Not Authorized!", // default error spelling is Authorised.
