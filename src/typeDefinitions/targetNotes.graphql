@@ -1,0 +1,64 @@
+type TargetNote {
+  id: String!
+  createdAt: GraphQLDateTime!
+  updatedAt: GraphQLDateTime!
+  active: Boolean!
+  target: Target!
+  createdBy: User!
+  lastEditedBy: User
+  content: String!
+}
+
+input CreateTargetNoteInput {
+  targetId: String!
+  content: String!
+}
+
+type CreateTargetNoteResult {
+  code: MutationCodeEnum!
+  success: Boolean!
+  message: String!
+  item: TargetNote
+}
+
+type UpdateTargetNoteResult {
+  code: MutationCodeEnum!
+  success: Boolean!
+  message: String!
+  item: TargetNote
+}
+
+input UpdateTargetNoteInput {
+  content: String
+  active: Boolean
+}
+
+input TargetNotesInput {
+  targetId: String!
+  where: TargetNotesWhere
+  limit: Int
+  offset: Int
+  sort: TargetNotesSort
+}
+
+input TargetNotesSort {
+  id: SortDirection
+  createdAt: SortDirection
+  updatedAt: SortDirection
+}
+
+input TargetNotesWhere {
+  OR: [TargetNotesWhere]
+  AND: [TargetNotesWhere]
+  id: StringWhere
+  content: StringWhere
+  createdAt: DateTimeWhere
+  updatedAt: DateTimeWhere
+  active: BooleanWhere
+}
+
+type TargetNotesResult {
+  hasMore: Boolean!
+  totalCount: Int!
+  items: [TargetNote]!
+}

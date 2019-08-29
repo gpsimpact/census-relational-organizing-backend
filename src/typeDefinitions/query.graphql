@@ -28,4 +28,6 @@ type Query {
   summaryCountAllTibs(tibType: TibType): [TibTotal]!
   summaryCountAllTeamUsers(teamId: String!): Int!
   summaryCountAllUsers: Int!
+  targetNote(id: String!): TargetNote
+  targetNotes(input: TargetNotesInput!): TargetNotesResult!
 }

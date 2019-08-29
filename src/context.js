@@ -151,6 +151,11 @@ export default (req, res, logger, gcPubsub) => {
       byIdLoader: simpleSingleLoader(sq.from`targets`, "id"),
       trueTibsLoader: simpleManyLoader(sq.from`target_true_tibs`, "targetId"),
       remove: setInactiveDataSource(sq.from`targets`)
+    },
+    targetNote: {
+      create: createGDS(sq.from`target_notes`),
+      update: updateGDS(sq.from`target_notes`),
+      byIdLoader: simpleSingleLoader(sq.from`target_notes`, "id")
     }
   };
 
