@@ -43,7 +43,6 @@ describe("User Targetss", () => {
       { user: { id: user.id } }
     );
     debugResponse(response1);
-    // console.log(response1);
     // where only input
     const response2 = await graphqlTestCall(
       GET_ALL_USER_TARGETS_QUERY,

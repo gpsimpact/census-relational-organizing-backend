@@ -60,7 +60,6 @@ describe("Write Form Values", () => {
       },
       { user: { id: adminUser.id } }
     );
-    // console.log(JSON.stringify(response, null, "\t"));
     expect(response.data.writeFormValues.code).toBe("OK");
     expect(response.data.writeFormValues.message).toBe(
       "All values have been written."

@@ -169,7 +169,6 @@ describe("Team", () => {
       },
       { user: { id: adminUser.id } }
     );
-    // console.log(response);
     expect(response.data.team.userPermissionSummaryCounts.length).toBe(2);
     expect(response.data.team.userPermissionSummaryCounts).toEqual([
       { permission: "USER__READ__TEAM", count: 5 },

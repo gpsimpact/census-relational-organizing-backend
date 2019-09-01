@@ -33,4 +33,11 @@ type Mutation {
     id: String!
     input: UpdateTargetNoteInput!
   ): UpdateTargetNoteResult!
+  createTargetContactAttempt(
+    input: CreateTargetContactAttemptInput!
+  ): CreateTargetContactAttemptResult!
+  updateTargetContactAttempt(
+    id: String!
+    input: UpdateTargetContactAttemptInput!
+  ): UpdateTargetContactAttemptResult!
 }

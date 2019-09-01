@@ -33,7 +33,6 @@ describe("User", () => {
       { teamId: team.id },
       { user: { id: user.id } }
     );
-    // console.log(response);
     expect(response.data.requestTeamMembership.code).toEqual("OK");
     expect(response.data.requestTeamMembership.success).toEqual(true);
     expect(response.data.requestTeamMembership.message).toEqual(
@@ -55,7 +54,6 @@ describe("User", () => {
     const response = await graphqlTestCall(REQUEST_TEAM_MEMBERSHIP_MUTATION, {
       teamId: team.id
     });
-    // console.log(response);
     // expect(response.data.requestTeamMembership).toBeNull();
     expect(response.errors.length).toEqual(1);
     expect(response.errors[0].message).toEqual("Not Authorized!");
@@ -72,7 +70,6 @@ describe("User", () => {
       },
       { user: { id: user.id } }
     );
-    // console.log(response);
     expect(response.data.requestTeamMembership.code).toEqual("DUPLICATE");
     expect(response.data.requestTeamMembership.success).toEqual(false);
     expect(response.data.requestTeamMembership.message).toEqual(

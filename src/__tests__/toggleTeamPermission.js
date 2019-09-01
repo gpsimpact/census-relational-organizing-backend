@@ -47,7 +47,6 @@ describe("User", () => {
       },
       { user: { id: adminUser.id } }
     );
-    // console.log(response);
     expect(response.data.toggleTeamPermission.code).toEqual("OK");
     expect(response.data.toggleTeamPermission.success).toEqual(true);
     expect(response.data.toggleTeamPermission.message).toEqual(
@@ -82,7 +81,6 @@ describe("User", () => {
     const response = await graphqlTestCall(GRANT_TEAM_PERMISSION_MUTATION, {
       input: { userId: granteeUser.id, teamId: team.id, permission }
     });
-    // console.log(response);
     expect(response.errors.length).toEqual(1);
     expect(response.errors[0].message).toEqual("Not Authorized!");
   });
@@ -100,7 +98,6 @@ describe("User", () => {
       },
       { user: { id: grantorUser.id } }
     );
-    // console.log(response);
     expect(response.errors.length).toEqual(1);
     expect(response.errors[0].message).toEqual("Not Authorized!");
 
@@ -132,7 +129,6 @@ describe("User", () => {
       },
       { user: { id: grantorUser.id } }
     );
-    // console.log(response);
     expect(response.errors.length).toEqual(1);
     expect(response.errors[0].message).toEqual("Not Authorized!");
 
@@ -167,7 +163,6 @@ describe("User", () => {
       },
       { user: { id: adminUser.id } }
     );
-    // console.log(response);
     expect(response.data.toggleTeamPermission.code).toEqual("DUPLICATE");
     expect(response.data.toggleTeamPermission.success).toEqual(false);
     expect(response.data.toggleTeamPermission.message).toEqual(
@@ -247,7 +242,6 @@ describe("User", () => {
       },
       { user: { id: adminUser.id } }
     );
-    // console.log(response);
     expect(response.data.toggleTeamPermission.code).toEqual("OK");
     expect(response.data.toggleTeamPermission.success).toEqual(true);
     expect(response.data.toggleTeamPermission.message).toEqual(

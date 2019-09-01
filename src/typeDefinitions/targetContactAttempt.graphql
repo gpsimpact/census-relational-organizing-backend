@@ -1,0 +1,86 @@
+type TargetContactAttempt {
+  id: String!
+  createdAt: GraphQLDateTime!
+  updatedAt: GraphQLDateTime!
+  active: Boolean!
+  target: Target!
+  createdBy: User!
+  lastEditedBy: User
+  content: String!
+  disposition: TargetContactAttemptDispositionEnum!
+  method: TargetContactAttemptMethodEnum!
+}
+
+enum TargetContactAttemptDispositionEnum {
+  NOT_HOME
+  WRONG_NUMBER
+  BOUNCED
+}
+
+enum TargetContactAttemptMethodEnum {
+  EMAIL
+  PHONE
+  FACEBOOK
+}
+
+input CreateTargetContactAttemptInput {
+  targetId: String!
+  content: String!
+  disposition: TargetContactAttemptDispositionEnum!
+  method: TargetContactAttemptMethodEnum!
+}
+
+type CreateTargetContactAttemptResult {
+  code: MutationCodeEnum!
+  success: Boolean!
+  message: String!
+  item: TargetContactAttempt
+}
+
+type UpdateTargetContactAttemptResult {
+  code: MutationCodeEnum!
+  success: Boolean!
+  message: String!
+  item: TargetContactAttempt
+}
+
+input UpdateTargetContactAttemptInput {
+  content: String
+  active: Boolean
+  disposition: TargetContactAttemptDispositionEnum
+  method: TargetContactAttemptMethodEnum
+}
+
+input TargetContactAttemptsInput {
+  targetId: String!
+  where: TargetContactAttemptsWhere
+  limit: Int
+  offset: Int
+  sort: TargetContactAttemptsSort
+}
+
+input TargetContactAttemptsSort {
+  id: SortDirection
+  createdAt: SortDirection
+  updatedAt: SortDirection
+  disposition: SortDirection
+  method: SortDirection
+}
+
+input TargetContactAttemptsWhere {
+  OR: [TargetContactAttemptsWhere]
+  AND: [TargetContactAttemptsWhere]
+  id: StringWhere
+  content: StringWhere
+  createdAt: DateTimeWhere
+  updatedAt: DateTimeWhere
+  active: BooleanWhere
+  disposition: StringWhere
+  method: StringWhere
+}
+
+type TargetContactAttemptsResult {
+  hasMore: Boolean!
+  totalCount: Int!
+  items: [TargetContactAttempt]!
+}

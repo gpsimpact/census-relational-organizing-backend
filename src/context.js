@@ -156,6 +156,11 @@ export default (req, res, logger, gcPubsub) => {
       create: createGDS(sq.from`target_notes`),
       update: updateGDS(sq.from`target_notes`),
       byIdLoader: simpleSingleLoader(sq.from`target_notes`, "id")
+    },
+    targetContactAttempt: {
+      create: createGDS(sq.from`target_contact_attempts`),
+      update: updateGDS(sq.from`target_contact_attempts`),
+      byIdLoader: simpleSingleLoader(sq.from`target_contact_attempts`, "id")
     }
   };
 
@@ -170,8 +175,6 @@ export default (req, res, logger, gcPubsub) => {
     }
     return sgMail.send(messageData);
   };
-
-  // console.log("AUTH USER IS ", req.session.userId);
 
   return {
     req,

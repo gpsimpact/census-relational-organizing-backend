@@ -2,12 +2,14 @@ import { updateOneHOR } from "@jakelowen/sqorn-graphql-filters";
 
 export default async (root, args, context) => {
   // make sure team exists
-  const existing = await context.dataSource.targetNote.byIdLoader.load(args.id);
+  const existing = await context.dataSource.targetContactAttempt.byIdLoader.load(
+    args.id
+  );
   if (!existing) {
     return {
       success: false,
       code: "INPUT_ERROR",
-      message: "No note with this id exists.",
+      message: "No target contact attempt with this id exists.",
       item: null
     };
   }
@@ -19,17 +21,17 @@ export default async (root, args, context) => {
   const writeArgs = Object.assign({}, args, { input: writeInput });
 
   // proceed to update target object
-  const targetNote = await updateOneHOR(
-    "dataSource.targetNote.update",
+  const targetContactAttempt = await updateOneHOR(
+    "dataSource.targetContactAttempt.update",
     "input",
     "id",
-    "UPDATE_TARGET_NOTE"
+    "UPDATE_TARGET_CONTACT_ATTEMPT"
   )(root, writeArgs, context);
 
   return {
     success: true,
     code: "OK",
-    message: "Note updated.",
-    item: targetNote
+    message: "Contact attempt updated.",
+    item: targetContactAttempt
   };
 };

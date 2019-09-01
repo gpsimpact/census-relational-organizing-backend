@@ -62,6 +62,13 @@ import targetNoteLastEditedBy from "./targetNote/lastEditedBy";
 import targetNoteTarget from "./targetNote/target";
 import targetNote from "./query/targetNote";
 import targetNotes from "./query/targetNotes";
+import createTargetContactAttempt from "./mutation/createTargetContactAttempt";
+import targetContactAttemptCreatedBy from "./targetContactAttempt/createdBy";
+import targetContactAttemptLastEditedBy from "./targetContactAttempt/lastEditedBy";
+import targetContactAttemptTarget from "./targetContactAttempt/target";
+import updateTargetContactAttempt from "./mutation/updateTargetContactAttempt";
+import targetContactAttempt from "./query/targetContactAttempt";
+import targetContactAttempts from "./query/targetContactAttempts"
 
 export default {
   Query: {
@@ -91,7 +98,9 @@ export default {
     summaryCountAllTeamUsers,
     summaryCountAllUsers,
     targetNote,
-    targetNotes
+    targetNotes,
+    targetContactAttempt,
+    targetContactAttempts
   },
   Mutation: {
     createUser,
@@ -118,7 +127,9 @@ export default {
     updateTarget,
     removeTarget,
     createTargetNote,
-    updateTargetNote
+    updateTargetNote,
+    createTargetContactAttempt,
+    updateTargetContactAttempt
   },
   User: {
     globalPermissions,
@@ -147,5 +158,10 @@ export default {
     createdBy: targetNoteCreatedBy,
     lastEditedBy: targetNoteLastEditedBy,
     target: targetNoteTarget
+  },
+  TargetContactAttempt: {
+    createdBy: targetContactAttemptCreatedBy,
+    lastEditedBy: targetContactAttemptLastEditedBy,
+    target: targetContactAttemptTarget
   }
 };

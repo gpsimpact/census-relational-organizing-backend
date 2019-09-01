@@ -23,7 +23,7 @@ const userOwnsTargetCheck = async (parent, args, ctx) => {
   return target && target.userId && ctx.user.id === target.userId;
 };
 
-const userOwnsTargetNoteSubjectCheck = async (parent, args, ctx) => {
+const userOwnsTargetNoteSubjectCheckRoot = async (parent, args, ctx) => {
   if (!ctx.user || !ctx.user.id) {
     return false;
   }
@@ -34,6 +34,20 @@ const userOwnsTargetNoteSubjectCheck = async (parent, args, ctx) => {
   const target = await ctx.dataSource.target.byIdLoader.load(
     targetNote.targetId
   );
+  return target && target.userId && ctx.user.id === target.userId;
+};
+
+const userOwnsTargetCASubjectCheck = async (parent, args, ctx) => {
+  if (!ctx.user || !ctx.user.id) {
+    return false;
+  }
+  const targetCA = await ctx.dataSource.targetContactAttempt.byIdLoader.load(
+    args.id
+  );
+  if (!targetCA) {
+    return false;
+  }
+  const target = await ctx.dataSource.target.byIdLoader.load(targetCA.targetId);
   return target && target.userId && ctx.user.id === target.userId;
 };
 
@@ -161,7 +175,14 @@ const userOwnsTarget = rule(`user-owns-target`, { cache: "contextual" })(
 
 const userOwnsTargetNoteSubject = rule(`user-owns-target-note-subject`, {
   cache: "contextual"
-})(userOwnsTargetNoteSubjectCheck);
+})(userOwnsTargetNoteSubjectCheckRoot);
+
+const userOwnsTargetCASubject = rule(
+  `user-owns-target-contact-attempt-subject`,
+  {
+    cache: "contextual"
+  }
+)(userOwnsTargetCASubjectCheck);
 
 const hasGlobalPerm = requiredGP =>
   rule(`name-has-global-perm-${requiredGP}`, { cache: "contextual" })(
@@ -276,7 +297,15 @@ export default shield(
         isAuthenticated,
         or(has_GP_ADMIN, userOwnsTargetNoteSubject)
       ),
-      targetNotes: and(isAuthenticated, or(has_GP_ADMIN, userOwnsTarget))
+      targetNotes: and(isAuthenticated, or(has_GP_ADMIN, userOwnsTarget)),
+      targetContactAttempt: and(
+        isAuthenticated,
+        or(has_GP_ADMIN, userOwnsTargetCASubject)
+      ),
+      targetContactAttempts: and(
+        isAuthenticated,
+        or(has_GP_ADMIN, userOwnsTarget)
+      )
     },
     Mutation: {
       removeUser: and(isAuthenticated, has_GP_ADMIN),
@@ -319,6 +348,14 @@ export default shield(
       updateTargetNote: and(
         isAuthenticated,
         or(has_GP_ADMIN, userOwnsTargetNoteSubject)
+      ),
+      createTargetContactAttempt: and(
+        isAuthenticated,
+        or(has_GP_ADMIN, userOwnsTarget)
+      ),
+      updateTargetContactAttempt: and(
+        isAuthenticated,
+        or(has_GP_ADMIN, userOwnsTargetCASubject)
       )
     },
     Team: {
@@ -376,7 +413,11 @@ export default shield(
     TargetNote: allow,
     CreateTargetNoteResult: allow,
     UpdateTargetNoteResult: allow,
-    TargetNotesResult: allow
+    TargetNotesResult: allow,
+    TargetContactAttempt: allow,
+    CreateTargetContactAttemptResult: allow,
+    UpdateTargetContactAttemptResult: allow,
+    TargetContactAttemptsResult: allow
   },
   {
     fallbackError: "Not Authorized!", // default error spelling is Authorised.

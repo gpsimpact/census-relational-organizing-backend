@@ -56,7 +56,6 @@ describe("User", () => {
       { id: form.id },
       { user: { id: adminUser.id } }
     );
-    // console.log(JSON.stringify(response, null, "\t"));
     expect(response.data.form.id).toEqual(form.id);
     expect(response.data.form.title).toEqual(form.title);
     expect(response.data.form.fields[0].value).toBeNull();
@@ -85,7 +84,6 @@ describe("User", () => {
       },
       { user: { id: adminUser.id } }
     );
-    // console.log(JSON.stringify(response, null, "\t"));
     expect(response.data.form.id).toEqual(form.id);
     expect(response.data.form.label).toEqual(form.label);
     expect(response.data.form.fields[0].value).toBe(formValue.value);
