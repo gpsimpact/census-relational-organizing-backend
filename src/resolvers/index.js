@@ -68,6 +68,7 @@ import targetContactAttemptLastEditedBy from "./targetContactAttempt/lastEditedB
 import targetContactAttemptTarget from "./targetContactAttempt/target";
 import updateTargetContactAttempt from "./mutation/updateTargetContactAttempt";
 import targetContactAttempt from "./query/targetContactAttempt";
+import targetContactAttempts from "./query/targetContactAttempts"
 
 export default {
   Query: {
@@ -98,7 +99,8 @@ export default {
     summaryCountAllUsers,
     targetNote,
     targetNotes,
-    targetContactAttempt
+    targetContactAttempt,
+    targetContactAttempts
   },
   Mutation: {
     createUser,

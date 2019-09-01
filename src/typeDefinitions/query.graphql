@@ -31,4 +31,7 @@ type Query {
   targetNote(id: String!): TargetNote
   targetNotes(input: TargetNotesInput!): TargetNotesResult!
   targetContactAttempt(id: String!): TargetContactAttempt
+  targetContactAttempts(
+    input: TargetContactAttemptsInput!
+  ): TargetContactAttemptsResult!
 }

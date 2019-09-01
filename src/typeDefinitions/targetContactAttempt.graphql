@@ -50,3 +50,37 @@ input UpdateTargetContactAttemptInput {
   disposition: TargetContactAttemptDispositionEnum
   method: TargetContactAttemptMethodEnum
 }
+
+input TargetContactAttemptsInput {
+  targetId: String!
+  where: TargetContactAttemptsWhere
+  limit: Int
+  offset: Int
+  sort: TargetContactAttemptsSort
+}
+
+input TargetContactAttemptsSort {
+  id: SortDirection
+  createdAt: SortDirection
+  updatedAt: SortDirection
+  disposition: SortDirection
+  method: SortDirection
+}
+
+input TargetContactAttemptsWhere {
+  OR: [TargetContactAttemptsWhere]
+  AND: [TargetContactAttemptsWhere]
+  id: StringWhere
+  content: StringWhere
+  createdAt: DateTimeWhere
+  updatedAt: DateTimeWhere
+  active: BooleanWhere
+  disposition: StringWhere
+  method: StringWhere
+}
+
+type TargetContactAttemptsResult {
+  hasMore: Boolean!
+  totalCount: Int!
+  items: [TargetContactAttempt]!
+}

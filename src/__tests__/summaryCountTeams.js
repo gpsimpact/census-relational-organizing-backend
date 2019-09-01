@@ -27,7 +27,6 @@ describe("Summary Count all teams", () => {
       { user: { id: user.id } }
     );
     // should return correct data
-    // console.log(response);
     expect(response.errors.length).toEqual(1);
     expect(response.errors[0].message).toEqual("Not Authorized!");
   });
@@ -46,7 +45,6 @@ describe("Summary Count all teams", () => {
       null,
       { user: { id: adminUser.id } }
     );
-    // console.log(response);
     expect(response.data.summaryCountTeams).toEqual(5);
   });
 });

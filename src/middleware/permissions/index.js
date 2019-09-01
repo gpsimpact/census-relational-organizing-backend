@@ -23,7 +23,7 @@ const userOwnsTargetCheck = async (parent, args, ctx) => {
   return target && target.userId && ctx.user.id === target.userId;
 };
 
-const userOwnsTargetNoteSubjectCheck = async (parent, args, ctx) => {
+const userOwnsTargetNoteSubjectCheckRoot = async (parent, args, ctx) => {
   if (!ctx.user || !ctx.user.id) {
     return false;
   }
@@ -175,7 +175,7 @@ const userOwnsTarget = rule(`user-owns-target`, { cache: "contextual" })(
 
 const userOwnsTargetNoteSubject = rule(`user-owns-target-note-subject`, {
   cache: "contextual"
-})(userOwnsTargetNoteSubjectCheck);
+})(userOwnsTargetNoteSubjectCheckRoot);
 
 const userOwnsTargetCASubject = rule(
   `user-owns-target-contact-attempt-subject`,
@@ -301,6 +301,10 @@ export default shield(
       targetContactAttempt: and(
         isAuthenticated,
         or(has_GP_ADMIN, userOwnsTargetCASubject)
+      ),
+      targetContactAttempts: and(
+        isAuthenticated,
+        or(has_GP_ADMIN, userOwnsTarget)
       )
     },
     Mutation: {
@@ -412,7 +416,8 @@ export default shield(
     TargetNotesResult: allow,
     TargetContactAttempt: allow,
     CreateTargetContactAttemptResult: allow,
-    UpdateTargetContactAttemptResult: allow
+    UpdateTargetContactAttemptResult: allow,
+    TargetContactAttemptsResult: allow
   },
   {
     fallbackError: "Not Authorized!", // default error spelling is Authorised.

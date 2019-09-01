@@ -57,7 +57,6 @@ describe("User", () => {
         teamId: team.id
       }
     );
-    // console.log(response);
     // expect(response.data.requestTeamMembership).toBeNull();
     expect(response.errors.length).toEqual(1);
     expect(response.errors[0].message).toEqual("Not Authorized!");

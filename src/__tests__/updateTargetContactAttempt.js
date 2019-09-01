@@ -51,8 +51,6 @@ describe("Update target contact attempt", () => {
       target.id
     );
 
-    console.log({ targetContactAttempt });
-
     const newData = {
       content: faker.lorem.paragraph()
     };

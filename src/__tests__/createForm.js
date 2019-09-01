@@ -68,7 +68,6 @@ describe("RequestLoginResolver", () => {
       },
       { user: { id: adminUser.id } }
     );
-    // console.log(response);
     expect(response.data.createForm.code).toBe("OK");
     expect(response.data.createForm.message).toBe("Form has been created.");
     expect(response.data.createForm.success).toBe(true);
@@ -153,7 +152,6 @@ describe("RequestLoginResolver", () => {
       },
       { user: { id: adminUser.id } }
     );
-    // console.log(response);
     expect(response.data.createForm.code).toBe("INPUT_ERROR");
     expect(response.data.createForm.message).toBe(
       "Fields have duplicate name properties"
