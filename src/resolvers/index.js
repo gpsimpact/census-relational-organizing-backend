@@ -66,6 +66,7 @@ import createTargetContactAttempt from "./mutation/createTargetContactAttempt";
 import targetContactAttemptCreatedBy from "./targetContactAttempt/createdBy";
 import targetContactAttemptLastEditedBy from "./targetContactAttempt/lastEditedBy";
 import targetContactAttemptTarget from "./targetContactAttempt/target";
+import updateTargetContactAttempt from "./mutation/updateTargetContactAttempt";
 
 export default {
   Query: {
@@ -123,7 +124,8 @@ export default {
     removeTarget,
     createTargetNote,
     updateTargetNote,
-    createTargetContactAttempt
+    createTargetContactAttempt,
+    updateTargetContactAttempt
   },
   User: {
     globalPermissions,

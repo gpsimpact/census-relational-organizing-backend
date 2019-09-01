@@ -208,3 +208,14 @@ export const createTestTargetNote = async (userId, targetId) => {
   };
   return createGDS(sq.from`target_notes`)(data);
 };
+
+export const createTestTargetContactAttempt = async (userId, targetId) => {
+  const data = {
+    targetId,
+    createdBy: userId,
+    content: faker.lorem.paragraph(),
+    disposition: "NOT_HOME",
+    method: "PHONE"
+  };
+  return createGDS(sq.from`target_contact_attempts`)(data);
+};

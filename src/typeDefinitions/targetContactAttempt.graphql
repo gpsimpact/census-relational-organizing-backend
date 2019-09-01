@@ -36,3 +36,17 @@ type CreateTargetContactAttemptResult {
   message: String!
   item: TargetContactAttempt
 }
+
+type UpdateTargetContactAttemptResult {
+  code: MutationCodeEnum!
+  success: Boolean!
+  message: String!
+  item: TargetContactAttempt
+}
+
+input UpdateTargetContactAttemptInput {
+  content: String
+  active: Boolean
+  disposition: TargetContactAttemptDispositionEnum
+  method: TargetContactAttemptMethodEnum
+}

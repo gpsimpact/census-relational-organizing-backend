@@ -37,6 +37,20 @@ const userOwnsTargetNoteSubjectCheck = async (parent, args, ctx) => {
   return target && target.userId && ctx.user.id === target.userId;
 };
 
+const userOwnsTargetCASubjectCheck = async (parent, args, ctx) => {
+  if (!ctx.user || !ctx.user.id) {
+    return false;
+  }
+  const targetCA = await ctx.dataSource.targetContactAttempt.byIdLoader.load(
+    args.id
+  );
+  if (!targetCA) {
+    return false;
+  }
+  const target = await ctx.dataSource.target.byIdLoader.load(targetCA.targetId);
+  return target && target.userId && ctx.user.id === target.userId;
+};
+
 const hasGlobalPermCheck = requiredGP => async (parent, args, ctx) => {
   // get list of users's global perms
   if (!ctx.user || !ctx.user.id) {
@@ -162,6 +176,13 @@ const userOwnsTarget = rule(`user-owns-target`, { cache: "contextual" })(
 const userOwnsTargetNoteSubject = rule(`user-owns-target-note-subject`, {
   cache: "contextual"
 })(userOwnsTargetNoteSubjectCheck);
+
+const userOwnsTargetCASubject = rule(
+  `user-owns-target-contact-attempt-subject`,
+  {
+    cache: "contextual"
+  }
+)(userOwnsTargetCASubjectCheck);
 
 const hasGlobalPerm = requiredGP =>
   rule(`name-has-global-perm-${requiredGP}`, { cache: "contextual" })(
@@ -323,6 +344,10 @@ export default shield(
       createTargetContactAttempt: and(
         isAuthenticated,
         or(has_GP_ADMIN, userOwnsTarget)
+      ),
+      updateTargetContactAttempt: and(
+        isAuthenticated,
+        or(has_GP_ADMIN, userOwnsTargetCASubject)
       )
     },
     Team: {
@@ -382,7 +407,8 @@ export default shield(
     UpdateTargetNoteResult: allow,
     TargetNotesResult: allow,
     TargetContactAttempt: allow,
-    CreateTargetContactAttemptResult: allow
+    CreateTargetContactAttemptResult: allow,
+    UpdateTargetContactAttemptResult: allow
   },
   {
     fallbackError: "Not Authorized!", // default error spelling is Authorised.

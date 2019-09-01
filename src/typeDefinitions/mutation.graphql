@@ -36,4 +36,8 @@ type Mutation {
   createTargetContactAttempt(
     input: CreateTargetContactAttemptInput!
   ): CreateTargetContactAttemptResult!
+  updateTargetContactAttempt(
+    id: String!
+    input: UpdateTargetContactAttemptInput!
+  ): UpdateTargetContactAttemptResult!
 }
