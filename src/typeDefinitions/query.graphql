@@ -30,4 +30,5 @@ type Query {
   summaryCountAllUsers: Int!
   targetNote(id: String!): TargetNote
   targetNotes(input: TargetNotesInput!): TargetNotesResult!
+  targetContactAttempt(id: String!): TargetContactAttempt
 }

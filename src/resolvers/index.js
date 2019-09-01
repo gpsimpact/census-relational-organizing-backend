@@ -67,6 +67,7 @@ import targetContactAttemptCreatedBy from "./targetContactAttempt/createdBy";
 import targetContactAttemptLastEditedBy from "./targetContactAttempt/lastEditedBy";
 import targetContactAttemptTarget from "./targetContactAttempt/target";
 import updateTargetContactAttempt from "./mutation/updateTargetContactAttempt";
+import targetContactAttempt from "./query/targetContactAttempt";
 
 export default {
   Query: {
@@ -96,7 +97,8 @@ export default {
     summaryCountAllTeamUsers,
     summaryCountAllUsers,
     targetNote,
-    targetNotes
+    targetNotes,
+    targetContactAttempt
   },
   Mutation: {
     createUser,

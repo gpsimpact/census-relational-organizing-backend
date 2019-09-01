@@ -297,7 +297,11 @@ export default shield(
         isAuthenticated,
         or(has_GP_ADMIN, userOwnsTargetNoteSubject)
       ),
-      targetNotes: and(isAuthenticated, or(has_GP_ADMIN, userOwnsTarget))
+      targetNotes: and(isAuthenticated, or(has_GP_ADMIN, userOwnsTarget)),
+      targetContactAttempt: and(
+        isAuthenticated,
+        or(has_GP_ADMIN, userOwnsTargetCASubject)
+      )
     },
     Mutation: {
       removeUser: and(isAuthenticated, has_GP_ADMIN),
