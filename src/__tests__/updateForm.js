@@ -130,7 +130,6 @@ describe("Update Form", () => {
       },
       { user: { id: adminUser.id } }
     );
-    // console.log(response);
     expect(response.data.updateForm.code).toBe("INPUT_ERROR");
     expect(response.data.updateForm.message).toBe(
       "Fields have duplicate name properties"

@@ -37,7 +37,6 @@ describe("Teams", () => {
       {},
       { user: { id: user.id } }
     );
-    // console.log(response1);
     // where only input
     const response2 = await graphqlTestCall(
       GET_ALL_TEAMS_QUERY,

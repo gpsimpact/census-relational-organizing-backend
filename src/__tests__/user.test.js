@@ -123,7 +123,6 @@ describe("User", () => {
       { id: user.id },
       { user: { id: adminUser.id } }
     );
-    // console.log(JSON.stringify(response, null, "\t"));
     expect(response.data.user.teamPermissions.length).toBe(1);
     expect(response.data.user.teamPermissions[0].permissions.length).toBe(2);
     expect(response.data.user.teamPermissions[0].permissions).toContain(
@@ -162,7 +161,6 @@ describe("User", () => {
       { id: user2.id },
       { user: { id: user1.id } }
     );
-    // console.log(JSON.stringify(response));
     // should return correct data
     expect(response.errors.length).toEqual(1);
     expect(response.errors[0].message).toEqual("Not Authorized!");
@@ -181,7 +179,6 @@ describe("User", () => {
       { id: user1.id },
       { user: { id: user1.id } }
     );
-    // console.log(JSON.stringify(response));
     // should return correct data
     expect(response.data.user.teamPermissions[0].team.id).toEqual(team.id);
     expect(response.data.user.teamPermissions.length).toEqual(1);

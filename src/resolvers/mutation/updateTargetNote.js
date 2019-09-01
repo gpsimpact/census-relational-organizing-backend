@@ -18,8 +18,6 @@ export default async (root, args, context) => {
 
   const writeArgs = Object.assign({}, args, { input: writeInput });
 
-  // console.log({ writeArgs });
-
   // proceed to update target object
   const targetNote = await updateOneHOR(
     "dataSource.targetNote.update",

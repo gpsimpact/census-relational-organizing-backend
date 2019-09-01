@@ -14,7 +14,6 @@ export default async (root, { input }, { sq }) => {
     code = "OK";
     message = "All values have been written.";
   } catch (error) {
-    // console.log("ERROR", error);
     await trx.rollback();
     code = "INPUT_ERROR";
     message = "No values were written. Check your inputs.";

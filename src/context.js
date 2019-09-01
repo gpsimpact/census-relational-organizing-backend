@@ -176,8 +176,6 @@ export default (req, res, logger, gcPubsub) => {
     return sgMail.send(messageData);
   };
 
-  // console.log("AUTH USER IS ", req.session.userId);
-
   return {
     req,
     res,

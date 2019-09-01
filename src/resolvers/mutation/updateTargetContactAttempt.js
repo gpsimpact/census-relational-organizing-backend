@@ -20,8 +20,6 @@ export default async (root, args, context) => {
 
   const writeArgs = Object.assign({}, args, { input: writeInput });
 
-  // console.log({ writeArgs });
-
   // proceed to update target object
   const targetContactAttempt = await updateOneHOR(
     "dataSource.targetContactAttempt.update",

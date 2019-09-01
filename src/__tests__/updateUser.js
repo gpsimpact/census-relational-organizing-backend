@@ -77,7 +77,6 @@ describe("Update User", () => {
       },
       { user: { id: user.id } }
     );
-    // console.log(response);
     expect(response.data.updateUser).not.toBeNull();
     expect(response.data.updateUser.item.firstName).toEqual(newData.firstName);
     expect(response.data.updateUser.item.email).toEqual(
@@ -106,7 +105,6 @@ describe("Update User", () => {
       },
       { user: { id: user.id } }
     );
-    // console.log(response);
     expect(response.errors.length).toEqual(1);
     expect(response.errors[0].message).toEqual("Not Authorized!");
   });
@@ -128,7 +126,6 @@ describe("Update User", () => {
       },
       { user: { id: adminUser.id } }
     );
-    // console.log(response);
     expect(response.data.updateUser).not.toBeNull();
     expect(response.data.updateUser.item.firstName).toEqual(newData.firstName);
     expect(response.data.updateUser.item.email).toEqual(
@@ -152,7 +149,6 @@ describe("Update User", () => {
       id: user.id,
       input: newData
     });
-    // console.log(response);
     expect(response.errors.length).toEqual(1);
     expect(response.errors[0].message).toEqual("Not Authorized!");
   });
