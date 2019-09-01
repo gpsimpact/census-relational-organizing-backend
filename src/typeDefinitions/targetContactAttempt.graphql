@@ -1,0 +1,38 @@
+type TargetContactAttempt {
+  id: String!
+  createdAt: GraphQLDateTime!
+  updatedAt: GraphQLDateTime!
+  active: Boolean!
+  target: Target!
+  createdBy: User!
+  lastEditedBy: User
+  content: String!
+  disposition: TargetContactAttemptDispositionEnum!
+  method: TargetContactAttemptMethodEnum!
+}
+
+enum TargetContactAttemptDispositionEnum {
+  NOT_HOME
+  WRONG_NUMBER
+  BOUNCED
+}
+
+enum TargetContactAttemptMethodEnum {
+  EMAIL
+  PHONE
+  FACEBOOK
+}
+
+input CreateTargetContactAttemptInput {
+  targetId: String!
+  content: String!
+  disposition: TargetContactAttemptDispositionEnum!
+  method: TargetContactAttemptMethodEnum!
+}
+
+type CreateTargetContactAttemptResult {
+  code: MutationCodeEnum!
+  success: Boolean!
+  message: String!
+  item: TargetContactAttempt
+}

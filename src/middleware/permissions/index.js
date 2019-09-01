@@ -319,6 +319,10 @@ export default shield(
       updateTargetNote: and(
         isAuthenticated,
         or(has_GP_ADMIN, userOwnsTargetNoteSubject)
+      ),
+      createTargetContactAttempt: and(
+        isAuthenticated,
+        or(has_GP_ADMIN, userOwnsTarget)
       )
     },
     Team: {
@@ -376,7 +380,9 @@ export default shield(
     TargetNote: allow,
     CreateTargetNoteResult: allow,
     UpdateTargetNoteResult: allow,
-    TargetNotesResult: allow
+    TargetNotesResult: allow,
+    TargetContactAttempt: allow,
+    CreateTargetContactAttemptResult: allow
   },
   {
     fallbackError: "Not Authorized!", // default error spelling is Authorised.

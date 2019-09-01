@@ -156,6 +156,9 @@ export default (req, res, logger, gcPubsub) => {
       create: createGDS(sq.from`target_notes`),
       update: updateGDS(sq.from`target_notes`),
       byIdLoader: simpleSingleLoader(sq.from`target_notes`, "id")
+    },
+    targetContactAttempt: {
+      create: createGDS(sq.from`target_contact_attempts`)
     }
   };
 
