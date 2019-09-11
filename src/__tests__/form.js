@@ -1,5 +1,5 @@
 // import faker from "faker";
-import { graphqlTestCall } from "../utils/graphqlTestCall";
+import { graphqlTestCall, debugResponse } from "../utils/graphqlTestCall";
 import { dbUp, dbDown } from "../utils/testDbOps";
 import {
   createTestUser,
@@ -27,12 +27,7 @@ query form($id: String!, $targetId: String) {
               label
           }
           placeholder
-          validationTests {
-              method
-              value
-              message
-          }
-          validationType
+          validationTests
         }
     }
 }
@@ -56,9 +51,17 @@ describe("User", () => {
       { id: form.id },
       { user: { id: adminUser.id } }
     );
+    debugResponse(response);
     expect(response.data.form.id).toEqual(form.id);
     expect(response.data.form.title).toEqual(form.title);
     expect(response.data.form.fields[0].value).toBeNull();
+    // maks sure Double deserialization occurs here.
+    expect(JSON.parse(response.data.form.fields[0].validationTests)).toEqual([
+      ["yup.number"],
+      ["yup.required"],
+      ["yup.min", 50],
+      ["yup.max", 500]
+    ]);
   });
 
   test("Happy Path By Id, WITH value", async () => {

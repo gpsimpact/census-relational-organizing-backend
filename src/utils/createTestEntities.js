@@ -133,15 +133,12 @@ export const createTestForm = async userId => {
           }
         ],
         placeholder: "I am a place holder",
-        validationType: "string",
-        validationTests: [
-          { method: "required", message: "Value is required." },
-          {
-            method: "min",
-            value: "2",
-            message: "Must have length of 2."
-          }
-        ]
+        validationTests: JSON.stringify([
+          ["yup.number"],
+          ["yup.required"],
+          ["yup.min", 50],
+          ["yup.max", 500]
+        ])
       },
       {
         label: "I am the label text",
@@ -158,15 +155,12 @@ export const createTestForm = async userId => {
           }
         ],
         placeholder: "I am a place holder",
-        validationType: "string",
-        validationTests: [
-          { method: "required", message: "Value is required." },
-          {
-            method: "min",
-            value: "2",
-            message: "Must have length of 2."
-          }
-        ]
+        validationTests: JSON.stringify([
+          ["yup.number"],
+          ["yup.required"],
+          ["yup.min", 50],
+          ["yup.max", 500]
+        ])
       }
     ])
   };
