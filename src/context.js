@@ -161,6 +161,9 @@ export default (req, res, logger, gcPubsub) => {
       create: createGDS(sq.from`target_contact_attempts`),
       update: updateGDS(sq.from`target_contact_attempts`),
       byIdLoader: simpleSingleLoader(sq.from`target_contact_attempts`, "id")
+    },
+    taskDefinition: {
+      create: createGDS(sq.from`task_definitions`)
     }
   };
 

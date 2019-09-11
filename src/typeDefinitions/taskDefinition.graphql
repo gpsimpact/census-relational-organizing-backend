@@ -1,0 +1,32 @@
+type TaskDefinition {
+  id: String!
+  active: Boolean!
+  form: Form!
+  createdBy: User!
+  lastEditedBy: User
+  points: Int!
+  createdAt: GraphQLDateTime!
+  updatedAt: GraphQLDateTime!
+  notAvailableBefore: GraphQLDateTime
+  notAvailableAfter: GraphQLDateTime
+  isGloballyAvailable: Boolean!
+  notUntilCompletionOf: TaskDefinition
+  # calculated field
+  isAvailable: Boolean
+}
+
+input CreateTaskDefinitionInput {
+  formId: String!
+  points: Int
+  notAvailableBefore: GraphQLDateTime
+  notAvailableAfter: GraphQLDateTime
+  isGloballyAvailable: Boolean
+  notUntilCompletionOf: String
+}
+
+type CreateTaskDefinitionResult {
+  code: MutationCodeEnum!
+  success: Boolean!
+  message: String!
+  item: TaskDefinition
+}

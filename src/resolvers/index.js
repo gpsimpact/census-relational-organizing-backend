@@ -69,6 +69,10 @@ import targetContactAttemptTarget from "./targetContactAttempt/target";
 import updateTargetContactAttempt from "./mutation/updateTargetContactAttempt";
 import targetContactAttempt from "./query/targetContactAttempt";
 import targetContactAttempts from "./query/targetContactAttempts";
+import createTaskDefinition from "./mutation/createTaskDefinition";
+import taskDefCreatedBy from "./taskDefinition/createdBy";
+import taskDefLastEditedBy from "./taskDefinition/lastEditedBy";
+import taskDefForm from "./taskDefinition/form";
 
 export default {
   Query: {
@@ -129,7 +133,8 @@ export default {
     createTargetNote,
     updateTargetNote,
     createTargetContactAttempt,
-    updateTargetContactAttempt
+    updateTargetContactAttempt,
+    createTaskDefinition
   },
   User: {
     globalPermissions,
@@ -163,5 +168,10 @@ export default {
     createdBy: targetContactAttemptCreatedBy,
     lastEditedBy: targetContactAttemptLastEditedBy,
     target: targetContactAttemptTarget
+  },
+  TaskDefinition: {
+    createdBy: taskDefCreatedBy,
+    lastEditedBy: taskDefLastEditedBy,
+    form: taskDefForm
   }
 };

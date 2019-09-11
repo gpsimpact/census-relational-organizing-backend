@@ -356,6 +356,10 @@ export default shield(
       updateTargetContactAttempt: and(
         isAuthenticated,
         or(has_GP_ADMIN, userOwnsTargetCASubject)
+      ),
+      createTaskDefinition: and(
+        isAuthenticated,
+        or(has_GP_ADMIN, isAnyTeamAdmin)
       )
     },
     Team: {
@@ -414,7 +418,9 @@ export default shield(
     TargetContactAttempt: allow,
     CreateTargetContactAttemptResult: allow,
     UpdateTargetContactAttemptResult: allow,
-    TargetContactAttemptsResult: allow
+    TargetContactAttemptsResult: allow,
+    CreateTaskDefinitionResult: allow,
+    TaskDefinition: allow
   },
   {
     fallbackError: "Not Authorized!", // default error spelling is Authorised.
