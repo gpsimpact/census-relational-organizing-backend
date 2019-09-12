@@ -1,0 +1,22 @@
+type TaskAssignment {
+  id: String!
+  definition: TaskDefinition!
+  team: Team!
+  active: Boolean!
+  # calculated field
+  available: TaskAssignmentAvailbillityStatus!
+  # calculated field
+  nonAvailableMessage: [String]
+  # calculated field
+  availableTo: [TaskAssignmentRoles]!
+}
+
+type TaskAssignmentRoles {
+  role: ObjectLevelPermissionEnum!
+  available: Boolean!
+}
+
+type TaskAssignmentAvailbillityStatus {
+  available: Boolean!
+  nonAvailableMessage: String
+}

@@ -12,7 +12,7 @@ type TaskDefinition {
   isGloballyAvailable: Boolean!
   notUntilCompletionOf: TaskDefinition
   # calculated field
-  isAvailable: Boolean
+  #   isAvailable: Boolean
 }
 
 input CreateTaskDefinitionInput {

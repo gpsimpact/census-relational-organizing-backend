@@ -305,6 +305,12 @@ export default shield(
       targetContactAttempts: and(
         isAuthenticated,
         or(has_GP_ADMIN, userOwnsTarget)
+      ),
+      taskAssignment: and(
+        isAuthenticated
+        // has_GP_ADMIN
+        // WILL NEED MORE HERE.
+        // or(has_GP_ADMIN, userOwnsTarget)
       )
     },
     Mutation: {
@@ -420,7 +426,10 @@ export default shield(
     UpdateTargetContactAttemptResult: allow,
     TargetContactAttemptsResult: allow,
     CreateTaskDefinitionResult: allow,
-    TaskDefinition: allow
+    TaskDefinition: allow,
+    TaskAssignment: allow,
+    TaskAssignmentRoles: allow,
+    TaskAssignmentAvailbillityStatus: allow
   },
   {
     fallbackError: "Not Authorized!", // default error spelling is Authorised.

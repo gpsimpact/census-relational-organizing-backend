@@ -4,8 +4,6 @@ import { graphqlTestCall, debugResponse } from "../utils/graphqlTestCall";
 import { dbUp } from "../utils/testDbOps";
 import {
   createTestUser,
-  createTestTeam,
-  createTestTarget,
   createAdminUser,
   createTestForm
 } from "../utils/createTestEntities";

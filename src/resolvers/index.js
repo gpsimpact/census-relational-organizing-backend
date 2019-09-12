@@ -73,6 +73,11 @@ import createTaskDefinition from "./mutation/createTaskDefinition";
 import taskDefCreatedBy from "./taskDefinition/createdBy";
 import taskDefLastEditedBy from "./taskDefinition/lastEditedBy";
 import taskDefForm from "./taskDefinition/form";
+import taskAssignment from "./query/taskAssignment";
+import taskAssignmentTaskDefinition from "./taskAssignment/taskDefinition";
+import taskAssignmentTeam from "./taskAssignment/team";
+import taskAssignmentAvailableTo from "./taskAssignment/availableTo";
+import taskAssignmentAvailable from "./taskAssignment/available";
 
 export default {
   Query: {
@@ -104,7 +109,8 @@ export default {
     targetNote,
     targetNotes,
     targetContactAttempt,
-    targetContactAttempts
+    targetContactAttempts,
+    taskAssignment
   },
   Mutation: {
     createUser,
@@ -173,5 +179,11 @@ export default {
     createdBy: taskDefCreatedBy,
     lastEditedBy: taskDefLastEditedBy,
     form: taskDefForm
+  },
+  TaskAssignment: {
+    definition: taskAssignmentTaskDefinition,
+    team: taskAssignmentTeam,
+    availableTo: taskAssignmentAvailableTo,
+    available: taskAssignmentAvailable
   }
 };
