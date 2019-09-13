@@ -10,7 +10,7 @@ import {
   createTestOLPermission,
   createTestUser
 } from "../utils/createTestEntities";
-// import { sq } from "../db";
+import { sq } from "../db";
 
 const GET_TASK_ASSIGNMENT_QUERY = `
 query taskAssignment($id: String!) {
@@ -147,14 +147,82 @@ describe("TARGET Contact Attempt", () => {
 
   // TEST IF DELETE RENDERS UNAVAIL
   test("deleted renders unavailable", async () => {
-    expect("this test").toEqual("written");
+    const user = await createAdminUser();
+
+    const team = await createTestTeam();
+    const form = await createTestForm(user.id);
+    const taskDefinition = await createTestTaskDefinition(form.id, user.id);
+    const taskAssignment = await createTestTaskAssignment(
+      taskDefinition.id,
+      team.id,
+      {
+        MEMBER: true
+      }
+    );
+    await sq`task_assignments`
+      .set({ active: false })
+      .where({ id: taskAssignment.id });
+
+    const response = await graphqlTestCall(
+      GET_TASK_ASSIGNMENT_QUERY,
+      { id: taskAssignment.id },
+      { user: { id: user.id } }
+    );
+    debugResponse(response);
+    expect(response.data.taskAssignment.available.available).toEqual(false);
   });
   // TEST IF NOT BEFORE RENDERS UNAVAIL
   test("violation of not before date renders unavailable", async () => {
-    expect("this test").toEqual("written");
+    const user = await createAdminUser();
+
+    const team = await createTestTeam();
+    createTestOLPermission(user.id, team.id, "TRAINING");
+    const form = await createTestForm(user.id);
+    const taskDefinition = await createTestTaskDefinition(form.id, user.id);
+    const taskAssignment = await createTestTaskAssignment(
+      taskDefinition.id,
+      team.id,
+      {
+        MEMBER: true
+      }
+    );
+    await sq`task_definitions`
+      .set({ notAvailableBeforeTs: sq.sql`now() + interval '1 day'` })
+      .where({ id: taskDefinition.id });
+
+    const response = await graphqlTestCall(
+      GET_TASK_ASSIGNMENT_QUERY,
+      { id: taskAssignment.id },
+      { user: { id: user.id } }
+    );
+    debugResponse(response);
+    expect(response.data.taskAssignment.available.available).toEqual(false);
   });
   // TEST IF NOT AFTER RENDERS UNAVAIL
   test("violation of not after date renders unavailable", async () => {
-    expect("this test").toEqual("written");
+    const user = await createAdminUser();
+
+    const team = await createTestTeam();
+    createTestOLPermission(user.id, team.id, "TRAINING");
+    const form = await createTestForm(user.id);
+    const taskDefinition = await createTestTaskDefinition(form.id, user.id);
+    const taskAssignment = await createTestTaskAssignment(
+      taskDefinition.id,
+      team.id,
+      {
+        MEMBER: true
+      }
+    );
+    await sq`task_definitions`
+      .set({ notAvailableAfter: sq.sql`now() - interval '1 day'` })
+      .where({ id: taskDefinition.id });
+
+    const response = await graphqlTestCall(
+      GET_TASK_ASSIGNMENT_QUERY,
+      { id: taskAssignment.id },
+      { user: { id: user.id } }
+    );
+    debugResponse(response);
+    expect(response.data.taskAssignment.available.available).toEqual(false);
   });
 });

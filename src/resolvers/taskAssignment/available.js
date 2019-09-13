@@ -24,7 +24,7 @@ export default async (root, args, context) => {
   }
 
   if (
-    taskDefinition.notAvailableBeforeTs != null &&
+    taskDefinition.notAvailableAfter != null &&
     taskDefinition.notAvailableAfter <= now
   ) {
     return {
