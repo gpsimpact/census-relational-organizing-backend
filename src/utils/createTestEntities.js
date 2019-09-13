@@ -1,7 +1,7 @@
 import faker from "faker";
 import { createGDS } from "@jakelowen/sqorn-graphql-filters";
 import { sq } from "../db";
-import { permsToInt } from "./permissions/permBitWise";
+import { permsToInt, makeDefaultState } from "./permissions/permBitWise";
 
 export const uuid = () => faker.random.uuid();
 
@@ -43,6 +43,16 @@ export const createTestOLPermission = async (userId, teamId, permission) =>
     userId,
     permission
   });
+
+export const createTestTeamPermissionBit = async (userId, teamId, permObJ) => {
+  const defState = makeDefaultState();
+  const perms = Object.assign({}, defState, permObJ);
+  return createGDS(sq.from`team_permissions_bit`)({
+    teamId,
+    userId,
+    permission: permsToInt(perms)
+  });
+};
 
 export const createTestTarget = async data => {
   const fakeData = {

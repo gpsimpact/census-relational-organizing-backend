@@ -2,6 +2,7 @@ import generateRandomBytes from "../../utils/generateRandomBytes";
 import generateSecurityCode from "../../utils/securityCode";
 import generateLoginEmail from "../../utils/email/generateLoginEmail";
 import _ from "lodash";
+import { permsToInt } from "../../utils/permissions/permBitWise";
 
 export default async (root, args, context) => {
   // clean the email and check for duplicates
@@ -40,10 +41,10 @@ export default async (root, args, context) => {
       };
     }
 
-    await context.dataSource.olPerms.create({
+    await context.dataSource.teamPermission.create({
       userId: user.id,
       teamId: dbTeam.id,
-      permission: "APPLICANT"
+      permission: permsToInt({ APPLICANT: true })
     });
   }
 

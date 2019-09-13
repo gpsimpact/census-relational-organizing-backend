@@ -10,6 +10,7 @@ enum MutationCodeEnum {
   UNKNOWN_ERROR
   OK
   EXPIRED
+  INELIGIBLE
 }
 
 scalar GraphQLDateTime

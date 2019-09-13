@@ -4,8 +4,8 @@ import { dbUp, dbDown } from "../utils/testDbOps";
 import {
   createTestUser,
   createTestTeam,
-  createTestOLPermission,
-  createAdminUser
+  createAdminUser,
+  createTestTeamPermissionBit
 } from "../utils/createTestEntities";
 
 const GET_USER_QUERY = `
@@ -115,8 +115,13 @@ describe("User", () => {
     const team = await createTestTeam();
     const adminUser = await createAdminUser();
 
-    const cp1 = await createTestOLPermission(user.id, team.id, "MEMBER");
-    const cp2 = await createTestOLPermission(user.id, team.id, "ADMIN");
+    // const cp1 = await createTestOLPermission(user.id, team.id, "MEMBER");
+    // const cp2 = await createTestOLPermission(user.id, team.id, "ADMIN");
+
+    await createTestTeamPermissionBit(user.id, team.id, {
+      MEMBER: true,
+      ADMIN: true
+    });
 
     const response = await graphqlTestCall(
       GET_USER_QUERY,
@@ -126,10 +131,10 @@ describe("User", () => {
     expect(response.data.user.teamPermissions.length).toBe(1);
     expect(response.data.user.teamPermissions[0].permissions.length).toBe(2);
     expect(response.data.user.teamPermissions[0].permissions).toContain(
-      cp1.permission
+      "MEMBER"
     );
     expect(response.data.user.teamPermissions[0].permissions).toContain(
-      cp2.permission
+      "ADMIN"
     );
     expect(response.data.user.teamPermissions[0].team.id).toEqual(team.id);
   });
@@ -144,7 +149,7 @@ describe("User", () => {
     );
 
     // should return correct data
-    expect(response1.data.user.teamPermissions).toBeNull();
+    expect(response1.data.user.teamPermissions).toEqual([]);
   });
 
   test("Non admin user can not query another user", async () => {
@@ -152,9 +157,14 @@ describe("User", () => {
     const user2 = await createTestUser();
     const team = await createTestTeam();
 
-    await createTestOLPermission(user1.id, team.id, "ADMIN");
+    // await createTestOLPermission(user1.id, team.id, "ADMIN");
 
-    await createTestOLPermission(user1.id, team.id, "MEMBER");
+    // await createTestOLPermission(user1.id, team.id, "MEMBER");
+
+    await createTestTeamPermissionBit(user1.id, team.id, {
+      MEMBER: true,
+      ADMIN: true
+    });
 
     const response = await graphqlTestCall(
       GET_USER_QUERY,
@@ -170,9 +180,14 @@ describe("User", () => {
     const user1 = await createTestUser();
     const team = await createTestTeam();
 
-    await createTestOLPermission(user1.id, team.id, "ADMIN");
+    // await createTestOLPermission(user1.id, team.id, "ADMIN");
 
-    await createTestOLPermission(user1.id, team.id, "MEMBER");
+    // await createTestOLPermission(user1.id, team.id, "MEMBER");
+
+    await createTestTeamPermissionBit(user1.id, team.id, {
+      MEMBER: true,
+      ADMIN: true
+    });
 
     const response = await graphqlTestCall(
       GET_USER_QUERY,
@@ -189,18 +204,16 @@ describe("User", () => {
     const user = await createTestUser();
     const team = await createTestTeam(false);
 
-    await createTestOLPermission(user.id, team.id, "USER__READ__TEAM");
-    await createTestOLPermission(
-      user.id,
-      team.id,
-      "USER__READ__TEAM_CONTACT_EMAIL"
-    );
+    await createTestTeamPermissionBit(user.id, team.id, {
+      MEMBER: true,
+      ADMIN: true
+    });
 
     const response = await graphqlTestCall(
       GET_USER_QUERY,
       { id: user.id },
       { user: { id: user.id } }
     );
-    expect(response.data.user.teamPermissions).toBeNull();
+    expect(response.data.user.teamPermissions).toEqual([]);
   });
 });

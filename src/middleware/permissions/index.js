@@ -1,5 +1,6 @@
 import { shield, and, or, allow, deny, rule } from "graphql-shield";
 import _ from "lodash";
+import { intToPerms } from "../../utils/permissions/permBitWise";
 
 /* ************************************************************************* 
   CHECKS - isolated testable logic 
@@ -75,14 +76,18 @@ const hasTeamPermCheck = (teamIdPath, requiredTP) => async (
   const teamId = _.get(args, teamIdPath);
 
   // check for perm
-  const existing = await ctx.dataSource.olPerms.loadOne.load({
+  const existing = await ctx.dataSource.teamPermission.loadOne.load({
     userId: grantorUserId,
-    teamId,
-    permission: requiredTP
+    teamId
   });
 
   if (existing) {
-    return true;
+    const teamPerms = intToPerms(existing.permission);
+    if (teamPerms[requiredTP] === true) {
+      return true;
+    } else {
+      return false;
+    }
   }
   return false;
 };
@@ -131,13 +136,18 @@ const userIsTeamAdminofUpdatingTtibCheck = async (parent, args, ctx) => {
   // get ttbid details
   const dbTtib = await ctx.dataSource.tib.byIdLoader.load(args.id);
   // IS user admin?
-  const existingTeamAdminPerm = await ctx.dataSource.olPerms.loadOne.load({
+  const existingTeamPerm = await ctx.dataSource.teamPermission.loadOne.load({
     userId: ctx.user.id,
-    teamId: dbTtib.teamId,
-    permission: "ADMIN"
+    teamId: dbTtib.teamId
   });
 
-  return !!existingTeamAdminPerm;
+  if (!existingTeamPerm) {
+    return false;
+  }
+
+  return intToPerms(existingTeamPerm.permission)["ADMIN"];
+
+  // return !!existingTeamAdminPerm;
 };
 
 // @TODO

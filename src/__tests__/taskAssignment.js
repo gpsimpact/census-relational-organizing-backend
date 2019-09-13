@@ -8,7 +8,8 @@ import {
   createTestTaskAssignment,
   createTestForm,
   createTestOLPermission,
-  createTestUser
+  createTestUser,
+  createTestTeamPermissionBit
 } from "../utils/createTestEntities";
 import { sq } from "../db";
 
@@ -39,7 +40,7 @@ beforeEach(async () => {
   await dbUp();
 });
 
-describe("TARGET Contact Attempt", () => {
+describe("Task assignment", () => {
   test("Happy Path ", async () => {
     const user = await createAdminUser();
     // const user = await createTestUser();
@@ -47,6 +48,7 @@ describe("TARGET Contact Attempt", () => {
     const team = await createTestTeam();
     // createTestOLPermission(user.id, team.id, "MEMBER");
     // createTestOLPermission(user.id, team.id, "TRAINING");
+
     const form = await createTestForm(user.id);
     const taskDefinition = await createTestTaskDefinition(form.id, user.id);
     const taskAssignment = await createTestTaskAssignment(
@@ -101,7 +103,8 @@ describe("TARGET Contact Attempt", () => {
     const user = await createTestUser();
 
     const team = await createTestTeam();
-    createTestOLPermission(user.id, team.id, "MEMBER");
+    // createTestOLPermission(user.id, team.id, "MEMBER");
+    await createTestTeamPermissionBit(user.id, team.id, { MEMBER: true });
     const form = await createTestForm(user.id);
     const taskDefinition = await createTestTaskDefinition(form.id, user.id);
     const taskAssignment = await createTestTaskAssignment(
@@ -125,7 +128,7 @@ describe("TARGET Contact Attempt", () => {
     const user = await createTestUser();
 
     const team = await createTestTeam();
-    createTestOLPermission(user.id, team.id, "TRAINING");
+    await createTestTeamPermissionBit(user.id, team.id, { TRAINING: true });
     const form = await createTestForm(user.id);
     const taskDefinition = await createTestTaskDefinition(form.id, user.id);
     const taskAssignment = await createTestTaskAssignment(

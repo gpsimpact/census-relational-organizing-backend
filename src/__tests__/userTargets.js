@@ -5,7 +5,8 @@ import {
   createTestUser,
   createTestTeam,
   createTestTarget,
-  createTestOLPermission
+  createTestOLPermission,
+  createTestTeamPermissionBit
 } from "../utils/createTestEntities";
 
 const GET_ALL_USER_TARGETS_QUERY = `
@@ -26,7 +27,7 @@ beforeEach(async () => {
   await dbUp();
 });
 
-describe("User Targetss", () => {
+describe("User Targets", () => {
   test("Happy Path", async () => {
     const user = await createTestUser();
     const user2 = await createTestUser();
@@ -34,7 +35,9 @@ describe("User Targetss", () => {
     await createTestTarget({ userId: user.id, teamId: team.id });
     await createTestTarget({ userId: user.id, teamId: team.id });
     await createTestTarget({ userId: user2.id, teamId: team.id });
-    await createTestOLPermission(user.id, team.id, "MEMBER");
+    // await createTestOLPermission(user.id, team.id, "MEMBER");
+
+    await createTestTeamPermissionBit(user.id, team.id, { MEMBER: true });
 
     // no input
     const response1 = await graphqlTestCall(
@@ -117,8 +120,11 @@ describe("User Targetss", () => {
     const team = await createTestTeam();
     await createTestTarget({ userId: user2.id, teamId: team.id });
     await createTestTarget({ userId: user2.id, teamId: team.id });
-    await createTestOLPermission(user2.id, team.id, "MEMBER");
-    await createTestOLPermission(teamAdminUser.id, team.id, "ADMIN");
+
+    await createTestTeamPermissionBit(user2.id, team.id, { MEMBER: true });
+    await createTestTeamPermissionBit(teamAdminUser.id, team.id, {
+      ADMIN: true
+    });
 
     // AS TEAM ADMIN
     const response1 = await graphqlTestCall(

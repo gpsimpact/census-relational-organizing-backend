@@ -8,6 +8,5 @@ export default async (root, args, context, info) => {
     info
   );
 
-  console.log("IN RESOLVER", foo);
   return foo;
 };

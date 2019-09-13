@@ -1,14 +1,15 @@
 // import faker from "faker";
-import { graphqlTestCall } from "../utils/graphqlTestCall";
+import { graphqlTestCall, debugResponse } from "../utils/graphqlTestCall";
 import { dbUp } from "../utils/testDbOps";
 import { sq } from "../db";
 import {
   createTestUser,
   createTestGlobalPerm,
   createTestTeam,
-  createTestOLPermission,
-  createAdminUser
+  createAdminUser,
+  createTestTeamPermissionBit
 } from "../utils/createTestEntities";
+import { intToPerms } from "../utils/permissions/permBitWise";
 
 const GRANT_TEAM_PERMISSION_MUTATION = `
 mutation toggleTeamPermission($input: ToggleTeamPermissionInput!) {
@@ -47,6 +48,7 @@ describe("User", () => {
       },
       { user: { id: adminUser.id } }
     );
+    debugResponse(response);
     expect(response.data.toggleTeamPermission.code).toEqual("OK");
     expect(response.data.toggleTeamPermission.success).toEqual(true);
     expect(response.data.toggleTeamPermission.message).toEqual(
@@ -64,12 +66,12 @@ describe("User", () => {
       ]
     });
 
-    const dbUserPerms = await sq.from`team_permissions`.where({
+    const [dbUserPerms] = await sq.from`team_permissions_bit`.where({
       userId: granteeUser.id,
       teamId: team.id
     });
-    expect(dbUserPerms).toHaveLength(1);
-    expect(dbUserPerms[0].permission).toEqual(permission);
+    expect(dbUserPerms).not.toBeNull();
+    expect(intToPerms(dbUserPerms.permission)[permission]).toBe(true);
   });
 
   test("fails if not authed", async () => {
@@ -132,7 +134,7 @@ describe("User", () => {
     expect(response.errors.length).toEqual(1);
     expect(response.errors[0].message).toEqual("Not Authorized!");
 
-    await createTestOLPermission(grantorUser.id, team.id, "ADMIN");
+    await createTestTeamPermissionBit(grantorUser.id, team.id, { ADMIN: true });
 
     const response2 = await graphqlTestCall(
       GRANT_TEAM_PERMISSION_MUTATION,
@@ -154,7 +156,10 @@ describe("User", () => {
     const permission = "APPLICANT";
     const team = await createTestTeam();
 
-    await createTestOLPermission(granteeUser.id, team.id, permission);
+    // await createTestOLPermission(granteeUser.id, team.id, permission);
+    await createTestTeamPermissionBit(granteeUser.id, team.id, {
+      [permission]: true
+    });
 
     const response = await graphqlTestCall(
       GRANT_TEAM_PERMISSION_MUTATION,
@@ -163,6 +168,7 @@ describe("User", () => {
       },
       { user: { id: adminUser.id } }
     );
+    debugResponse(response);
     expect(response.data.toggleTeamPermission.code).toEqual("DUPLICATE");
     expect(response.data.toggleTeamPermission.success).toEqual(false);
     expect(response.data.toggleTeamPermission.message).toEqual(
@@ -176,7 +182,10 @@ describe("User", () => {
     const permission = "MEMBER";
     const team = await createTestTeam();
 
-    await createTestOLPermission(granteeUser.id, team.id, "APPLICANT");
+    // await createTestOLPermission(granteeUser.id, team.id, "APPLICANT");
+    await createTestTeamPermissionBit(granteeUser.id, team.id, {
+      APPLICANT: true
+    });
 
     const response = await graphqlTestCall(
       GRANT_TEAM_PERMISSION_MUTATION,
@@ -191,22 +200,24 @@ describe("User", () => {
       "Permission granted."
     );
 
-    const dbUserPerms = await sq.from`team_permissions`.where({
+    const [dbUserPerms] = await sq.from`team_permissions_bit`.where({
       userId: granteeUser.id,
       teamId: team.id
     });
-    expect(dbUserPerms).toHaveLength(1);
-    expect(dbUserPerms[0].permission).toEqual(permission);
+    expect(dbUserPerms).not.toBeNull();
+    expect(intToPerms(dbUserPerms.permission)[permission]).toBe(true);
+    expect(intToPerms(dbUserPerms.permission)["APPLICANT"]).toBe(false);
   });
 
   // check only one at a time.
-  test("User can only have one team perm at a time.", async () => {
+  test("User can have more than one team perm at a time.", async () => {
     const adminUser = await createAdminUser();
     const granteeUser = await createTestUser();
     const permission = "MEMBER";
     const team = await createTestTeam();
 
-    await createTestOLPermission(granteeUser.id, team.id, "ADMIN");
+    // await createTestOLPermission(granteeUser.id, team.id, "ADMIN");
+    await createTestTeamPermissionBit(granteeUser.id, team.id, { ADMIN: true });
 
     const response = await graphqlTestCall(
       GRANT_TEAM_PERMISSION_MUTATION,
@@ -221,12 +232,13 @@ describe("User", () => {
       "Permission granted."
     );
 
-    const dbUserPerms = await sq.from`team_permissions`.where({
+    const [dbUserPerms] = await sq.from`team_permissions_bit`.where({
       userId: granteeUser.id,
       teamId: team.id
     });
-    expect(dbUserPerms).toHaveLength(1);
-    expect(dbUserPerms[0].permission).toEqual(permission);
+    expect(dbUserPerms).not.toBeNull();
+    expect(intToPerms(dbUserPerms.permission)[permission]).toBe(true);
+    expect(intToPerms(dbUserPerms.permission)["ADMIN"]).toBe(true);
   });
 
   test("Can Deny", async () => {
@@ -234,6 +246,10 @@ describe("User", () => {
     const granteeUser = await createTestUser();
     const permission = "DENIED";
     const team = await createTestTeam();
+
+    await createTestTeamPermissionBit(granteeUser.id, team.id, {
+      MEMBER: true
+    });
 
     const response = await graphqlTestCall(
       GRANT_TEAM_PERMISSION_MUTATION,
@@ -259,11 +275,13 @@ describe("User", () => {
       ]
     });
 
-    const dbUserPerms = await sq.from`team_permissions`.where({
+    const [dbUserPerms] = await sq.from`team_permissions_bit`.where({
       userId: granteeUser.id,
       teamId: team.id
     });
-    expect(dbUserPerms).toHaveLength(1);
-    expect(dbUserPerms[0].permission).toEqual(permission);
+    expect(dbUserPerms).not.toBeNull();
+    expect(intToPerms(dbUserPerms.permission)[permission]).toBe(true);
+    // When deny, all other should be false
+    expect(intToPerms(dbUserPerms.permission)["MEMBER"]).toBe(false);
   });
 });

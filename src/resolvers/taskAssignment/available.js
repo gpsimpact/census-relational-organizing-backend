@@ -1,5 +1,5 @@
-import _ from "lodash";
-import { permsToInt } from "../../utils/permissions/permBitWise";
+// import _ from "lodash";
+// import { permsToInt } from "../../utils/permissions/permBitWise";
 export default async (root, args, context) => {
   if (!root.active) {
     return {
@@ -39,30 +39,39 @@ export default async (root, args, context) => {
 
   const isGlobalAdmin = isGlobalAdminCheck && isGlobalAdminCheck.length >= 1;
 
-  const perms = await context.dataSource.olPerms.OLUserPerms(context.user.id);
+  const perms = await context.dataSource.teamPermission.loadOne.load({
+    userId: context.user.id,
+    teamId: root.teamId
+  }); // olPerms.OLUserPerms(context.user.id);
 
-  const permsThisTeam = _.first(perms, x => {
-    return (x.teamId = taskDefinition.teamId);
-  });
+  // console.log("!!!!!!!", {
+  //   perms,
+  //   userId: context.user.id,
+  //   teamId: root.teamId
+  // });
 
-  const permsThisTeamObj = {
-    ADMIN: false,
-    APPLICANT: false,
-    ELEVATED: false,
-    MEMBER: false,
-    TRAINING: false,
-    DENIED: false
-  };
+  // const permsThisTeam = _.first(perms, x => {
+  //   return (x.teamId = taskDefinition.teamId);
+  // });
 
-  if (permsThisTeam) {
-    _.map(permsThisTeam.permissions, p => {
-      permsThisTeamObj[p] = true;
-    });
-  }
+  // const permsThisTeamObj = {
+  //   ADMIN: false,
+  //   APPLICANT: false,
+  //   ELEVATED: false,
+  //   MEMBER: false,
+  //   TRAINING: false,
+  //   DENIED: false
+  // };
 
-  const ptoi = permsToInt(permsThisTeamObj);
+  // if (permsThisTeam) {
+  //   _.map(permsThisTeam.permissions, p => {
+  //     permsThisTeamObj[p] = true;
+  //   });
+  // }
 
-  if (!isGlobalAdmin && !(ptoi & root.taskRequiredRoles)) {
+  // const ptoi = permsToInt(permsThisTeamObj);
+
+  if (!isGlobalAdmin && !((perms.permission || 0) & root.taskRequiredRoles)) {
     return {
       available: false,
       nonAvailableMessage: `Task not available to you based on permissions.`

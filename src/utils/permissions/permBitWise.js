@@ -5,6 +5,15 @@ const MEMBER = 1 << 3; // 001000
 const ADMIN = 1 << 4; // 010000
 const DENIED = 1 << 5; // 100000
 
+export const makeDefaultState = () => ({
+  APPLICANT: false,
+  TRAINING: false,
+  ELEVATED: false,
+  MEMBER: false,
+  ADMIN: false,
+  DENIED: false
+});
+
 export const intToPerms = permInt => {
   // "&" is exclusionary - only bits in common are returned
   // 01 & 01 = 01
