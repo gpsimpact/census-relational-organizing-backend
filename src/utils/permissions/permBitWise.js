@@ -62,3 +62,14 @@ export const permsToInt = permObj => {
 
   return permInt;
 };
+
+export const hasAnyPerm = (userPermInt, neededPermInt) => {
+  if (userPermInt & neededPermInt) {
+    return true;
+  }
+  return false;
+};
+
+export const hasAllPerm = (userPermInt, neededPermInt) => {
+  return userPermInt === neededPermInt;
+};

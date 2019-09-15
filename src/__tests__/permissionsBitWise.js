@@ -1,4 +1,9 @@
-import { permsToInt, intToPerms } from "../utils/permissions/permBitWise";
+import {
+  permsToInt,
+  intToPerms,
+  hasAnyPerm,
+  hasAllPerm
+} from "../utils/permissions/permBitWise";
 
 describe("PermissionsBitWise", () => {
   test("Int to Perms", () => {
@@ -107,5 +112,25 @@ describe("PermissionsBitWise", () => {
         DENIED: false
       })
     ).toEqual(3);
+  });
+
+  test("has Any Perm helper", () => {
+    const userPermInt = permsToInt({ ELEVATED: true });
+    const neededPermInt = permsToInt({ ELEVATED: true, ADMIN: true });
+
+    expect(hasAnyPerm(userPermInt, neededPermInt)).toBe(true);
+
+    expect(hasAnyPerm(permsToInt({ TRAINING: true }), neededPermInt)).toBe(
+      false
+    );
+  });
+
+  test("has ALL Perm helper", () => {
+    const userPermInt = permsToInt({ ELEVATED: true });
+    const neededPermInt = permsToInt({ ELEVATED: true, ADMIN: true });
+
+    expect(hasAllPerm(userPermInt, neededPermInt)).toBe(false);
+
+    expect(hasAllPerm(neededPermInt, neededPermInt)).toBe(true);
   });
 });
