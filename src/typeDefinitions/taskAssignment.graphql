@@ -4,7 +4,7 @@ type TaskAssignment {
   team: Team!
   active: Boolean!
   # calculated field
-  available: TaskAssignmentAvailbillityStatus!
+  available(targetId: String): TaskAssignmentAvailbillityStatus!
   # calculated field
   nonAvailableMessage: [String]
   # calculated field

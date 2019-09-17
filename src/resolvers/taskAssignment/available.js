@@ -8,25 +8,15 @@ export default async (root, args, context) => {
     };
   }
 
-  let taskDefinition = await context.dataSource.taskDefinition.byIdLoader.load(
-    root.taskDefinitionId
-  );
-
   const now = new Date();
-  if (
-    taskDefinition.notAvailableBeforeTs != null &&
-    taskDefinition.notAvailableBeforeTs >= now
-  ) {
+  if (root.notAvailableBeforeTs != null && root.notAvailableBeforeTs >= now) {
     return {
       available: false,
       nonAvailableMessage: `Can not start on this task yet.`
     };
   }
 
-  if (
-    taskDefinition.notAvailableAfter != null &&
-    taskDefinition.notAvailableAfter <= now
-  ) {
+  if (root.notAvailableAfterTs != null && root.notAvailableAfterTs <= now) {
     return {
       available: false,
       nonAvailableMessage: `Task has expired.`
@@ -42,40 +32,32 @@ export default async (root, args, context) => {
   const perms = await context.dataSource.teamPermission.loadOne.load({
     userId: context.user.id,
     teamId: root.teamId
-  }); // olPerms.OLUserPerms(context.user.id);
-
-  // console.log("!!!!!!!", {
-  //   perms,
-  //   userId: context.user.id,
-  //   teamId: root.teamId
-  // });
-
-  // const permsThisTeam = _.first(perms, x => {
-  //   return (x.teamId = taskDefinition.teamId);
-  // });
-
-  // const permsThisTeamObj = {
-  //   ADMIN: false,
-  //   APPLICANT: false,
-  //   ELEVATED: false,
-  //   MEMBER: false,
-  //   TRAINING: false,
-  //   DENIED: false
-  // };
-
-  // if (permsThisTeam) {
-  //   _.map(permsThisTeam.permissions, p => {
-  //     permsThisTeamObj[p] = true;
-  //   });
-  // }
-
-  // const ptoi = permsToInt(permsThisTeamObj);
+  });
 
   if (!isGlobalAdmin && !((perms.permission || 0) & root.taskRequiredRoles)) {
     return {
       available: false,
       nonAvailableMessage: `Task not available to you based on permissions.`
     };
+  }
+
+  if (root.notUntilCompletionOf && args && args.targetId) {
+    const parentTaskAssignmentStatus = await context.dataSource.taskAssignmentStatus.loadOne.load(
+      {
+        targetId: args.targetId,
+        taskAssignmentId: root.notUntilCompletionOf
+      }
+    );
+
+    if (
+      parentTaskAssignmentStatus &&
+      parentTaskAssignmentStatus.complete === false
+    ) {
+      return {
+        available: false,
+        nonAvailableMessage: `This task depends on a task that is not yet complete for this target.`
+      };
+    }
   }
 
   return {

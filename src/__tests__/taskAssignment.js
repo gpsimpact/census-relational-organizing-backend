@@ -9,22 +9,31 @@ import {
   createTestForm,
   createTestOLPermission,
   createTestUser,
-  createTestTeamPermissionBit
+  createTestTeamPermissionBit,
+  createTestTarget,
+  createTestFormValue
 } from "../utils/createTestEntities";
 import { sq } from "../db";
 
 const GET_TASK_ASSIGNMENT_QUERY = `
-query taskAssignment($id: String!) {
+query taskAssignment($id: String!, $targetId: String!) {
     taskAssignment(id: $id) {
         id
         definition {
           id
+          form {
+            id
+            fields {
+              name
+              value(targetId: $targetId)
+            }
+          }
         }
         team {
           id
         }
         active
-        available {
+        available(targetId: $targetId) {
           available
           nonAvailableMessage
         }
@@ -43,11 +52,9 @@ beforeEach(async () => {
 describe("Task assignment", () => {
   test("Happy Path ", async () => {
     const user = await createAdminUser();
-    // const user = await createTestUser();
 
     const team = await createTestTeam();
-    // createTestOLPermission(user.id, team.id, "MEMBER");
-    // createTestOLPermission(user.id, team.id, "TRAINING");
+    const target = await createTestTarget({ userId: user.id, teamId: team.id });
 
     const form = await createTestForm(user.id);
     const taskDefinition = await createTestTaskDefinition(form.id, user.id);
@@ -61,7 +68,7 @@ describe("Task assignment", () => {
 
     const response = await graphqlTestCall(
       GET_TASK_ASSIGNMENT_QUERY,
-      { id: taskAssignment.id },
+      { id: taskAssignment.id, targetId: target.id },
       { user: { id: user.id } }
     );
     debugResponse(response);
@@ -103,6 +110,7 @@ describe("Task assignment", () => {
     const user = await createTestUser();
 
     const team = await createTestTeam();
+    const target = await createTestTarget({ userId: user.id, teamId: team.id });
     // createTestOLPermission(user.id, team.id, "MEMBER");
     await createTestTeamPermissionBit(user.id, team.id, { MEMBER: true });
     const form = await createTestForm(user.id);
@@ -117,7 +125,7 @@ describe("Task assignment", () => {
 
     const response = await graphqlTestCall(
       GET_TASK_ASSIGNMENT_QUERY,
-      { id: taskAssignment.id },
+      { id: taskAssignment.id, targetId: target.id },
       { user: { id: user.id } }
     );
     debugResponse(response);
@@ -128,6 +136,7 @@ describe("Task assignment", () => {
     const user = await createTestUser();
 
     const team = await createTestTeam();
+    const target = await createTestTarget({ userId: user.id, teamId: team.id });
     await createTestTeamPermissionBit(user.id, team.id, { TRAINING: true });
     const form = await createTestForm(user.id);
     const taskDefinition = await createTestTaskDefinition(form.id, user.id);
@@ -141,7 +150,7 @@ describe("Task assignment", () => {
 
     const response = await graphqlTestCall(
       GET_TASK_ASSIGNMENT_QUERY,
-      { id: taskAssignment.id },
+      { id: taskAssignment.id, targetId: target.id },
       { user: { id: user.id } }
     );
     debugResponse(response);
@@ -153,6 +162,7 @@ describe("Task assignment", () => {
     const user = await createAdminUser();
 
     const team = await createTestTeam();
+    const target = await createTestTarget({ userId: user.id, teamId: team.id });
     const form = await createTestForm(user.id);
     const taskDefinition = await createTestTaskDefinition(form.id, user.id);
     const taskAssignment = await createTestTaskAssignment(
@@ -168,7 +178,7 @@ describe("Task assignment", () => {
 
     const response = await graphqlTestCall(
       GET_TASK_ASSIGNMENT_QUERY,
-      { id: taskAssignment.id },
+      { id: taskAssignment.id, targetId: target.id },
       { user: { id: user.id } }
     );
     debugResponse(response);
@@ -179,7 +189,7 @@ describe("Task assignment", () => {
     const user = await createAdminUser();
 
     const team = await createTestTeam();
-    createTestOLPermission(user.id, team.id, "TRAINING");
+    const target = await createTestTarget({ userId: user.id, teamId: team.id });
     const form = await createTestForm(user.id);
     const taskDefinition = await createTestTaskDefinition(form.id, user.id);
     const taskAssignment = await createTestTaskAssignment(
@@ -189,13 +199,13 @@ describe("Task assignment", () => {
         MEMBER: true
       }
     );
-    await sq`task_definitions`
+    await sq`task_assignments`
       .set({ notAvailableBeforeTs: sq.sql`now() + interval '1 day'` })
-      .where({ id: taskDefinition.id });
+      .where({ id: taskAssignment.id });
 
     const response = await graphqlTestCall(
       GET_TASK_ASSIGNMENT_QUERY,
-      { id: taskAssignment.id },
+      { id: taskAssignment.id, targetId: target.id },
       { user: { id: user.id } }
     );
     debugResponse(response);
@@ -206,7 +216,7 @@ describe("Task assignment", () => {
     const user = await createAdminUser();
 
     const team = await createTestTeam();
-    createTestOLPermission(user.id, team.id, "TRAINING");
+    const target = await createTestTarget({ userId: user.id, teamId: team.id });
     const form = await createTestForm(user.id);
     const taskDefinition = await createTestTaskDefinition(form.id, user.id);
     const taskAssignment = await createTestTaskAssignment(
@@ -216,16 +226,99 @@ describe("Task assignment", () => {
         MEMBER: true
       }
     );
-    await sq`task_definitions`
-      .set({ notAvailableAfter: sq.sql`now() - interval '1 day'` })
-      .where({ id: taskDefinition.id });
+    await sq`task_assignments`
+      .set({ notAvailableAfterTs: sq.sql`now() - interval '1 day'` })
+      .where({ id: taskAssignment.id });
 
     const response = await graphqlTestCall(
       GET_TASK_ASSIGNMENT_QUERY,
-      { id: taskAssignment.id },
+      { id: taskAssignment.id, targetId: target.id },
       { user: { id: user.id } }
     );
     debugResponse(response);
     expect(response.data.taskAssignment.available.available).toEqual(false);
+  });
+
+  test("A task dependency will make unavailable if not completed", async () => {
+    const user = await createAdminUser();
+
+    const team = await createTestTeam();
+    createTestOLPermission(user.id, team.id, "TRAINING");
+    const form = await createTestForm(user.id);
+    const taskDefinition1 = await createTestTaskDefinition(form.id, user.id);
+    const taskDefinition2 = await createTestTaskDefinition(form.id, user.id);
+    const taskAssignmentParent = await createTestTaskAssignment(
+      taskDefinition1.id,
+      team.id,
+      {
+        MEMBER: true
+      }
+    );
+
+    const taskAssignmentChild = await createTestTaskAssignment(
+      taskDefinition2.id,
+      team.id,
+      {
+        MEMBER: true
+      }
+    );
+
+    const target = await createTestTarget({ userId: user.id, teamId: team.id });
+
+    await sq`task_assignments`
+      .set({ notUntilCompletionOf: taskAssignmentParent.id })
+      .where({ id: taskAssignmentChild.id });
+
+    await sq`task_assignment_status`.insert({
+      targetId: target.id,
+      taskAssignmentId: taskAssignmentParent.id,
+      completedBy: user.id,
+      complete: false
+    });
+
+    const response = await graphqlTestCall(
+      GET_TASK_ASSIGNMENT_QUERY,
+      { id: taskAssignmentChild.id, targetId: target.id },
+      { user: { id: user.id } }
+    );
+    debugResponse(response);
+    expect(response.data.taskAssignment.available.available).toEqual(false);
+  });
+
+  test("a task assignment should load a nested form value", async () => {
+    const user = await createAdminUser();
+
+    const team = await createTestTeam();
+    const target = await createTestTarget({ userId: user.id, teamId: team.id });
+
+    const form = await createTestForm(user.id);
+    const taskDefinition = await createTestTaskDefinition(form.id, user.id);
+    const taskAssignment = await createTestTaskAssignment(
+      taskDefinition.id,
+      team.id,
+      {
+        MEMBER: true
+      }
+    );
+    const formValue = await createTestFormValue(
+      form.id,
+      user.id,
+      target.id,
+      form.fields[0].name
+    );
+
+    const response = await graphqlTestCall(
+      GET_TASK_ASSIGNMENT_QUERY,
+      { id: taskAssignment.id, targetId: target.id },
+      { user: { id: user.id } }
+    );
+    debugResponse(response);
+    expect(response.data.taskAssignment.definition.form).not.toBeNull();
+    expect(
+      response.data.taskAssignment.definition.form.fields[0].value
+    ).toEqual(formValue.value);
+    expect(
+      response.data.taskAssignment.definition.form.fields[1].value
+    ).toBeNull();
   });
 });

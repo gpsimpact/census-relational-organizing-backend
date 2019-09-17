@@ -178,6 +178,12 @@ export default (req, res, logger, gcPubsub) => {
       update: updateGDS(sq.from`team_permissions_bit`),
       byUserIdLoader: simpleManyLoader(sq.from`team_permissions_bit`, "userId"),
       byTeamIdLoader: simpleManyLoader(sq.from`team_permissions_bit`, "teamId")
+    },
+    taskAssignmentStatus: {
+      loadOne: compoundOneLoader(sq.from`task_assignment_status`, [
+        "targetId",
+        "taskAssignmentId"
+      ])
     }
   };
 

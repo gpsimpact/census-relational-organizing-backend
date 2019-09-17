@@ -13,10 +13,7 @@ exports.up = knex => {
             created_by uuid REFERENCES users(id) NOT NULL,
             last_edited_by uuid REFERENCES users(id),
             points NUMERIC DEFAULT 0 NOT NULL,
-            not_available_before_ts TIMESTAMPTZ,
-            not_available_after TIMESTAMPTZ,
-            is_globally_available BOOLEAN DEFAULT FALSE,
-            not_until_completion_of uuid REFERENCES task_definitions(id)
+            is_globally_available BOOLEAN DEFAULT FALSE
         );
     `);
 };

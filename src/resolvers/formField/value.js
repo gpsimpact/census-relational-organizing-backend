@@ -5,7 +5,9 @@ export default async (root, args, context) => {
       name: root.name,
       targetId: args.targetId
     });
-    return data.value;
+    if (data && data.value) {
+      return data.value;
+    }
   }
   return null;
 };
