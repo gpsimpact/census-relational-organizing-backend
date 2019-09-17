@@ -78,6 +78,7 @@ import taskAssignmentTaskDefinition from "./taskAssignment/taskDefinition";
 import taskAssignmentTeam from "./taskAssignment/team";
 import taskAssignmentAvailableTo from "./taskAssignment/availableTo";
 import taskAssignmentAvailable from "./taskAssignment/available";
+import taskAssignmentComplete from "./taskAssignment/complete";
 
 export default {
   Query: {
@@ -184,6 +185,7 @@ export default {
     definition: taskAssignmentTaskDefinition,
     team: taskAssignmentTeam,
     availableTo: taskAssignmentAvailableTo,
-    available: taskAssignmentAvailable
+    available: taskAssignmentAvailable,
+    complete: taskAssignmentComplete
   }
 };

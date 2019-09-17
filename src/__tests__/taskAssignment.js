@@ -41,6 +41,7 @@ query taskAssignment($id: String!, $targetId: String!) {
           role
           available
         }
+        complete(targetId: $targetId)
       }
     }
 `;
@@ -320,5 +321,45 @@ describe("Task assignment", () => {
     expect(
       response.data.taskAssignment.definition.form.fields[1].value
     ).toBeNull();
+  });
+
+  test("a task assignment should report completion status", async () => {
+    const user = await createAdminUser();
+
+    const team = await createTestTeam();
+    const target = await createTestTarget({ userId: user.id, teamId: team.id });
+
+    const form = await createTestForm(user.id);
+    const taskDefinition = await createTestTaskDefinition(form.id, user.id);
+    const taskAssignment = await createTestTaskAssignment(
+      taskDefinition.id,
+      team.id,
+      {
+        MEMBER: true
+      }
+    );
+
+    const response = await graphqlTestCall(
+      GET_TASK_ASSIGNMENT_QUERY,
+      { id: taskAssignment.id, targetId: target.id },
+      { user: { id: user.id } }
+    );
+    debugResponse(response);
+    expect(response.data.taskAssignment.complete).toBe(false);
+
+    await sq`task_assignment_status`.insert({
+      targetId: target.id,
+      taskAssignmentId: taskAssignment.id,
+      completedBy: user.id,
+      complete: true
+    });
+
+    const response2 = await graphqlTestCall(
+      GET_TASK_ASSIGNMENT_QUERY,
+      { id: taskAssignment.id, targetId: target.id },
+      { user: { id: user.id } }
+    );
+    debugResponse(response2);
+    expect(response2.data.taskAssignment.complete).toBe(true);
   });
 });

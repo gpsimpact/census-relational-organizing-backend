@@ -9,6 +9,7 @@ type TaskAssignment {
   nonAvailableMessage: [String]
   # calculated field
   availableTo: [TaskAssignmentRoles]!
+  complete(targetId: String): Boolean
 }
 
 type TaskAssignmentRoles {
