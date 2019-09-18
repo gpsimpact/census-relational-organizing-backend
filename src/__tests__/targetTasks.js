@@ -7,13 +7,11 @@ import {
   createTestTaskDefinition,
   createTestTaskAssignment,
   createTestForm,
-  createTestOLPermission,
   createTestUser,
   createTestTeamPermissionBit,
   createTestTarget,
   createTestFormValue
 } from "../utils/createTestEntities";
-import { sq } from "../db";
 
 const GET_TARGET_TASKS_QUERY = `
 query targetTasks($targetId: String!) {

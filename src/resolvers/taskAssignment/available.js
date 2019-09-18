@@ -23,21 +23,33 @@ export default async (root, args, context) => {
     };
   }
 
+  // if a target ID specified in args, grab it
+  const target = await context.dataSource.target.byIdLoader.load(args.targetId);
+
+  if (args.targetId && !target) {
+    return {
+      available: false,
+      nonAvailableMessage: `No Target with this ID found.`
+    };
+  }
+
+  console.log(">>>>>>>>", { target });
+
   const isGlobalAdminCheck = await context.dataSource.globalPermissions.byUserIdLoader.load(
-    context.user.id
+    target.userId
   );
 
   const isGlobalAdmin = isGlobalAdminCheck && isGlobalAdminCheck.length >= 1;
 
   const perms = await context.dataSource.teamPermission.loadOne.load({
-    userId: context.user.id,
+    userId: target.userId,
     teamId: root.teamId
   });
 
   if (!isGlobalAdmin && !((perms.permission || 0) & root.taskRequiredRoles)) {
     return {
       available: false,
-      nonAvailableMessage: `Task not available to you based on permissions.`
+      nonAvailableMessage: `Task not available based on contact owner permissions.`
     };
   }
 
