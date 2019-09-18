@@ -1,0 +1,11 @@
+input UpdateTargetTaskInput {
+  taskAssignmentId: String!
+  targetId: String!
+  status: Boolean
+  fieldValues: [FormValuesDataInput]
+}
+
+input FormValuesDataInput {
+  name: String!
+  value: String!
+}

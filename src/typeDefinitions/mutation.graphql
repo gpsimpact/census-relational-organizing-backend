@@ -43,4 +43,5 @@ type Mutation {
   createTaskDefinition(
     input: CreateTaskDefinitionInput!
   ): CreateTaskDefinitionResult!
+  updateTargetTask(input: UpdateTargetTaskInput!): TaskAssignment
 }

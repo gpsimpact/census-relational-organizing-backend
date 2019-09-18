@@ -79,6 +79,7 @@ import taskAssignmentTeam from "./taskAssignment/team";
 import taskAssignmentAvailableTo from "./taskAssignment/availableTo";
 import taskAssignmentAvailable from "./taskAssignment/available";
 import taskAssignmentComplete from "./taskAssignment/complete";
+import targetTasks from "./query/targetTasks";
 
 export default {
   Query: {
@@ -111,7 +112,8 @@ export default {
     targetNotes,
     targetContactAttempt,
     targetContactAttempts,
-    taskAssignment
+    taskAssignment,
+    targetTasks
   },
   Mutation: {
     createUser,

@@ -25,6 +25,7 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 // pubsub
 import redis, { pubsub } from "./redis";
+import CompoundManyLoader from "./dataSources/CompoundManyLoader";
 
 const setInactiveDataSource = dbHandle => async id => {
   await dbHandle.where({ id }).set({ active: false });
@@ -167,7 +168,8 @@ export default (req, res, logger, gcPubsub) => {
       byIdLoader: simpleSingleLoader(sq.from`task_definitions`, "id")
     },
     taskAssignment: {
-      byIdLoader: simpleSingleLoader(sq.from`task_assignments`, "id")
+      byIdLoader: simpleSingleLoader(sq.from`task_assignments`, "id"),
+      byTeamIdLoader: simpleManyLoader(sq`task_assignments`, "teamId")
     },
     teamPermission: {
       create: createGDS(sq.from`team_permissions_bit`),
@@ -184,7 +186,8 @@ export default (req, res, logger, gcPubsub) => {
         "targetId",
         "taskAssignmentId"
       ])
-    }
+    },
+    targetTasks: {}
   };
 
   const sendEmail = messageData => {

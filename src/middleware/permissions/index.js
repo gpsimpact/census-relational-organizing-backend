@@ -14,6 +14,14 @@ const userOwnsTargetCheckRoot = async (parent, args, ctx) => {
   return target && target.userId && ctx.user.id === target.userId;
 };
 
+const userOwnsTargetCheckCalledTargetIDRoot = async (parent, args, ctx) => {
+  if (!ctx.user || !ctx.user.id) {
+    return false;
+  }
+  const target = await ctx.dataSource.target.byIdLoader.load(args.targetId);
+  return target && target.userId && ctx.user.id === target.userId;
+};
+
 const userOwnsTargetCheck = async (parent, args, ctx) => {
   if (!ctx.user || !ctx.user.id) {
     return false;
@@ -22,6 +30,36 @@ const userOwnsTargetCheck = async (parent, args, ctx) => {
     args.input.targetId
   );
   return target && target.userId && ctx.user.id === target.userId;
+};
+
+const isTeamAdminOfTeamOwningTargetAsTargetIdCheck = async (
+  parent,
+  args,
+  ctx
+) => {
+  if (!ctx.user || !ctx.user.id) {
+    return false;
+  }
+  const target = await ctx.dataSource.target.byIdLoader.load(args.targetId);
+  if (!target) {
+    return false;
+  }
+
+  // check for perm
+  const existingTeamPerm = await ctx.dataSource.teamPermission.loadOne.load({
+    userId: ctx.user.id,
+    teamId: target.teamId
+  });
+
+  if (!existingTeamPerm) {
+    return false;
+  }
+
+  if (!existingTeamPerm.permission) {
+    return false;
+  }
+
+  return intToPerms(existingTeamPerm.permission)["ADMIN"];
 };
 
 const userOwnsTargetNoteSubjectCheckRoot = async (parent, args, ctx) => {
@@ -183,6 +221,10 @@ const userOwnsTarget = rule(`user-owns-target`, { cache: "contextual" })(
   userOwnsTargetCheck
 );
 
+const userOwnsTargetRootAsTargetId = rule(`user-owns-target-root-as-targetId`, {
+  cache: "contextual"
+})(userOwnsTargetCheckCalledTargetIDRoot);
+
 const userOwnsTargetNoteSubject = rule(`user-owns-target-note-subject`, {
   cache: "contextual"
 })(userOwnsTargetNoteSubjectCheckRoot);
@@ -228,6 +270,13 @@ const isAnyTeamMember = rule(`is-any-team-member`, { cache: "contextual" })(
 const userIsTeamAdminofUpdatingTtib = rule(`userIsTeamAdminofUpdatingTtib`, {
   cache: "contextual"
 })(userIsTeamAdminofUpdatingTtibCheck);
+
+const isTeamAdminOfTeamOwningTargetAsTargetId = rule(
+  `isTeamAdminOfTeamOwningTargetAsTargetId`,
+  {
+    cache: "contextual"
+  }
+)(isTeamAdminOfTeamOwningTargetAsTargetIdCheck);
 
 // const userOwnsAllTargetsInWriteFormValueInput = rule(
 //   `userOwnsAllTargetsInWriteFormValueInput`,
@@ -321,6 +370,14 @@ export default shield(
         // has_GP_ADMIN
         // WILL NEED MORE HERE.
         // or(has_GP_ADMIN, userOwnsTarget)
+      ),
+      targetTasks: and(
+        isAuthenticated,
+        or(
+          has_GP_ADMIN,
+          userOwnsTargetRootAsTargetId,
+          isTeamAdminOfTeamOwningTargetAsTargetId
+        )
       )
     },
     Mutation: {

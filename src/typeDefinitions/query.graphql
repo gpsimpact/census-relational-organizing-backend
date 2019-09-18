@@ -35,4 +35,5 @@ type Query {
     input: TargetContactAttemptsInput!
   ): TargetContactAttemptsResult!
   taskAssignment(id: String!): TaskAssignment
+  targetTasks(targetId: String!): [TaskAssignment]
 }
