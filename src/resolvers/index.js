@@ -80,6 +80,7 @@ import taskAssignmentAvailableTo from "./taskAssignment/availableTo";
 import taskAssignmentAvailable from "./taskAssignment/available";
 import taskAssignmentComplete from "./taskAssignment/complete";
 import targetTasks from "./query/targetTasks";
+import updateTargetTask from "./mutation/updateTargetTask";
 
 export default {
   Query: {
@@ -143,7 +144,8 @@ export default {
     updateTargetNote,
     createTargetContactAttempt,
     updateTargetContactAttempt,
-    createTaskDefinition
+    createTaskDefinition,
+    updateTargetTask
   },
   User: {
     globalPermissions,

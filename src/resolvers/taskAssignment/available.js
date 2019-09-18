@@ -33,8 +33,6 @@ export default async (root, args, context) => {
     };
   }
 
-  console.log(">>>>>>>>", { target });
-
   const isGlobalAdminCheck = await context.dataSource.globalPermissions.byUserIdLoader.load(
     target.userId
   );
@@ -46,7 +44,9 @@ export default async (root, args, context) => {
     teamId: root.teamId
   });
 
-  if (!isGlobalAdmin && !((perms.permission || 0) & root.taskRequiredRoles)) {
+  let permHolder = perms && perms.permission ? perms.permission : 0;
+
+  if (!isGlobalAdmin && !(permHolder & root.taskRequiredRoles)) {
     return {
       available: false,
       nonAvailableMessage: `Task not available based on contact owner permissions.`

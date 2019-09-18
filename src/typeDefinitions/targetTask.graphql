@@ -1,11 +1,16 @@
 input UpdateTargetTaskInput {
-  taskAssignmentId: String!
-  targetId: String!
-  status: Boolean
+  complete: Boolean
   fieldValues: [FormValuesDataInput]
 }
 
 input FormValuesDataInput {
   name: String!
   value: String!
+}
+
+type UpdateTargetTaskResult {
+  code: MutationCodeEnum!
+  success: Boolean!
+  message: String!
+  item: TaskAssignment
 }

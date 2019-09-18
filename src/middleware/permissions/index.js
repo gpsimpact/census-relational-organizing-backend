@@ -433,6 +433,14 @@ export default shield(
       createTaskDefinition: and(
         isAuthenticated,
         or(has_GP_ADMIN, isAnyTeamAdmin)
+      ),
+      updateTargetTask: and(
+        isAuthenticated,
+        or(
+          has_GP_ADMIN,
+          userOwnsTargetRootAsTargetId,
+          isTeamAdminOfTeamOwningTargetAsTargetId
+        )
       )
     },
     Team: {
@@ -496,7 +504,8 @@ export default shield(
     TaskDefinition: allow,
     TaskAssignment: allow,
     TaskAssignmentRoles: allow,
-    TaskAssignmentAvailbillityStatus: allow
+    TaskAssignmentAvailbillityStatus: allow,
+    UpdateTargetTaskResult: allow
   },
   {
     fallbackError: "Not Authorized!", // default error spelling is Authorised.
