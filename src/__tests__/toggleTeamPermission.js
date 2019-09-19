@@ -209,7 +209,6 @@ describe("User", () => {
     expect(intToPerms(dbUserPerms.permission)["APPLICANT"]).toBe(false);
   });
 
-  // check only one at a time.
   test("User can have more than one team perm at a time.", async () => {
     const adminUser = await createAdminUser();
     const granteeUser = await createTestUser();
@@ -238,7 +237,10 @@ describe("User", () => {
     });
     expect(dbUserPerms).not.toBeNull();
     expect(intToPerms(dbUserPerms.permission)[permission]).toBe(true);
-    expect(intToPerms(dbUserPerms.permission)["ADMIN"]).toBe(true);
+    // FALSE vvv  because Joshua wants to stick with model for now where each
+    // member can only have one permission. If we move to multi, should expect true
+    // on next line
+    expect(intToPerms(dbUserPerms.permission)["ADMIN"]).toBe(false);
   });
 
   test("Can Deny", async () => {

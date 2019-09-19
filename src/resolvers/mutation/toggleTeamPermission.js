@@ -39,6 +39,14 @@ export default async (root, args, context) => {
   //   teamId: args.input.teamId
   // });
 
+  // Joshua prefers for now that each user only have one permission. This
+  // effectively cancels out 16-18, 28, 29.
+  // am leaving it though because if we go back to multi model I just need
+  // to comment out below.
+  seedPerms = Object.assign({}, makeDefaultState(), {
+    [args.input.permission]: true
+  });
+
   if (!existing) {
     await context.dataSource.teamPermission.create({
       teamId: args.input.teamId,
