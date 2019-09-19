@@ -35,7 +35,7 @@ query taskAssignment($id: String!, $targetId: String!) {
         active
         available(targetId: $targetId) {
           available
-          nonAvailableMessage
+          nonAvailableCode
         }
         availableTo {
           role

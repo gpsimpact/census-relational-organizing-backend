@@ -36,7 +36,7 @@ mutation updateTargetTask($taskAssignmentId: String!, $targetId: String!, $input
           active
           available(targetId: $targetId) {
             available
-            nonAvailableMessage
+            nonAvailableCode
           }
           availableTo {
             role

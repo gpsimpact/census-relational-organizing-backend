@@ -4,7 +4,7 @@ export default async (root, args, context) => {
   if (!root.active) {
     return {
       available: false,
-      nonAvailableMessage: "Task assignment has been deleted"
+      nonAvailableCode: "DELETED"
     };
   }
 
@@ -12,14 +12,14 @@ export default async (root, args, context) => {
   if (root.notAvailableBeforeTs != null && root.notAvailableBeforeTs >= now) {
     return {
       available: false,
-      nonAvailableMessage: `Can not start on this task yet.`
+      nonAvailableCode: "TOO_EARLY"
     };
   }
 
   if (root.notAvailableAfterTs != null && root.notAvailableAfterTs <= now) {
     return {
       available: false,
-      nonAvailableMessage: `Task has expired.`
+      nonAvailableCode: "EXPIRED"
     };
   }
 
@@ -29,7 +29,7 @@ export default async (root, args, context) => {
   if (args.targetId && !target) {
     return {
       available: false,
-      nonAvailableMessage: `No Target with this ID found.`
+      nonAvailableCode: "NO_TARGET"
     };
   }
 
@@ -49,7 +49,7 @@ export default async (root, args, context) => {
   if (!isGlobalAdmin && !(permHolder & root.taskRequiredRoles)) {
     return {
       available: false,
-      nonAvailableMessage: `Task not available based on contact owner permissions.`
+      nonAvailableCode: "WRONG_PERMISSIONS"
     };
   }
 
@@ -67,13 +67,13 @@ export default async (root, args, context) => {
     ) {
       return {
         available: false,
-        nonAvailableMessage: `This task depends on a task that is not yet complete for this target.`
+        nonAvailableCode: "DEPENDENCY_NOT_MET"
       };
     }
   }
 
   return {
     available: true,
-    nonAvailableMessage: null
+    nonAvailableCode: null
   };
 };

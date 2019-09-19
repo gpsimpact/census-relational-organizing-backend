@@ -6,8 +6,6 @@ type TaskAssignment {
   # calculated field
   available(targetId: String): TaskAssignmentAvailbillityStatus!
   # calculated field
-  nonAvailableMessage: [String]
-  # calculated field
   availableTo: [TaskAssignmentRoles]!
   complete(targetId: String): Boolean
 }
@@ -19,5 +17,14 @@ type TaskAssignmentRoles {
 
 type TaskAssignmentAvailbillityStatus {
   available: Boolean!
-  nonAvailableMessage: String
+  nonAvailableCode: TaskNotAvailableEnum
+}
+
+enum TaskNotAvailableEnum {
+  TOO_EARLY
+  EXPIRED
+  WRONG_PERMISSIONS
+  DELETED
+  NO_TARGET
+  DEPENDENCY_NOT_MET
 }

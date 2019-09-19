@@ -33,7 +33,7 @@ query targetTasks($targetId: String!) {
         active
         available(targetId: $targetId) {
           available
-          nonAvailableMessage
+          nonAvailableCode
         }
         availableTo {
           role
