@@ -8,6 +8,8 @@ type TaskAssignment {
   # calculated field
   availableTo: [TaskAssignmentRoles]!
   complete(targetId: String): Boolean
+  notAvailableBeforeTs: GraphQLDateTime
+  notAvailableAfterTs: GraphQLDateTime
 }
 
 type TaskAssignmentRoles {

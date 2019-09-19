@@ -42,6 +42,8 @@ query taskAssignment($id: String!, $targetId: String!) {
           available
         }
         complete(targetId: $targetId)
+        notAvailableBeforeTs
+        notAvailableAfterTs
       }
     }
 `;
@@ -211,6 +213,8 @@ describe("Task assignment", () => {
     );
     debugResponse(response);
     expect(response.data.taskAssignment.available.available).toEqual(false);
+    expect(response.data.taskAssignment.notAvailableBeforeTs).not.toBeNull();
+    expect(response.data.taskAssignment.notAvailableAfterTs).toBeNull();
   });
   // TEST IF NOT AFTER RENDERS UNAVAIL
   test("violation of not after date renders unavailable", async () => {
@@ -238,6 +242,8 @@ describe("Task assignment", () => {
     );
     debugResponse(response);
     expect(response.data.taskAssignment.available.available).toEqual(false);
+    expect(response.data.taskAssignment.notAvailableBeforeTs).toBeNull();
+    expect(response.data.taskAssignment.notAvailableAfterTs).not.toBeNull();
   });
 
   test("A task dependency will make unavailable if not completed", async () => {
