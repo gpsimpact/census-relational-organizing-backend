@@ -81,6 +81,7 @@ import taskAssignmentAvailable from "./taskAssignment/available";
 import taskAssignmentComplete from "./taskAssignment/complete";
 import targetTasks from "./query/targetTasks";
 import updateTargetTask from "./mutation/updateTargetTask";
+import taskAssignmentNotAvailableUntilCompletionOf from "./taskAssignment/notAvailableUntilCompletionOf";
 
 export default {
   Query: {
@@ -190,6 +191,7 @@ export default {
     team: taskAssignmentTeam,
     availableTo: taskAssignmentAvailableTo,
     available: taskAssignmentAvailable,
-    complete: taskAssignmentComplete
+    complete: taskAssignmentComplete,
+    notAvailableUntilCompletionOf: taskAssignmentNotAvailableUntilCompletionOf
   }
 };

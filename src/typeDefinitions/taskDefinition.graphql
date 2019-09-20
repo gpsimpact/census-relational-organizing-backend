@@ -7,10 +7,10 @@ type TaskDefinition {
   points: Int!
   createdAt: GraphQLDateTime!
   updatedAt: GraphQLDateTime!
-  notAvailableBefore: GraphQLDateTime
-  notAvailableAfter: GraphQLDateTime
+  # notAvailableBefore: GraphQLDateTime
+  # notAvailableAfter: GraphQLDateTime
   isGloballyAvailable: Boolean!
-  notUntilCompletionOf: TaskDefinition
+  # notUntilCompletionOf: TaskDefinition
   # calculated field
   #   isAvailable: Boolean
 }

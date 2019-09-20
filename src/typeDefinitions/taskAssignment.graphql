@@ -10,6 +10,7 @@ type TaskAssignment {
   complete(targetId: String): Boolean
   notAvailableBeforeTs: GraphQLDateTime
   notAvailableAfterTs: GraphQLDateTime
+  notAvailableUntilCompletionOf: TaskAssignment
 }
 
 type TaskAssignmentRoles {

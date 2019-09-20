@@ -32,12 +32,7 @@ const CREATE_TASK_DEFINITION_MUTATION = `
         points
         createdAt
         updatedAt
-        notAvailableBefore
-        notAvailableAfter
         isGloballyAvailable
-        notUntilCompletionOf {
-          id
-        }
       }
     }
   }
