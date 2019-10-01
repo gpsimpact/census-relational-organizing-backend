@@ -32,6 +32,7 @@ describe("RequestLoginResolver", () => {
       title: "This is form title",
       buttonText: "Button Text",
       redirectRoute: "/someRoute",
+      description: "test description",
       fields: [
         {
           label: "I am the label text",

@@ -34,6 +34,7 @@ enum FORM_FIELD_TYPE_ENUM {
   radio
   tel
   text
+  linear
 }
 
 input CreateFormFieldInput {
