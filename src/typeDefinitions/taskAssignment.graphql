@@ -11,6 +11,7 @@ type TaskAssignment {
   notAvailableBeforeTs: GraphQLDateTime
   notAvailableAfterTs: GraphQLDateTime
   notAvailableUntilCompletionOf: TaskAssignment
+  sortValue: Int
 }
 
 type TaskAssignmentRoles {

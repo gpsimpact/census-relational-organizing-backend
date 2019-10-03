@@ -44,6 +44,7 @@ query taskAssignment($id: String!, $targetId: String!) {
         complete(targetId: $targetId)
         notAvailableBeforeTs
         notAvailableAfterTs
+        sortValue
       }
     }
 `;
@@ -107,6 +108,7 @@ describe("Task assignment", () => {
       }
     ]);
     expect(response.data.taskAssignment.available.available).toEqual(true);
+    expect(response.data.taskAssignment.sortValue).toBeNull();
   });
 
   test("available if has permission ", async () => {
@@ -187,6 +189,7 @@ describe("Task assignment", () => {
     debugResponse(response);
     expect(response.data.taskAssignment.available.available).toEqual(false);
   });
+
   // TEST IF NOT BEFORE RENDERS UNAVAIL
   test("violation of not before date renders unavailable", async () => {
     const user = await createAdminUser();
@@ -368,4 +371,34 @@ describe("Task assignment", () => {
     debugResponse(response2);
     expect(response2.data.taskAssignment.complete).toBe(true);
   });
+
+
+  // TEST IF DELETE RENDERS UNAVAIL
+  test("sortValue is returned", async () => {
+    const user = await createAdminUser();
+
+    const team = await createTestTeam();
+    const target = await createTestTarget({ userId: user.id, teamId: team.id });
+    const form = await createTestForm(user.id);
+    const taskDefinition = await createTestTaskDefinition(form.id, user.id);
+    const taskAssignment = await createTestTaskAssignment(
+      taskDefinition.id,
+      team.id,
+      {
+        MEMBER: true
+      }
+    );
+    await sq`task_assignments`
+      .set({ sortValue: 2 })
+      .where({ id: taskAssignment.id });
+
+    const response = await graphqlTestCall(
+      GET_TASK_ASSIGNMENT_QUERY,
+      { id: taskAssignment.id, targetId: target.id },
+      { user: { id: user.id } }
+    );
+    debugResponse(response);
+    expect(response.data.taskAssignment.sortValue).toEqual(2);
+  });
+
 });
