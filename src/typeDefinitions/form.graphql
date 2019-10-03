@@ -2,7 +2,7 @@ type Form {
   id: String!
   title: String!
   buttonText: String!
-  redirectRoute: String!
+  redirectRoute: String
   description: String
   fields: [FormField]
 }
@@ -10,7 +10,7 @@ type Form {
 input CreateFormInput {
   title: String!
   buttonText: String!
-  redirectRoute: String!
+  redirectRoute: String
   description: String
   fields: [CreateFormFieldInput]
 }
