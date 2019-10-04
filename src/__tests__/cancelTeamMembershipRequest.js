@@ -6,8 +6,9 @@ import {
   createTestUser,
   //   createTestGlobalPerm,
   createTestTeam,
-  createTestOLPermission
+  createTestTeamPermissionBit
 } from "../utils/createTestEntities";
+import { intToPerms } from "../utils/permissions/permBitWise";
 
 const CANCEL_TEAM_MEMBERSHIP_REQUEST_MUTATION = `
 mutation cancelTeamMembershipRequest($teamId: String!) {
@@ -27,7 +28,8 @@ describe("User", () => {
   test("Happy Path", async () => {
     const user = await createTestUser();
     const team = await createTestTeam();
-    await createTestOLPermission(user.id, team.id, "APPLICANT");
+    // await createTestOLPermission(user.id, team.id, "APPLICANT");
+    await createTestTeamPermissionBit(user.id, team.id, { APPLICANT: true });
     const response = await graphqlTestCall(
       CANCEL_TEAM_MEMBERSHIP_REQUEST_MUTATION,
       { teamId: team.id },
@@ -40,11 +42,12 @@ describe("User", () => {
       "Application Successfully Cancelled."
     );
 
-    const dbUserPerms = await sq.from`team_permissions`.where({
+    const [dbUserPerms] = await sq.from`team_permissions_bit`.where({
       userId: user.id,
       teamId: team.id
     });
-    expect(dbUserPerms).toHaveLength(0);
+    expect(dbUserPerms).not.toBeNull();
+    expect(intToPerms(dbUserPerms.permission)["APPLICANT"]).toBe(false);
   });
 
   test("fails if not authed", async () => {

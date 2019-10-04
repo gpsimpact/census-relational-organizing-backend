@@ -17,14 +17,15 @@ import getLoginToken from "./dataSources/users/getLoginToken";
 // globalPermissions
 import globalPermissionsForUser from "./dataSources/globalPermissions/gpArrayByUserId";
 // Team Permissions
-import OLUserPerms from "./dataSources/OLPermissions/OLUserPerms";
-import OLTeamPerms from "./dataSources/OLPermissions/OLTeamPerms";
+// import OLUserPerms from "./dataSources/OLPermissions/OLUserPerms";
+// import OLTeamPerms from "./dataSources/OLPermissions/OLTeamPerms";
 // email
 import sgMail from "@sendgrid/mail";
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 // pubsub
 import redis, { pubsub } from "./redis";
+import CompoundManyLoader from "./dataSources/CompoundManyLoader";
 
 const setInactiveDataSource = dbHandle => async id => {
   await dbHandle.where({ id }).set({ active: false });
@@ -37,10 +38,10 @@ export default (req, res, logger, gcPubsub) => {
   const teamByIdLoader = simpleSingleLoader(sq.from`teams`, "id");
   const teamBySlugLoader = simpleSingleLoader(sq.from`teams`, "slug");
   const teamByNameLoader = simpleSingleLoader(sq.from`teams`, "name");
-  const UserPermissionSummaryCountsByTeamIdLoader = simpleManyLoader(
-    sq.from`team_user_permission_summary_counts`,
-    "teamId"
-  );
+  // const UserPermissionSummaryCountsByTeamIdLoader = simpleManyLoader(
+  //   sq.from`team_user_permission_summary_counts`,
+  //   "teamId"
+  // );
 
   const globalPermissionsByUserIdLoader = simpleManyLoader(
     sq.from`global_permissions`,
@@ -55,17 +56,17 @@ export default (req, res, logger, gcPubsub) => {
     "teamId"
   );
 
-  const OLPermsByUserIdLoader = simpleManyLoader(
-    sq.from`team_permissions`.leftJoin`teams`
-      .on`team_permissions.team_id = teams.id`.where`teams.active = ${true}`,
-    // .andWhere("teams.active", "=", true),
-    "userId"
-  );
+  // const OLPermsByUserIdLoader = simpleManyLoader(
+  //   sq.from`team_permissions`.leftJoin`teams`
+  //     .on`team_permissions.team_id = teams.id`.where`teams.active = ${true}`,
+  //   // .andWhere("teams.active", "=", true),
+  //   "userId"
+  // );
 
-  const OLPermsByTeamIdLoader = simpleManyLoader(
-    sq.from`team_permissions`,
-    "teamId"
-  );
+  // const OLPermsByTeamIdLoader = simpleManyLoader(
+  //   sq.from`team_permissions`,
+  //   "teamId"
+  // );
 
   // const ioByIdLoader = singleLoaderGDS(sq.from`insertion_orders_current`, "id");
   // const ioLiByIdLoader = singleLoaderGDS(
@@ -87,20 +88,20 @@ export default (req, res, logger, gcPubsub) => {
       byUserIdLoader: globalPermissionsByUserIdLoader,
       forUser: globalPermissionsForUser(globalPermissionsByUserIdLoader)
     },
-    olPerms: {
-      byUserIdLoader: OLPermsByUserIdLoader,
-      byTeamIdLoader: OLPermsByTeamIdLoader,
-      summaryCountsByTeamIdLoader: UserPermissionSummaryCountsByTeamIdLoader,
-      OLUserPerms: OLUserPerms(OLPermsByUserIdLoader),
-      OLTeamPerms: OLTeamPerms(OLPermsByTeamIdLoader),
-      create: createGDS(sq.from`team_permissions`),
-      loadOne: compoundOneLoader(sq.from`team_permissions`, [
-        "userId",
-        "teamId",
-        "permission"
-      ]),
-      remove: data => sq.delete.from`team_permissions`.where(data)
-    },
+    // olPerms: {
+    //   byUserIdLoader: OLPermsByUserIdLoader,
+    //   byTeamIdLoader: OLPermsByTeamIdLoader,
+    //   summaryCountsByTeamIdLoader: UserPermissionSummaryCountsByTeamIdLoader,
+    //   OLUserPerms: OLUserPerms(OLPermsByUserIdLoader),
+    //   OLTeamPerms: OLTeamPerms(OLPermsByTeamIdLoader),
+    //   create: createGDS(sq.from`team_permissions`),
+    //   loadOne: compoundOneLoader(sq.from`team_permissions`, [
+    //     "userId",
+    //     "teamId",
+    //     "permission"
+    //   ]),
+    //   remove: data => sq.delete.from`team_permissions`.where(data)
+    // },
     team: {
       byIdLoader: teamByIdLoader,
       bySlugLoader: teamBySlugLoader,
@@ -161,7 +162,32 @@ export default (req, res, logger, gcPubsub) => {
       create: createGDS(sq.from`target_contact_attempts`),
       update: updateGDS(sq.from`target_contact_attempts`),
       byIdLoader: simpleSingleLoader(sq.from`target_contact_attempts`, "id")
-    }
+    },
+    taskDefinition: {
+      create: createGDS(sq.from`task_definitions`),
+      byIdLoader: simpleSingleLoader(sq.from`task_definitions`, "id")
+    },
+    taskAssignment: {
+      byIdLoader: simpleSingleLoader(sq.from`task_assignments`, "id"),
+      byTeamIdLoader: simpleManyLoader(sq`task_assignments`, "teamId")
+    },
+    teamPermission: {
+      create: createGDS(sq.from`team_permissions_bit`),
+      loadOne: compoundOneLoader(sq.from`team_permissions_bit`, [
+        "userId",
+        "teamId"
+      ]),
+      update: updateGDS(sq.from`team_permissions_bit`),
+      byUserIdLoader: simpleManyLoader(sq.from`team_permissions_bit`, "userId"),
+      byTeamIdLoader: simpleManyLoader(sq.from`team_permissions_bit`, "teamId")
+    },
+    taskAssignmentStatus: {
+      loadOne: compoundOneLoader(sq.from`task_assignment_status`, [
+        "targetId",
+        "taskAssignmentId"
+      ])
+    },
+    targetTasks: {}
   };
 
   const sendEmail = messageData => {

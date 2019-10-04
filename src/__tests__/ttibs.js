@@ -4,7 +4,7 @@ import {
   createTestUser,
   createTestTtib,
   createTestTeam,
-  createTestOLPermission
+  createTestTeamPermissionBit
 } from "../utils/createTestEntities";
 import { sq } from "../db";
 
@@ -30,7 +30,7 @@ describe("TTIBS", () => {
   test("Happy Path", async () => {
     const user = await createTestUser();
     const team = await createTestTeam();
-    await createTestOLPermission(user.id, team.id, "MEMBER");
+    await createTestTeamPermissionBit(user.id, team.id, { MEMBER: true });
     await createTestTtib(user.id, team.id);
     await createTestTtib(user.id, team.id);
     const ttib3 = await createTestTtib(user.id, team.id);
@@ -75,7 +75,7 @@ describe("TTIBS", () => {
   test("Can grab only ACTION tibtypes", async () => {
     const user = await createTestUser();
     const team = await createTestTeam();
-    await createTestOLPermission(user.id, team.id, "MEMBER");
+    await createTestTeamPermissionBit(user.id, team.id, { MEMBER: true });
     await createTestTtib(user.id, team.id);
     await createTestTtib(user.id, team.id);
     const ttib3 = await createTestTtib(user.id, team.id);

@@ -68,7 +68,20 @@ import targetContactAttemptLastEditedBy from "./targetContactAttempt/lastEditedB
 import targetContactAttemptTarget from "./targetContactAttempt/target";
 import updateTargetContactAttempt from "./mutation/updateTargetContactAttempt";
 import targetContactAttempt from "./query/targetContactAttempt";
-import targetContactAttempts from "./query/targetContactAttempts"
+import targetContactAttempts from "./query/targetContactAttempts";
+import createTaskDefinition from "./mutation/createTaskDefinition";
+import taskDefCreatedBy from "./taskDefinition/createdBy";
+import taskDefLastEditedBy from "./taskDefinition/lastEditedBy";
+import taskDefForm from "./taskDefinition/form";
+import taskAssignment from "./query/taskAssignment";
+import taskAssignmentTaskDefinition from "./taskAssignment/taskDefinition";
+import taskAssignmentTeam from "./taskAssignment/team";
+import taskAssignmentAvailableTo from "./taskAssignment/availableTo";
+import taskAssignmentAvailable from "./taskAssignment/available";
+import taskAssignmentComplete from "./taskAssignment/complete";
+import targetTasks from "./query/targetTasks";
+import updateTargetTask from "./mutation/updateTargetTask";
+import taskAssignmentNotAvailableUntilCompletionOf from "./taskAssignment/notAvailableUntilCompletionOf";
 
 export default {
   Query: {
@@ -100,7 +113,9 @@ export default {
     targetNote,
     targetNotes,
     targetContactAttempt,
-    targetContactAttempts
+    targetContactAttempts,
+    taskAssignment,
+    targetTasks
   },
   Mutation: {
     createUser,
@@ -129,7 +144,9 @@ export default {
     createTargetNote,
     updateTargetNote,
     createTargetContactAttempt,
-    updateTargetContactAttempt
+    updateTargetContactAttempt,
+    createTaskDefinition,
+    updateTargetTask
   },
   User: {
     globalPermissions,
@@ -163,5 +180,18 @@ export default {
     createdBy: targetContactAttemptCreatedBy,
     lastEditedBy: targetContactAttemptLastEditedBy,
     target: targetContactAttemptTarget
+  },
+  TaskDefinition: {
+    createdBy: taskDefCreatedBy,
+    lastEditedBy: taskDefLastEditedBy,
+    form: taskDefForm
+  },
+  TaskAssignment: {
+    definition: taskAssignmentTaskDefinition,
+    team: taskAssignmentTeam,
+    availableTo: taskAssignmentAvailableTo,
+    available: taskAssignmentAvailable,
+    complete: taskAssignmentComplete,
+    notAvailableUntilCompletionOf: taskAssignmentNotAvailableUntilCompletionOf
   }
 };

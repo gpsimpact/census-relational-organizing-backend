@@ -1,13 +1,15 @@
 // import faker from "faker";
-import { graphqlTestCall } from "../utils/graphqlTestCall";
+import { graphqlTestCall, debugResponse } from "../utils/graphqlTestCall";
 import { dbUp } from "../utils/testDbOps";
 import { sq } from "../db";
 import {
   createTestUser,
   //   createTestGlobalPerm,
   createTestTeam,
-  createTestOLPermission
+  // createTestOLPermission,
+  createTestTeamPermissionBit
 } from "../utils/createTestEntities";
+import { intToPerms } from "../utils/permissions/permBitWise";
 
 const REQUEST_TEAM_MEMBERSHIP_MUTATION = `
 mutation requestTeamMembership($teamId: String!) {
@@ -33,18 +35,19 @@ describe("User", () => {
       { teamId: team.id },
       { user: { id: user.id } }
     );
+    debugResponse(response);
     expect(response.data.requestTeamMembership.code).toEqual("OK");
     expect(response.data.requestTeamMembership.success).toEqual(true);
     expect(response.data.requestTeamMembership.message).toEqual(
       "Application Successful."
     );
 
-    const dbUserPerms = await sq.from`team_permissions`.where({
+    const [dbUserPerms] = await sq.from`team_permissions_bit`.where({
       userId: user.id,
       teamId: team.id
     });
-    expect(dbUserPerms).toHaveLength(1);
-    expect(dbUserPerms[0].permission).toEqual("APPLICANT");
+    expect(dbUserPerms).not.toBeNull();
+    expect(intToPerms(dbUserPerms.permission).APPLICANT).toBe(true);
   });
 
   test("fails if not authed", async () => {
@@ -62,7 +65,7 @@ describe("User", () => {
   test("fails if already applicant", async () => {
     const user = await createTestUser();
     const team = await createTestTeam();
-    await createTestOLPermission(user.id, team.id, "APPLICANT");
+    await createTestTeamPermissionBit(user.id, team.id, { APPLICANT: true });
     const response = await graphqlTestCall(
       REQUEST_TEAM_MEMBERSHIP_MUTATION,
       {
@@ -70,10 +73,32 @@ describe("User", () => {
       },
       { user: { id: user.id } }
     );
+    debugResponse(response);
     expect(response.data.requestTeamMembership.code).toEqual("DUPLICATE");
     expect(response.data.requestTeamMembership.success).toEqual(false);
     expect(response.data.requestTeamMembership.message).toEqual(
       "An application for membership is already pending."
+    );
+  });
+
+  test("fails if any type permission already set on team", async () => {
+    const user = await createTestUser();
+    const team = await createTestTeam();
+    await createTestTeamPermissionBit(user.id, team.id, {
+      DENIED: true
+    });
+    const response = await graphqlTestCall(
+      REQUEST_TEAM_MEMBERSHIP_MUTATION,
+      {
+        teamId: team.id
+      },
+      { user: { id: user.id } }
+    );
+    debugResponse(response);
+    expect(response.data.requestTeamMembership.code).toEqual("INELIGIBLE");
+    expect(response.data.requestTeamMembership.success).toEqual(false);
+    expect(response.data.requestTeamMembership.message).toEqual(
+      "You are ineligible to apply for membership."
     );
   });
 });

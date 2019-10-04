@@ -40,4 +40,12 @@ type Mutation {
     id: String!
     input: UpdateTargetContactAttemptInput!
   ): UpdateTargetContactAttemptResult!
+  createTaskDefinition(
+    input: CreateTaskDefinitionInput!
+  ): CreateTaskDefinitionResult!
+  updateTargetTask(
+    taskAssignmentId: String!
+    targetId: String!
+    input: UpdateTargetTaskInput!
+  ): UpdateTargetTaskResult!
 }

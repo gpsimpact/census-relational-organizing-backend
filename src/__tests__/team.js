@@ -1,10 +1,10 @@
-import { graphqlTestCall } from "../utils/graphqlTestCall";
+import { graphqlTestCall, debugResponse } from "../utils/graphqlTestCall";
 import { dbUp } from "../utils/testDbOps";
 import {
   createTestUser,
   createTestTeam,
   createTestGlobalPerm,
-  createTestOLPermission
+  createTestTeamPermissionBit
 } from "../utils/createTestEntities";
 
 const GET_TEAM_QUERY = `
@@ -114,8 +114,8 @@ describe("Team", () => {
   //   const adminUser = await createAdminUser();
   //   const team = await createTestTeam();
 
-  //   const cp1 = await createTestOLPermission(adminUser.id, team.id, "MEMBER");
-  //   const cp2 = await createTestOLPermission(
+  //   const cp1 = await createTestTeamPermissionBit(adminUser.id, team.id, "MEMBER");
+  //   const cp2 = await createTestTeamPermissionBit(
   //     adminUser.id,
   //     team.id,
   //     "APPLICANT"
@@ -151,16 +151,14 @@ describe("Team", () => {
     const team = await createTestTeam();
     await createTestGlobalPerm(adminUser.id, "ADMIN_TEAMS");
 
-    await createTestOLPermission(user2.id, team.id, "USER__READ__TEAM");
-    await createTestOLPermission(user3.id, team.id, "USER__READ__TEAM");
-    await createTestOLPermission(
-      user3.id,
-      team.id,
-      "USER__READ__TEAM_CONTACT_EMAIL"
-    );
-    await createTestOLPermission(user4.id, team.id, "USER__READ__TEAM");
-    await createTestOLPermission(user5.id, team.id, "USER__READ__TEAM");
-    await createTestOLPermission(user6.id, team.id, "USER__READ__TEAM");
+    await createTestTeamPermissionBit(user2.id, team.id, { MEMBER: true });
+    await createTestTeamPermissionBit(user3.id, team.id, {
+      MEMBER: true,
+      ELEVATED: true
+    });
+    await createTestTeamPermissionBit(user4.id, team.id, { ADMIN: true });
+    await createTestTeamPermissionBit(user5.id, team.id, { ADMIN: true });
+    await createTestTeamPermissionBit(user6.id, team.id, { ADMIN: true });
 
     const response = await graphqlTestCall(
       GET_TEAM_QUERY,
@@ -169,10 +167,33 @@ describe("Team", () => {
       },
       { user: { id: adminUser.id } }
     );
-    expect(response.data.team.userPermissionSummaryCounts.length).toBe(2);
+    debugResponse(response);
+    expect(response.data.team.userPermissionSummaryCounts.length).toBe(6);
     expect(response.data.team.userPermissionSummaryCounts).toEqual([
-      { permission: "USER__READ__TEAM", count: 5 },
-      { permission: "USER__READ__TEAM_CONTACT_EMAIL", count: 1 }
+      {
+        permission: "APPLICANT",
+        count: 0
+      },
+      {
+        permission: "TRAINING",
+        count: 0
+      },
+      {
+        permission: "ELEVATED",
+        count: 1
+      },
+      {
+        permission: "MEMBER",
+        count: 2
+      },
+      {
+        permission: "ADMIN",
+        count: 3
+      },
+      {
+        permission: "DENIED",
+        count: 0
+      }
     ]);
   });
 });

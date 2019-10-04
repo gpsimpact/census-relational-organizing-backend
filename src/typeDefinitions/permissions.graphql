@@ -4,6 +4,8 @@ enum GlobalPermissionsEnum {
 
 enum ObjectLevelPermissionEnum {
   APPLICANT
+  TRAINING
+  ELEVATED
   MEMBER
   ADMIN
   DENIED

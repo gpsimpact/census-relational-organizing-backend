@@ -7,37 +7,7 @@ type FormField {
   selectOptions: [SelectOptions]
   placeholder: String
   # for value storage
-  validationTests: [ValidationTests]
-  validationType: ValidationTypeEnum!
-}
-
-type ValidationTests {
-  method: String!
-  value: String
-  message: String!
-}
-
-enum ValidationTypeEnum {
-  string
-  number
-}
-
-enum VALIDATION_TEST_METHOD_ENUM {
-  required
-  min
-  email
-  url
-  lessThan
-  moreThan
-  positive
-  negative
-  integer
-}
-
-input ValidationTestsInput {
-  method: VALIDATION_TEST_METHOD_ENUM!
-  value: String
-  message: String!
+  validationTests: String
 }
 
 type SelectOptions {
@@ -64,6 +34,7 @@ enum FORM_FIELD_TYPE_ENUM {
   radio
   tel
   text
+  linear
 }
 
 input CreateFormFieldInput {
@@ -73,6 +44,5 @@ input CreateFormFieldInput {
   # used only for select fields
   selectOptions: [SelectOptionsInput]
   placeholder: String
-  validationType: ValidationTypeEnum!
-  validationTests: [ValidationTestsInput]
+  validationTests: String
 }

@@ -13,7 +13,8 @@ export default async (root, args, context) => {
   }
 
   // write a removeMany and apply to team_permissions
-  await context.dataSource.team.removeAllTeamPermissionsByTeamId(args.id);
+  // await context.dataSource.team.removeAllTeamPermissionsByTeamId(args.id);
+  await context.sq`team_permissions_bit`.delete.where({ teamId: args.id });
   await removeOneHOR("dataSource.team.remove", "id", "REMOVE_TEAM")(
     root,
     args,

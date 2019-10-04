@@ -1,4 +1,4 @@
-import { graphqlTestCall } from "../utils/graphqlTestCall";
+import { graphqlTestCall, debugResponse } from "../utils/graphqlTestCall";
 import { dbUp } from "../utils/testDbOps";
 import {
   createTestUser,
@@ -32,6 +32,7 @@ describe("RequestLoginResolver", () => {
       title: "This is form title",
       buttonText: "Button Text",
       redirectRoute: "/someRoute",
+      description: "test description",
       fields: [
         {
           label: "I am the label text",
@@ -48,15 +49,12 @@ describe("RequestLoginResolver", () => {
             }
           ],
           placeholder: "I am a place holder",
-          validationType: "string",
-          validationTests: [
-            { method: "required", message: "Value is required." },
-            {
-              method: "min",
-              value: "2",
-              message: "Must have length of 2."
-            }
-          ]
+          validationTests: JSON.stringify([
+            ["yup.number"],
+            ["yup.required"],
+            ["yup.min", 50],
+            ["yup.max", 500]
+          ])
         }
       ]
     };
@@ -68,6 +66,7 @@ describe("RequestLoginResolver", () => {
       },
       { user: { id: adminUser.id } }
     );
+    debugResponse(response);
     expect(response.data.createForm.code).toBe("OK");
     expect(response.data.createForm.message).toBe("Form has been created.");
     expect(response.data.createForm.success).toBe(true);
@@ -107,15 +106,12 @@ describe("RequestLoginResolver", () => {
             }
           ],
           placeholder: "I am a place holder",
-          validationType: "string",
-          validationTests: [
-            { method: "required", message: "Value is required." },
-            {
-              method: "min",
-              value: "2",
-              message: "Must have length of 2."
-            }
-          ]
+          validationTests: JSON.stringify([
+            ["yup.number"],
+            ["yup.required"],
+            ["yup.min", 50],
+            ["yup.max", 500]
+          ])
         },
         {
           label: "I am the label text",
@@ -132,15 +128,12 @@ describe("RequestLoginResolver", () => {
             }
           ],
           placeholder: "I am a place holder",
-          validationType: "string",
-          validationTests: [
-            { method: "required", message: "Value is required." },
-            {
-              method: "min",
-              value: "2",
-              message: "Must have length of 2."
-            }
-          ]
+          validationTests: JSON.stringify([
+            ["yup.number"],
+            ["yup.required"],
+            ["yup.min", 50],
+            ["yup.max", 500]
+          ])
         }
       ]
     };

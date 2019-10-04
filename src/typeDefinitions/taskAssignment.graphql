@@ -1,0 +1,34 @@
+type TaskAssignment {
+  id: String!
+  definition: TaskDefinition!
+  team: Team!
+  active: Boolean!
+  # calculated field
+  available(targetId: String): TaskAssignmentAvailbillityStatus!
+  # calculated field
+  availableTo: [TaskAssignmentRoles]!
+  complete(targetId: String): Boolean
+  notAvailableBeforeTs: GraphQLDateTime
+  notAvailableAfterTs: GraphQLDateTime
+  notAvailableUntilCompletionOf: TaskAssignment
+  sortValue: Int
+}
+
+type TaskAssignmentRoles {
+  role: ObjectLevelPermissionEnum!
+  available: Boolean!
+}
+
+type TaskAssignmentAvailbillityStatus {
+  available: Boolean!
+  nonAvailableCode: TaskNotAvailableEnum
+}
+
+enum TaskNotAvailableEnum {
+  TOO_EARLY
+  EXPIRED
+  WRONG_PERMISSIONS
+  DELETED
+  NO_TARGET
+  DEPENDENCY_NOT_MET
+}

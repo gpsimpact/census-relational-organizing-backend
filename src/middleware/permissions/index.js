@@ -1,5 +1,6 @@
 import { shield, and, or, allow, deny, rule } from "graphql-shield";
 import _ from "lodash";
+import { intToPerms } from "../../utils/permissions/permBitWise";
 
 /* ************************************************************************* 
   CHECKS - isolated testable logic 
@@ -13,6 +14,14 @@ const userOwnsTargetCheckRoot = async (parent, args, ctx) => {
   return target && target.userId && ctx.user.id === target.userId;
 };
 
+const userOwnsTargetCheckCalledTargetIDRoot = async (parent, args, ctx) => {
+  if (!ctx.user || !ctx.user.id) {
+    return false;
+  }
+  const target = await ctx.dataSource.target.byIdLoader.load(args.targetId);
+  return target && target.userId && ctx.user.id === target.userId;
+};
+
 const userOwnsTargetCheck = async (parent, args, ctx) => {
   if (!ctx.user || !ctx.user.id) {
     return false;
@@ -21,6 +30,36 @@ const userOwnsTargetCheck = async (parent, args, ctx) => {
     args.input.targetId
   );
   return target && target.userId && ctx.user.id === target.userId;
+};
+
+const isTeamAdminOfTeamOwningTargetAsTargetIdCheck = async (
+  parent,
+  args,
+  ctx
+) => {
+  if (!ctx.user || !ctx.user.id) {
+    return false;
+  }
+  const target = await ctx.dataSource.target.byIdLoader.load(args.targetId);
+  if (!target) {
+    return false;
+  }
+
+  // check for perm
+  const existingTeamPerm = await ctx.dataSource.teamPermission.loadOne.load({
+    userId: ctx.user.id,
+    teamId: target.teamId
+  });
+
+  if (!existingTeamPerm) {
+    return false;
+  }
+
+  if (!existingTeamPerm.permission) {
+    return false;
+  }
+
+  return intToPerms(existingTeamPerm.permission)["ADMIN"];
 };
 
 const userOwnsTargetNoteSubjectCheckRoot = async (parent, args, ctx) => {
@@ -75,14 +114,18 @@ const hasTeamPermCheck = (teamIdPath, requiredTP) => async (
   const teamId = _.get(args, teamIdPath);
 
   // check for perm
-  const existing = await ctx.dataSource.olPerms.loadOne.load({
+  const existing = await ctx.dataSource.teamPermission.loadOne.load({
     userId: grantorUserId,
-    teamId,
-    permission: requiredTP
+    teamId
   });
 
   if (existing) {
-    return true;
+    const teamPerms = intToPerms(existing.permission);
+    if (teamPerms[requiredTP] === true) {
+      return true;
+    } else {
+      return false;
+    }
   }
   return false;
 };
@@ -131,13 +174,18 @@ const userIsTeamAdminofUpdatingTtibCheck = async (parent, args, ctx) => {
   // get ttbid details
   const dbTtib = await ctx.dataSource.tib.byIdLoader.load(args.id);
   // IS user admin?
-  const existingTeamAdminPerm = await ctx.dataSource.olPerms.loadOne.load({
+  const existingTeamPerm = await ctx.dataSource.teamPermission.loadOne.load({
     userId: ctx.user.id,
-    teamId: dbTtib.teamId,
-    permission: "ADMIN"
+    teamId: dbTtib.teamId
   });
 
-  return !!existingTeamAdminPerm;
+  if (!existingTeamPerm) {
+    return false;
+  }
+
+  return intToPerms(existingTeamPerm.permission)["ADMIN"];
+
+  // return !!existingTeamAdminPerm;
 };
 
 // @TODO
@@ -172,6 +220,10 @@ const userOwnsTargetRoot = rule(`user-owns-target-root`, {
 const userOwnsTarget = rule(`user-owns-target`, { cache: "contextual" })(
   userOwnsTargetCheck
 );
+
+const userOwnsTargetRootAsTargetId = rule(`user-owns-target-root-as-targetId`, {
+  cache: "contextual"
+})(userOwnsTargetCheckCalledTargetIDRoot);
 
 const userOwnsTargetNoteSubject = rule(`user-owns-target-note-subject`, {
   cache: "contextual"
@@ -218,6 +270,13 @@ const isAnyTeamMember = rule(`is-any-team-member`, { cache: "contextual" })(
 const userIsTeamAdminofUpdatingTtib = rule(`userIsTeamAdminofUpdatingTtib`, {
   cache: "contextual"
 })(userIsTeamAdminofUpdatingTtibCheck);
+
+const isTeamAdminOfTeamOwningTargetAsTargetId = rule(
+  `isTeamAdminOfTeamOwningTargetAsTargetId`,
+  {
+    cache: "contextual"
+  }
+)(isTeamAdminOfTeamOwningTargetAsTargetIdCheck);
 
 // const userOwnsAllTargetsInWriteFormValueInput = rule(
 //   `userOwnsAllTargetsInWriteFormValueInput`,
@@ -305,6 +364,20 @@ export default shield(
       targetContactAttempts: and(
         isAuthenticated,
         or(has_GP_ADMIN, userOwnsTarget)
+      ),
+      taskAssignment: and(
+        isAuthenticated
+        // has_GP_ADMIN
+        // WILL NEED MORE HERE.
+        // or(has_GP_ADMIN, userOwnsTarget)
+      ),
+      targetTasks: and(
+        isAuthenticated,
+        or(
+          has_GP_ADMIN,
+          userOwnsTargetRootAsTargetId,
+          isTeamAdminOfTeamOwningTargetAsTargetId
+        )
       )
     },
     Mutation: {
@@ -356,6 +429,18 @@ export default shield(
       updateTargetContactAttempt: and(
         isAuthenticated,
         or(has_GP_ADMIN, userOwnsTargetCASubject)
+      ),
+      createTaskDefinition: and(
+        isAuthenticated,
+        or(has_GP_ADMIN, isAnyTeamAdmin)
+      ),
+      updateTargetTask: and(
+        isAuthenticated,
+        or(
+          has_GP_ADMIN,
+          userOwnsTargetRootAsTargetId,
+          isTeamAdminOfTeamOwningTargetAsTargetId
+        )
       )
     },
     Team: {
@@ -373,9 +458,6 @@ export default shield(
     UpdateGtibResult: allow,
     Form: allow,
     FormField: allow,
-    ValidationTests: allow,
-    ValidationTypeEnum: allow,
-    VALIDATION_TEST_METHOD_ENUM: allow,
     SelectOptions: allow,
     FORM_FIELD_TYPE_ENUM: allow,
     UpdateFormResult: allow,
@@ -417,7 +499,13 @@ export default shield(
     TargetContactAttempt: allow,
     CreateTargetContactAttemptResult: allow,
     UpdateTargetContactAttemptResult: allow,
-    TargetContactAttemptsResult: allow
+    TargetContactAttemptsResult: allow,
+    CreateTaskDefinitionResult: allow,
+    TaskDefinition: allow,
+    TaskAssignment: allow,
+    TaskAssignmentRoles: allow,
+    TaskAssignmentAvailbillityStatus: allow,
+    UpdateTargetTaskResult: allow
   },
   {
     fallbackError: "Not Authorized!", // default error spelling is Authorised.

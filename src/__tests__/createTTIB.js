@@ -3,8 +3,8 @@ import { dbUp } from "../utils/testDbOps";
 import {
   createTestUser,
   createTestTeam,
-  createTestOLPermission,
-  createTestGlobalPerm
+  createTestGlobalPerm,
+  createTestTeamPermissionBit
 } from "../utils/createTestEntities";
 import { sq } from "../db";
 
@@ -29,11 +29,11 @@ beforeEach(async () => {
   await dbUp();
 });
 
-describe("RequestLoginResolver", () => {
+describe("Create Ttib", () => {
   test("happy path as team admin", async () => {
     const user = await createTestUser();
     const team = await createTestTeam();
-    await createTestOLPermission(user.id, team.id, "ADMIN");
+    await createTestTeamPermissionBit(user.id, team.id, { ADMIN: true });
 
     const newData = {
       text: "I am text!",

@@ -1,6 +1,7 @@
 import faker from "faker";
 import { createGDS } from "@jakelowen/sqorn-graphql-filters";
 import { sq } from "../db";
+import { permsToInt, makeDefaultState } from "./permissions/permBitWise";
 
 export const uuid = () => faker.random.uuid();
 
@@ -42,6 +43,16 @@ export const createTestOLPermission = async (userId, teamId, permission) =>
     userId,
     permission
   });
+
+export const createTestTeamPermissionBit = async (userId, teamId, permObJ) => {
+  const defState = makeDefaultState();
+  const perms = Object.assign({}, defState, permObJ);
+  return createGDS(sq.from`team_permissions_bit`)({
+    teamId,
+    userId,
+    permission: permsToInt(perms)
+  });
+};
 
 export const createTestTarget = async data => {
   const fakeData = {
@@ -133,15 +144,12 @@ export const createTestForm = async userId => {
           }
         ],
         placeholder: "I am a place holder",
-        validationType: "string",
-        validationTests: [
-          { method: "required", message: "Value is required." },
-          {
-            method: "min",
-            value: "2",
-            message: "Must have length of 2."
-          }
-        ]
+        validationTests: JSON.stringify([
+          ["yup.number"],
+          ["yup.required"],
+          ["yup.min", 50],
+          ["yup.max", 500]
+        ])
       },
       {
         label: "I am the label text",
@@ -158,15 +166,12 @@ export const createTestForm = async userId => {
           }
         ],
         placeholder: "I am a place holder",
-        validationType: "string",
-        validationTests: [
-          { method: "required", message: "Value is required." },
-          {
-            method: "min",
-            value: "2",
-            message: "Must have length of 2."
-          }
-        ]
+        validationTests: JSON.stringify([
+          ["yup.number"],
+          ["yup.required"],
+          ["yup.min", 50],
+          ["yup.max", 500]
+        ])
       }
     ])
   };
@@ -218,4 +223,27 @@ export const createTestTargetContactAttempt = async (userId, targetId) => {
     method: "PHONE"
   };
   return createGDS(sq.from`target_contact_attempts`)(data);
+};
+
+export const createTestTaskDefinition = async (formId, userId) => {
+  const data = {
+    formId,
+    createdBy: userId
+  };
+
+  return createGDS(sq.from`task_definitions`)(data);
+};
+
+export const createTestTaskAssignment = async (
+  taskDefinitionId,
+  teamId,
+  permissions
+) => {
+  const data = {
+    teamId,
+    taskDefinitionId,
+    taskRequiredRoles: permsToInt(permissions)
+  };
+
+  return createGDS(sq.from`task_assignments`)(data);
 };
