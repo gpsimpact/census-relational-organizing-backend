@@ -1,7 +1,7 @@
 require("dotenv").config();
 
 import { sq } from "../db";
-import { dbUp } from "../utils/testDbOps";
+import { dbUp, dbDown } from "../utils/testDbOps";
 import {
   createTestTarget,
   createTestTeam,
@@ -11,6 +11,10 @@ import targetTractUpdate from "./targetTractUpdate";
 
 beforeEach(async () => {
   await dbUp();
+});
+
+afterAll(async () => {
+  await dbDown();
 });
 
 describe("message function target Census tract update", () => {

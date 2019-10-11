@@ -1,6 +1,6 @@
 // import faker from "faker";
 import { graphqlTestCall, debugResponse } from "../utils/graphqlTestCall";
-import { dbUp } from "../utils/testDbOps";
+import { dbUp, dbDown } from "../utils/testDbOps";
 import {
   createTestUser,
   createTestTeam,
@@ -38,6 +38,10 @@ query targetContactAttempts($input:TargetContactAttemptsInput!) {
 
 beforeEach(async () => {
   await dbUp();
+});
+
+afterAll(async () => {
+  await dbDown();
 });
 
 describe("Target contact attempts", () => {

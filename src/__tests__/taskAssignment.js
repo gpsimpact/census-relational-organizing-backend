@@ -1,6 +1,6 @@
 // import _ from "lodash";
 import { graphqlTestCall, debugResponse } from "../utils/graphqlTestCall";
-import { dbUp } from "../utils/testDbOps";
+import { dbUp, dbDown } from "../utils/testDbOps";
 import {
   createTestTeam,
   createAdminUser,
@@ -51,6 +51,10 @@ query taskAssignment($id: String!, $targetId: String!) {
 
 beforeEach(async () => {
   await dbUp();
+});
+
+afterAll(async () => {
+  await dbDown();
 });
 
 describe("Task assignment", () => {
@@ -372,7 +376,6 @@ describe("Task assignment", () => {
     expect(response2.data.taskAssignment.complete).toBe(true);
   });
 
-
   // TEST IF DELETE RENDERS UNAVAIL
   test("sortValue is returned", async () => {
     const user = await createAdminUser();
@@ -400,5 +403,4 @@ describe("Task assignment", () => {
     debugResponse(response);
     expect(response.data.taskAssignment.sortValue).toEqual(2);
   });
-
 });

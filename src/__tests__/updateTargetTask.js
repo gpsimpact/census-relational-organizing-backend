@@ -1,5 +1,5 @@
 import { graphqlTestCall, debugResponse } from "../utils/graphqlTestCall";
-import { dbUp } from "../utils/testDbOps";
+import { dbUp, dbDown } from "../utils/testDbOps";
 import {
   createTestTeam,
   createAdminUser,
@@ -50,6 +50,10 @@ mutation updateTargetTask($taskAssignmentId: String!, $targetId: String!, $input
 
 beforeEach(async () => {
   await dbUp();
+});
+
+afterAll(async () => {
+  await dbDown();
 });
 
 describe("Task assignment", () => {

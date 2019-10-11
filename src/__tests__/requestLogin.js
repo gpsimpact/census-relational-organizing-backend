@@ -1,6 +1,6 @@
 import faker from "faker";
 import { graphqlTestCall } from "../utils/graphqlTestCall";
-import { dbUp } from "../utils/testDbOps";
+import { dbUp, dbDown } from "../utils/testDbOps";
 import { createTestUser } from "../utils/createTestEntities";
 
 const requestLoginMutation = `
@@ -18,9 +18,9 @@ beforeEach(async () => {
   await dbUp();
 });
 
-// afterEach(async () => {
-//   await dbDown();
-// });
+afterAll(async () => {
+  await dbDown();
+});
 
 describe("RequestLoginResolver", () => {
   test("Non existant user returns DOES_NOT_EXIST and success: false", async () => {

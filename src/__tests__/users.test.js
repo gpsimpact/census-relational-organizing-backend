@@ -27,7 +27,7 @@ beforeEach(async () => {
   await dbUp();
 });
 
-afterEach(async () => {
+afterAll(async () => {
   await dbDown();
 });
 

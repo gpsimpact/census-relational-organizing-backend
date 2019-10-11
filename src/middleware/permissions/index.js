@@ -188,6 +188,19 @@ const userIsTeamAdminofUpdatingTtibCheck = async (parent, args, ctx) => {
   // return !!existingTeamAdminPerm;
 };
 
+// const userIsAdminofInputTeamIdCheck = async (parent, args, ctx) => {
+//   const existingTeamPerm = await ctx.dataSource.teamPermission.loadOne.load({
+//     userId: ctx.user.id,
+//     teamId: args.input.teamId
+//   });
+
+//   if (!existingTeamPerm) {
+//     return false;
+//   }
+
+//   return intToPerms(existingTeamPerm.permission)["ADMIN"];
+// }
+
 // @TODO
 // I NEVER DID ASSOCIATE TARGETS WITH THEIR USERS. SO I CANT MAKE THIS PERM CHECK UNTIL I DO //
 // const userOwnsAllTargetsInWriteFormValueInputCheck = async (
@@ -378,7 +391,8 @@ export default shield(
           userOwnsTargetRootAsTargetId,
           isTeamAdminOfTeamOwningTargetAsTargetId
         )
-      )
+      ),
+      teamEligibleTasks: and(isAuthenticated, or(has_TP_ADMIN, has_GP_ADMIN))
     },
     Mutation: {
       removeUser: and(isAuthenticated, has_GP_ADMIN),

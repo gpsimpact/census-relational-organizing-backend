@@ -1,6 +1,6 @@
 // import faker from "faker";
 import { graphqlTestCall, debugResponse } from "../utils/graphqlTestCall";
-import { dbUp } from "../utils/testDbOps";
+import { dbUp, dbDown } from "../utils/testDbOps";
 import { sq } from "../db";
 import {
   createTestUser,
@@ -32,6 +32,10 @@ mutation toggleTeamPermission($input: ToggleTeamPermissionInput!) {
 
 beforeEach(async () => {
   await dbUp();
+});
+
+afterAll(async () => {
+  await dbDown();
 });
 
 describe("User", () => {

@@ -25,7 +25,7 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 // pubsub
 import redis, { pubsub } from "./redis";
-import CompoundManyLoader from "./dataSources/CompoundManyLoader";
+// import CompoundManyLoader from "./dataSources/CompoundManyLoader";
 
 const setInactiveDataSource = dbHandle => async id => {
   await dbHandle.where({ id }).set({ active: false });
