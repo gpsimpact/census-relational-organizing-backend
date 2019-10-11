@@ -392,7 +392,8 @@ export default shield(
           isTeamAdminOfTeamOwningTargetAsTargetId
         )
       ),
-      teamEligibleTasks: and(isAuthenticated, or(has_TP_ADMIN, has_GP_ADMIN))
+      teamEligibleTasks: and(isAuthenticated, or(has_TP_ADMIN, has_GP_ADMIN)),
+      taskDefinition: isAuthenticated
     },
     Mutation: {
       removeUser: and(isAuthenticated, has_GP_ADMIN),
