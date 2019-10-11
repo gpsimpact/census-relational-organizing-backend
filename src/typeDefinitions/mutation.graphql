@@ -48,4 +48,7 @@ type Mutation {
     targetId: String!
     input: UpdateTargetTaskInput!
   ): UpdateTargetTaskResult!
+  designateTeamEligibleTask(
+    input: DesignateTeamEligibleTaskInput!
+  ): DesignateTeamEligibleTaskResult!
 }

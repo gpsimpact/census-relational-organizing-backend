@@ -30,7 +30,3 @@ type CreateTaskDefinitionResult {
   message: String!
   item: TaskDefinition
 }
-
-input TeamEligibleTasksInput {
-  teamId: String!
-}

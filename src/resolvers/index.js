@@ -83,6 +83,7 @@ import targetTasks from "./query/targetTasks";
 import updateTargetTask from "./mutation/updateTargetTask";
 import taskAssignmentNotAvailableUntilCompletionOf from "./taskAssignment/notAvailableUntilCompletionOf";
 import teamEligibleTasks from "./query/teamEligibleTasks";
+import designateTeamEligibleTask from "./mutation/designateTeamEligibleTask";
 
 export default {
   Query: {
@@ -148,7 +149,8 @@ export default {
     createTargetContactAttempt,
     updateTargetContactAttempt,
     createTaskDefinition,
-    updateTargetTask
+    updateTargetTask,
+    designateTeamEligibleTask
   },
   User: {
     globalPermissions,
