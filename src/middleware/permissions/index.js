@@ -457,7 +457,8 @@ export default shield(
           isTeamAdminOfTeamOwningTargetAsTargetId
         )
       ),
-      designateTeamEligibleTask: and(isAuthenticated, has_GP_ADMIN)
+      designateTeamEligibleTask: and(isAuthenticated, has_GP_ADMIN),
+      createTaskAssignment: and(isAuthenticated, or(has_TP_ADMIN, has_GP_ADMIN))
     },
     Team: {
       userPermissions: allow, // <- Make this go away soon in favor of own root query
@@ -522,7 +523,8 @@ export default shield(
     TaskAssignmentRoles: allow,
     TaskAssignmentAvailbillityStatus: allow,
     UpdateTargetTaskResult: allow,
-    DesignateTeamEligibleTaskResult: allow
+    DesignateTeamEligibleTaskResult: allow,
+    CreateTaskAssignmentResult: allow
   },
   {
     fallbackError: "Not Authorized!", // default error spelling is Authorised.

@@ -51,4 +51,7 @@ type Mutation {
   designateTeamEligibleTask(
     input: DesignateTeamEligibleTaskInput!
   ): DesignateTeamEligibleTaskResult!
+  createTaskAssignment(
+    input: CreateTaskAssignmentInput!
+  ): CreateTaskAssignmentResult!
 }
