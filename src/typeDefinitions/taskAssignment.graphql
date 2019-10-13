@@ -49,3 +49,15 @@ type CreateTaskAssignmentResult {
   message: String!
   item: TaskAssignment
 }
+
+input SetTaskAssignmentSortOrderInput {
+  teamId: String!
+  orderedTaskAssignmentIds: [String]!
+}
+
+type SetTaskAssignmentSortOrderResult {
+  code: MutationCodeEnum!
+  success: Boolean!
+  message: String!
+  item: [TaskAssignment]!
+}

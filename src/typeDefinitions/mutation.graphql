@@ -54,4 +54,7 @@ type Mutation {
   createTaskAssignment(
     input: CreateTaskAssignmentInput!
   ): CreateTaskAssignmentResult!
+  setTaskAssignmentSortOrder(
+    input: SetTaskAssignmentSortOrderInput!
+  ): SetTaskAssignmentSortOrderResult!
 }

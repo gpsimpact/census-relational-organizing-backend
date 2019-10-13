@@ -86,6 +86,7 @@ import teamEligibleTasks from "./query/teamEligibleTasks";
 import designateTeamEligibleTask from "./mutation/designateTeamEligibleTask";
 import taskDefinition from "./query/taskDefinition";
 import createTaskAssignment from "./mutation/createTaskAssignment";
+import setTaskAssignmentSortOrder from "./mutation/setTaskAssignmentSortOrder";
 
 export default {
   Query: {
@@ -154,7 +155,8 @@ export default {
     createTaskDefinition,
     updateTargetTask,
     designateTeamEligibleTask,
-    createTaskAssignment
+    createTaskAssignment,
+    setTaskAssignmentSortOrder
   },
   User: {
     globalPermissions,
