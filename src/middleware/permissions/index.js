@@ -188,6 +188,26 @@ const userIsTeamAdminofUpdatingTtibCheck = async (parent, args, ctx) => {
   // return !!existingTeamAdminPerm;
 };
 
+const userIsTeamAdminofTaskAssignmentTeamCheck = async (parent, args, ctx) => {
+  // get ttbid details
+  const dbTa = await ctx.dataSource.taskAssignment.byIdLoader.load(
+    args.input.taskAssignmentId
+  );
+  // IS user admin?
+  const existingTeamPerm = await ctx.dataSource.teamPermission.loadOne.load({
+    userId: ctx.user.id,
+    teamId: dbTa.teamId
+  });
+
+  if (!existingTeamPerm) {
+    return false;
+  }
+
+  return intToPerms(existingTeamPerm.permission)["ADMIN"];
+
+  // return !!existingTeamAdminPerm;
+};
+
 // const userIsAdminofInputTeamIdCheck = async (parent, args, ctx) => {
 //   const existingTeamPerm = await ctx.dataSource.teamPermission.loadOne.load({
 //     userId: ctx.user.id,
@@ -290,6 +310,13 @@ const isTeamAdminOfTeamOwningTargetAsTargetId = rule(
     cache: "contextual"
   }
 )(isTeamAdminOfTeamOwningTargetAsTargetIdCheck);
+
+const userIsTeamAdminofTaskAssignmentTeam = rule(
+  `userIsTeamAdminofTaskAssignmentTeam`,
+  {
+    cache: "contextual"
+  }
+)(userIsTeamAdminofTaskAssignmentTeamCheck);
 
 // const userOwnsAllTargetsInWriteFormValueInput = rule(
 //   `userOwnsAllTargetsInWriteFormValueInput`,
@@ -465,6 +492,10 @@ export default shield(
       setTaskAssignmentSortOrder: and(
         isAuthenticated,
         or(has_TP_ADMIN, has_GP_ADMIN)
+      ),
+      updateTaskAssignment: and(
+        isAuthenticated,
+        or(has_GP_ADMIN, userIsTeamAdminofTaskAssignmentTeam)
       )
     },
     Team: {
@@ -532,7 +563,8 @@ export default shield(
     UpdateTargetTaskResult: allow,
     DesignateTeamEligibleTaskResult: allow,
     CreateTaskAssignmentResult: allow,
-    SetTaskAssignmentSortOrderResult: allow
+    SetTaskAssignmentSortOrderResult: allow,
+    UpdateTaskAssignmentResult: allow
   },
   {
     fallbackError: "Not Authorized!", // default error spelling is Authorised.

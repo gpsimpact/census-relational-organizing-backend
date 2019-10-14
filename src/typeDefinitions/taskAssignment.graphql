@@ -61,3 +61,20 @@ type SetTaskAssignmentSortOrderResult {
   message: String!
   item: [TaskAssignment]!
 }
+
+input UpdateTaskAssignmentInput {
+  taskAssignmentId: String!
+  taskDefinitionId: String
+  notAvailableBeforeTs: GraphQLDateTime
+  notAvailableAfterTs: GraphQLDateTime
+  taskRequiredRoles: [ObjectLevelPermissionEnum!]
+  # task assignment ID
+  notUntilCompletionOf: String
+}
+
+type UpdateTaskAssignmentResult {
+  code: MutationCodeEnum!
+  success: Boolean!
+  message: String!
+  item: TaskAssignment
+}
