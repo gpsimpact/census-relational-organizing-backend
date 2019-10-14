@@ -1,5 +1,5 @@
 import { graphqlTestCall } from "../utils/graphqlTestCall";
-import { dbUp } from "../utils/testDbOps";
+import { dbUp, dbDown } from "../utils/testDbOps";
 import {
   createTestUser,
   createTestGlobalPerm
@@ -25,6 +25,10 @@ const CREATE_GTIB_MUTATION = `
 
 beforeEach(async () => {
   await dbUp();
+});
+
+afterAll(async () => {
+  await dbDown();
 });
 
 describe("RequestLoginResolver", () => {

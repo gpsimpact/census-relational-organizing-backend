@@ -1,7 +1,7 @@
 import faker from "faker";
 // import _ from "lodash";
 import { graphqlTestCall, debugResponse } from "../utils/graphqlTestCall";
-import { dbUp } from "../utils/testDbOps";
+import { dbUp, dbDown } from "../utils/testDbOps";
 import {
   createTestUser,
   createAdminUser,
@@ -40,6 +40,10 @@ const CREATE_TASK_DEFINITION_MUTATION = `
 
 beforeEach(async () => {
   await dbUp();
+});
+
+afterAll(async () => {
+  await dbDown();
 });
 
 describe("Create Task Definition", () => {

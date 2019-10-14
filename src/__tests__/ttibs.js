@@ -1,5 +1,5 @@
 import { graphqlTestCall, debugResponse } from "../utils/graphqlTestCall";
-import { dbUp } from "../utils/testDbOps";
+import { dbUp, dbDown } from "../utils/testDbOps";
 import {
   createTestUser,
   createTestTtib,

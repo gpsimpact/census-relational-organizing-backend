@@ -1,7 +1,7 @@
 import faker from "faker";
 import _ from "lodash";
 import { graphqlTestCall, debugResponse } from "../utils/graphqlTestCall";
-import { dbUp } from "../utils/testDbOps";
+import { dbUp, dbDown } from "../utils/testDbOps";
 import {
   createTestUser,
   createTestTeam,
@@ -36,6 +36,10 @@ const UPDATE_TARGET_MUTATION = `
 
 beforeEach(async () => {
   await dbUp();
+});
+
+afterAll(async () => {
+  await dbDown();
 });
 
 describe("Update Form", () => {

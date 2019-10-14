@@ -1,5 +1,6 @@
 // import { map } from "lodash";
 import knex from "./knexInstance";
+import { pool } from "../db";
 import redis from "../redis";
 
 export const dbUp = async () => {
@@ -22,5 +23,6 @@ export const dbDown = async () => {
   //   map(tableList, table => knex.raw(`TRUNCATE TABLE ${table} CASCADE;`)),
   //   redis.flushdb()
   // );
-  // knex.destroy();
+  await knex.destroy();
+  await pool.end();
 };

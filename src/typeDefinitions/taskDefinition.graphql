@@ -30,3 +30,7 @@ type CreateTaskDefinitionResult {
   message: String!
   item: TaskDefinition
 }
+
+input TaskDefinitionInput {
+  taskDefinitionId: String!
+}

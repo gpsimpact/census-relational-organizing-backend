@@ -32,3 +32,49 @@ enum TaskNotAvailableEnum {
   NO_TARGET
   DEPENDENCY_NOT_MET
 }
+
+input CreateTaskAssignmentInput {
+  teamId: String!
+  taskDefinitionId: String!
+  notAvailableBeforeTs: GraphQLDateTime
+  notAvailableAfterTs: GraphQLDateTime
+  taskRequiredRoles: [ObjectLevelPermissionEnum!]!
+  # task assignment ID
+  notUntilCompletionOf: String
+}
+
+type CreateTaskAssignmentResult {
+  code: MutationCodeEnum!
+  success: Boolean!
+  message: String!
+  item: TaskAssignment
+}
+
+input SetTaskAssignmentSortOrderInput {
+  teamId: String!
+  orderedTaskAssignmentIds: [String]!
+}
+
+type SetTaskAssignmentSortOrderResult {
+  code: MutationCodeEnum!
+  success: Boolean!
+  message: String!
+  item: [TaskAssignment]!
+}
+
+input UpdateTaskAssignmentInput {
+  taskAssignmentId: String!
+  taskDefinitionId: String
+  notAvailableBeforeTs: GraphQLDateTime
+  notAvailableAfterTs: GraphQLDateTime
+  taskRequiredRoles: [ObjectLevelPermissionEnum!]
+  # task assignment ID
+  notUntilCompletionOf: String
+}
+
+type UpdateTaskAssignmentResult {
+  code: MutationCodeEnum!
+  success: Boolean!
+  message: String!
+  item: TaskAssignment
+}

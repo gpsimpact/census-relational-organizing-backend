@@ -1,6 +1,6 @@
 import _ from "lodash";
 import { graphqlTestCall, debugResponse } from "../utils/graphqlTestCall";
-import { dbUp } from "../utils/testDbOps";
+import { dbUp, dbDown } from "../utils/testDbOps";
 import {
   createTestTeam,
   createAdminUser,
@@ -46,6 +46,10 @@ query targetTasks($targetId: String!) {
 
 beforeEach(async () => {
   await dbUp();
+});
+
+afterAll(async () => {
+  await dbDown();
 });
 
 describe("Task assignment", () => {

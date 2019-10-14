@@ -1,5 +1,5 @@
 import { graphqlTestCall } from "../utils/graphqlTestCall";
-import { dbUp } from "../utils/testDbOps";
+import { dbUp, dbDown } from "../utils/testDbOps";
 import {
   createTestUser,
   createTestTeam,
@@ -29,6 +29,9 @@ beforeEach(async () => {
   await dbUp();
 });
 
+afterAll(async () => {
+  await dbDown();
+});
 describe("Create Ttib", () => {
   test("happy path as team admin", async () => {
     const user = await createTestUser();

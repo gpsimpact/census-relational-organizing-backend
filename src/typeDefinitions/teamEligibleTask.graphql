@@ -1,0 +1,16 @@
+input TeamEligibleTasksInput {
+  teamId: String!
+}
+
+input DesignateTeamEligibleTaskInput {
+  teamId: String!
+  taskDefinitionId: String!
+  eligible: Boolean!
+}
+
+type DesignateTeamEligibleTaskResult {
+  code: MutationCodeEnum!
+  success: Boolean!
+  message: String!
+  item: TaskDefinition
+}

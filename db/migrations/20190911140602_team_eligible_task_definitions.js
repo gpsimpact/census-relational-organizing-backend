@@ -8,7 +8,7 @@ exports.up = knex => {
   return knex.raw(`
           CREATE TABLE team_eligible_task_definitions (
                 team_id uuid REFERENCES teams(id) NOT NULL,
-                task_definition_id uuid REFERENCES task_definitions(id),
+                task_definition_id uuid REFERENCES task_definitions(id) NOT NULL,
                 PRIMARY KEY(team_id, task_definition_id)
           );
       `);

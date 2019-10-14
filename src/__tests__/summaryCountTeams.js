@@ -1,6 +1,6 @@
 // import faker from "faker";
 import { graphqlTestCall } from "../utils/graphqlTestCall";
-import { dbUp } from "../utils/testDbOps";
+import { dbUp, dbDown } from "../utils/testDbOps";
 import {
   createTestTeam,
   createTestUser,
@@ -16,6 +16,10 @@ const SUMMARY_COUNT_ALL_TEAMS_QUERY = `
 
 beforeEach(async () => {
   await dbUp();
+});
+
+afterAll(async () => {
+  await dbDown();
 });
 
 describe("Summary Count all teams", () => {

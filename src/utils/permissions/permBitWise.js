@@ -1,9 +1,9 @@
-const APPLICANT = 1; // 000001
-const TRAINING = 1 << 1; // 000010
-const ELEVATED = 1 << 2; // 000100
-const MEMBER = 1 << 3; // 001000
-const ADMIN = 1 << 4; // 010000
-const DENIED = 1 << 5; // 100000
+const APPLICANT = 1; // 000001 // 1
+const TRAINING = 1 << 1; // 000010 // 2
+const ELEVATED = 1 << 2; // 000100 // 4
+const MEMBER = 1 << 3; // 001000 // 8
+const ADMIN = 1 << 4; // 010000 // 16
+const DENIED = 1 << 5; // 100000 // 32
 
 export const makeDefaultState = () => ({
   APPLICANT: false,

@@ -188,6 +188,39 @@ const userIsTeamAdminofUpdatingTtibCheck = async (parent, args, ctx) => {
   // return !!existingTeamAdminPerm;
 };
 
+const userIsTeamAdminofTaskAssignmentTeamCheck = async (parent, args, ctx) => {
+  // get ttbid details
+  const dbTa = await ctx.dataSource.taskAssignment.byIdLoader.load(
+    args.input.taskAssignmentId
+  );
+  // IS user admin?
+  const existingTeamPerm = await ctx.dataSource.teamPermission.loadOne.load({
+    userId: ctx.user.id,
+    teamId: dbTa.teamId
+  });
+
+  if (!existingTeamPerm) {
+    return false;
+  }
+
+  return intToPerms(existingTeamPerm.permission)["ADMIN"];
+
+  // return !!existingTeamAdminPerm;
+};
+
+// const userIsAdminofInputTeamIdCheck = async (parent, args, ctx) => {
+//   const existingTeamPerm = await ctx.dataSource.teamPermission.loadOne.load({
+//     userId: ctx.user.id,
+//     teamId: args.input.teamId
+//   });
+
+//   if (!existingTeamPerm) {
+//     return false;
+//   }
+
+//   return intToPerms(existingTeamPerm.permission)["ADMIN"];
+// }
+
 // @TODO
 // I NEVER DID ASSOCIATE TARGETS WITH THEIR USERS. SO I CANT MAKE THIS PERM CHECK UNTIL I DO //
 // const userOwnsAllTargetsInWriteFormValueInputCheck = async (
@@ -277,6 +310,13 @@ const isTeamAdminOfTeamOwningTargetAsTargetId = rule(
     cache: "contextual"
   }
 )(isTeamAdminOfTeamOwningTargetAsTargetIdCheck);
+
+const userIsTeamAdminofTaskAssignmentTeam = rule(
+  `userIsTeamAdminofTaskAssignmentTeam`,
+  {
+    cache: "contextual"
+  }
+)(userIsTeamAdminofTaskAssignmentTeamCheck);
 
 // const userOwnsAllTargetsInWriteFormValueInput = rule(
 //   `userOwnsAllTargetsInWriteFormValueInput`,
@@ -378,7 +418,9 @@ export default shield(
           userOwnsTargetRootAsTargetId,
           isTeamAdminOfTeamOwningTargetAsTargetId
         )
-      )
+      ),
+      teamEligibleTasks: and(isAuthenticated, or(has_TP_ADMIN, has_GP_ADMIN)),
+      taskDefinition: isAuthenticated
     },
     Mutation: {
       removeUser: and(isAuthenticated, has_GP_ADMIN),
@@ -441,6 +483,19 @@ export default shield(
           userOwnsTargetRootAsTargetId,
           isTeamAdminOfTeamOwningTargetAsTargetId
         )
+      ),
+      designateTeamEligibleTask: and(isAuthenticated, has_GP_ADMIN),
+      createTaskAssignment: and(
+        isAuthenticated,
+        or(has_TP_ADMIN, has_GP_ADMIN)
+      ),
+      setTaskAssignmentSortOrder: and(
+        isAuthenticated,
+        or(has_TP_ADMIN, has_GP_ADMIN)
+      ),
+      updateTaskAssignment: and(
+        isAuthenticated,
+        or(has_GP_ADMIN, userIsTeamAdminofTaskAssignmentTeam)
       )
     },
     Team: {
@@ -505,7 +560,11 @@ export default shield(
     TaskAssignment: allow,
     TaskAssignmentRoles: allow,
     TaskAssignmentAvailbillityStatus: allow,
-    UpdateTargetTaskResult: allow
+    UpdateTargetTaskResult: allow,
+    DesignateTeamEligibleTaskResult: allow,
+    CreateTaskAssignmentResult: allow,
+    SetTaskAssignmentSortOrderResult: allow,
+    UpdateTaskAssignmentResult: allow
   },
   {
     fallbackError: "Not Authorized!", // default error spelling is Authorised.

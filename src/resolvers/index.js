@@ -82,6 +82,12 @@ import taskAssignmentComplete from "./taskAssignment/complete";
 import targetTasks from "./query/targetTasks";
 import updateTargetTask from "./mutation/updateTargetTask";
 import taskAssignmentNotAvailableUntilCompletionOf from "./taskAssignment/notAvailableUntilCompletionOf";
+import teamEligibleTasks from "./query/teamEligibleTasks";
+import designateTeamEligibleTask from "./mutation/designateTeamEligibleTask";
+import taskDefinition from "./query/taskDefinition";
+import createTaskAssignment from "./mutation/createTaskAssignment";
+import setTaskAssignmentSortOrder from "./mutation/setTaskAssignmentSortOrder";
+import updateTaskAssignment from "./mutation/updateTaskAssignment";
 
 export default {
   Query: {
@@ -115,7 +121,9 @@ export default {
     targetContactAttempt,
     targetContactAttempts,
     taskAssignment,
-    targetTasks
+    targetTasks,
+    teamEligibleTasks,
+    taskDefinition
   },
   Mutation: {
     createUser,
@@ -146,7 +154,11 @@ export default {
     createTargetContactAttempt,
     updateTargetContactAttempt,
     createTaskDefinition,
-    updateTargetTask
+    updateTargetTask,
+    designateTeamEligibleTask,
+    createTaskAssignment,
+    setTaskAssignmentSortOrder,
+    updateTaskAssignment
   },
   User: {
     globalPermissions,

@@ -1,7 +1,7 @@
 // import faker from "faker";
 import _ from "lodash";
 import { graphqlTestCall, debugResponse } from "../utils/graphqlTestCall";
-import { dbUp } from "../utils/testDbOps";
+import { dbUp, dbDown } from "../utils/testDbOps";
 import {
   createTestTeam,
   createAdminUser,
@@ -16,6 +16,10 @@ query summaryTotalMyTeamHouseholdSize($teamId: String!) {
 
 beforeEach(async () => {
   await dbUp();
+});
+
+afterAll(async () => {
+  await dbDown();
 });
 
 describe("Summary Count team HH size - one user", () => {

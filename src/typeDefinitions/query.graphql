@@ -36,4 +36,6 @@ type Query {
   ): TargetContactAttemptsResult!
   taskAssignment(id: String!): TaskAssignment
   targetTasks(targetId: String!, active: Boolean! = true): [TaskAssignment]
+  teamEligibleTasks(input: TeamEligibleTasksInput!): [TaskDefinition]
+  taskDefinition(input: TaskDefinitionInput!): TaskDefinition
 }
