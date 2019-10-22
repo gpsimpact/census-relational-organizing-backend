@@ -50,8 +50,8 @@ describe("User", () => {
       userId: user.id,
       teamId: team.id
     });
-    expect(dbUserPerms).not.toBeNull();
-    expect(intToPerms(dbUserPerms.permission)["APPLICANT"]).toBe(false);
+    expect(dbUserPerms).toBeUndefined();
+    // expect(intToPerms(dbUserPerms.permission)["APPLICANT"]).toBe(false);
   });
 
   test("fails if not authed", async () => {
