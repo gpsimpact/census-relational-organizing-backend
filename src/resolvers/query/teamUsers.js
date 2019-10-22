@@ -10,7 +10,6 @@ export default async (root, args, context, info) => {
     perms[x] = true;
   });
   const permInt = permsToInt(perms);
-  console.log({ perms, permInt });
 
   const dbHandle = context.sq.from`users`.where(
     context.sq
