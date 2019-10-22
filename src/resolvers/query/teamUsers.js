@@ -10,10 +10,13 @@ export default async (root, args, context, info) => {
     perms[x] = true;
   });
   const permInt = permsToInt(perms);
+  console.log({ perms, permInt });
 
   const dbHandle = context.sq.from`users`.where(
     context.sq
-      .txt`(EXISTS (SELECT user_id FROM team_permissions_bit WHERE (permission | ${permInt} ) > 0 AND users.id = user_id))`
+      .txt`(EXISTS (SELECT user_id FROM team_permissions_bit WHERE ((permission | ${permInt} ) > 0) AND users.id = user_id and team_id = ${
+      args.input.teamId
+    }))`
   );
 
   // console.log(await dbHandle);
