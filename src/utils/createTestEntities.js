@@ -47,6 +47,7 @@ export const createTestOLPermission = async (userId, teamId, permission) =>
 export const createTestTeamPermissionBit = async (userId, teamId, permObJ) => {
   const defState = makeDefaultState();
   const perms = Object.assign({}, defState, permObJ);
+
   return createGDS(sq.from`team_permissions_bit`)({
     teamId,
     userId,
