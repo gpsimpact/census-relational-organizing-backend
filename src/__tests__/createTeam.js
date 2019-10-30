@@ -1,10 +1,13 @@
 import faker from "faker";
-import { graphqlTestCall } from "../utils/graphqlTestCall";
+import { graphqlTestCall, debugResponse } from "../utils/graphqlTestCall";
 import { dbUp, dbDown } from "../utils/testDbOps";
 import {
   createTestUser,
   createTestTeam,
-  createAdminUser
+  createAdminUser,
+  createTestForm,
+  createTestTaskDefinition,
+  createTestTaskAssignment
 } from "../utils/createTestEntities";
 import { sq } from "../db";
 
@@ -95,5 +98,58 @@ describe("Create Team", () => {
     expect(response.data).toBeNull();
     expect(response.errors.length).toEqual(1);
     expect(response.errors[0].message).toEqual("Not Authorized!");
+  });
+
+  test("Default taskAssignments are created", async () => {
+    const adminUser = await createAdminUser();
+
+    const newTeamData = {
+      name: faker.company.companyName()
+    };
+
+    const formA = await createTestForm(adminUser.id);
+    const taskDefinitionA = await createTestTaskDefinition(
+      formA.id,
+      adminUser.id
+    );
+    await sq`task_definitions`
+      .set({ autoAddNewTeams: true, autoAddSortValue: 0 })
+      .where({ id: taskDefinitionA.id });
+
+    const formB = await createTestForm(adminUser.id);
+    const taskDefinitionB = await createTestTaskDefinition(
+      formB.id,
+      adminUser.id
+    );
+    await sq`task_definitions`
+      .set({ autoAddNewTeams: true, autoAddSortValue: 1 })
+      .where({ id: taskDefinitionB.id });
+
+    // no input
+    const response = await graphqlTestCall(
+      CREATE_TEAM_MUTATION,
+      {
+        input: newTeamData
+      },
+      { user: { id: adminUser.id } }
+    );
+    debugResponse(response);
+    expect(response.data.createTeam).not.toBeNull();
+    expect(response.data.createTeam.item.name).toEqual(newTeamData.name);
+    const [dbTaskAssignmentsA] = await sq.from`task_assignments`.where({
+      teamId: response.data.createTeam.item.id,
+      taskDefinitionId: taskDefinitionA.id
+    });
+    expect(dbTaskAssignmentsA).toBeDefined();
+    expect(dbTaskAssignmentsA.sortValue).toEqual(0);
+    expect(dbTaskAssignmentsA.taskRequiredRoles).toEqual(8);
+
+    const [dbTaskAssignmentsB] = await sq.from`task_assignments`.where({
+      teamId: response.data.createTeam.item.id,
+      taskDefinitionId: taskDefinitionB.id
+    });
+    expect(dbTaskAssignmentsB).toBeDefined();
+    expect(dbTaskAssignmentsB.sortValue).toEqual(1);
+    expect(dbTaskAssignmentsB.taskRequiredRoles).toEqual(8);
   });
 });

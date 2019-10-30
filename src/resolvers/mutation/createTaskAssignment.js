@@ -13,7 +13,8 @@ export default async (
       notAvailableBeforeTs,
       notAvailableAfterTs,
       taskRequiredRoles,
-      notUntilCompletionOf
+      notUntilCompletionOf,
+      supplementalFields
     }
   },
   context
@@ -57,6 +58,10 @@ export default async (
     }
   }
 
+  if (supplementalFields) {
+    supplementalFields = JSON.stringify(supplementalFields);
+  }
+
   // convert required roles to bit value
   const perms = makeDefaultState();
   taskRequiredRoles.forEach(x => {
@@ -76,6 +81,7 @@ export default async (
     notAvailableAfterTs,
     taskRequiredRoles: permInt,
     notUntilCompletionOf,
+    supplementalFields,
     sortValue: teamTaskAssignmentCount.count || 0
   }).return`*`;
 

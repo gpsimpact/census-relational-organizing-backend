@@ -14,6 +14,7 @@ import {
   createTestFormValue
 } from "../utils/createTestEntities";
 import { sq } from "../db";
+import _ from "lodash";
 
 const GET_TASK_ASSIGNMENT_QUERY = `
 query taskAssignment($id: String!, $targetId: String!) {
@@ -45,6 +46,12 @@ query taskAssignment($id: String!, $targetId: String!) {
         notAvailableBeforeTs
         notAvailableAfterTs
         sortValue
+        supplementalFields {
+          label
+          name
+          type
+          value(targetId: $targetId)
+        }
       }
     }
 `;
@@ -402,5 +409,58 @@ describe("Task assignment", () => {
     );
     debugResponse(response);
     expect(response.data.taskAssignment.sortValue).toEqual(2);
+  });
+
+  test("Field supplemental fields works ", async () => {
+    const user = await createAdminUser();
+
+    const team = await createTestTeam();
+    const target = await createTestTarget({ userId: user.id, teamId: team.id });
+
+    const form = await createTestForm(user.id);
+    const taskDefinition = await createTestTaskDefinition(form.id, user.id);
+    const taskAssignment = await createTestTaskAssignment(
+      taskDefinition.id,
+      team.id,
+      {
+        MEMBER: true
+      }
+    );
+
+    const supplementalFields = [
+      {
+        label: "I am the label text",
+        type: "text",
+        name: "testingSupplemental"
+      }
+    ];
+
+    await sq`task_assignments`
+      .set({ supplementalFields: JSON.stringify(supplementalFields) })
+      .where({ id: taskAssignment.id });
+
+    // test form value carries over
+    const formValue = await createTestFormValue(
+      form.id,
+      user.id,
+      target.id,
+      supplementalFields[0].name
+    );
+
+    const response = await graphqlTestCall(
+      GET_TASK_ASSIGNMENT_QUERY,
+      { id: taskAssignment.id, targetId: target.id },
+      { user: { id: user.id } }
+    );
+    debugResponse(response);
+    expect(response.data.taskAssignment.id).toEqual(taskAssignment.id);
+    expect(response.data.taskAssignment.supplementalFields.length).toBe(1);
+    expect(
+      _.omit(response.data.taskAssignment.supplementalFields[0], "value")
+    ).toEqual(supplementalFields[0]);
+
+    expect(response.data.taskAssignment.supplementalFields[0].value).toEqual(
+      formValue.value
+    );
   });
 });

@@ -12,6 +12,7 @@ type TaskAssignment {
   notAvailableAfterTs: GraphQLDateTime
   notAvailableUntilCompletionOf: TaskAssignment
   sortValue: Int
+  supplementalFields: [FormField]
 }
 
 type TaskAssignmentRoles {
@@ -41,6 +42,7 @@ input CreateTaskAssignmentInput {
   taskRequiredRoles: [ObjectLevelPermissionEnum!]!
   # task assignment ID
   notUntilCompletionOf: String
+  supplementalFields: [CreateFormFieldInput]
 }
 
 type CreateTaskAssignmentResult {
@@ -70,6 +72,7 @@ input UpdateTaskAssignmentInput {
   taskRequiredRoles: [ObjectLevelPermissionEnum!]
   # task assignment ID
   notUntilCompletionOf: String
+  supplementalFields: [CreateFormFieldInput]
 }
 
 type UpdateTaskAssignmentResult {
