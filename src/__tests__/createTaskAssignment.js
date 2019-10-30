@@ -62,13 +62,22 @@ describe("Task assignment", () => {
     const form = await createTestForm(user.id);
     const taskDefinition = await createTestTaskDefinition(form.id, user.id);
 
+    const supplementalFields = [
+      {
+        label: "I am the label text",
+        type: "text",
+        name: "testingSupplemental"
+      }
+    ];
+
     const response = await graphqlTestCall(
       CREATE_TASK_ASSIGNMENT_MUTATION,
       {
         input: {
           teamId: team.id,
           taskDefinitionId: taskDefinition.id,
-          taskRequiredRoles: ["MEMBER", "TRAINING"]
+          taskRequiredRoles: ["MEMBER", "TRAINING"],
+          supplementalFields
         }
       },
       { user: { id: user.id } }
@@ -83,6 +92,8 @@ describe("Task assignment", () => {
     });
     expect(dbCheck.length).toBe(1);
     expect(dbCheck[0].taskRequiredRoles).toEqual(10);
+    expect(dbCheck[0].supplementalFields[0]).toEqual(supplementalFields[0]);
+
     expect(response.data.createTaskAssignment.item.sortValue).toBe(0);
 
     const form2 = await createTestForm(user.id);

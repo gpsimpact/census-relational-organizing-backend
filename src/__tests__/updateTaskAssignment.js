@@ -71,13 +71,22 @@ describe("Task assignment", () => {
       { MEMBER: true }
     );
 
+    const supplementalFields = [
+      {
+        label: "I am the label text",
+        type: "text",
+        name: "testingSupplemental"
+      }
+    ];
+
     const response = await graphqlTestCall(
       UPDATE_TASK_ASSIGNMENT_MUTATION,
       {
         input: {
           taskAssignmentId: taskAssignment.id,
           taskDefinitionId: taskDefinition2.id,
-          taskRequiredRoles: ["MEMBER", "TRAINING"]
+          taskRequiredRoles: ["MEMBER", "TRAINING"],
+          supplementalFields
         }
       },
       { user: { id: user.id } }
@@ -91,6 +100,7 @@ describe("Task assignment", () => {
     expect(dbCheck.length).toBe(1);
     expect(dbCheck[0].taskDefinitionId).toEqual(taskDefinition2.id);
     expect(dbCheck[0].taskRequiredRoles).toEqual(10);
+    expect(dbCheck[0].supplementalFields[0]).toEqual(supplementalFields[0]);
     // expect("non authed user cant").toBe("written");
   });
 

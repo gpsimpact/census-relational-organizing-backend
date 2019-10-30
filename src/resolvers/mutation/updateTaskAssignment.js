@@ -59,9 +59,14 @@ export default async (root, { input }, context) => {
     permInt = permsToInt(perms);
   }
 
+  if (input.supplementalFields) {
+    input.supplementalFields = JSON.stringify(input.supplementalFields);
+  }
+
   const updateValues = Object.assign({}, _.omit(input, "taskAssignmentId"), {
     taskRequiredRoles: permInt
   });
+
   const [updatedTa] = await context.sq`task_assignments`
     .set(updateValues)
     .where({ id: input.taskAssignmentId }).return`*`;

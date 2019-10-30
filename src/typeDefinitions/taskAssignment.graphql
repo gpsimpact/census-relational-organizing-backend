@@ -42,6 +42,7 @@ input CreateTaskAssignmentInput {
   taskRequiredRoles: [ObjectLevelPermissionEnum!]!
   # task assignment ID
   notUntilCompletionOf: String
+  supplementalFields: [CreateFormFieldInput]
 }
 
 type CreateTaskAssignmentResult {
@@ -71,6 +72,7 @@ input UpdateTaskAssignmentInput {
   taskRequiredRoles: [ObjectLevelPermissionEnum!]
   # task assignment ID
   notUntilCompletionOf: String
+  supplementalFields: [CreateFormFieldInput]
 }
 
 type UpdateTaskAssignmentResult {
