@@ -17,6 +17,9 @@ type Target {
   active: Boolean!
   retainAddress: Boolean!
   censusTract: String
+  genderIdentity: GenderIdentityEnum
+  sexualOrientation: SexualOrientationEnum
+  raceEthnicity: RaceEthnicityEnum
 }
 
 input CreateTargetInput {
@@ -34,6 +37,9 @@ input CreateTargetInput {
   activeTibs: [String!]
   teamId: String!
   retainAddress: Boolean! = true
+  genderIdentity: GenderIdentityEnum
+  sexualOrientation: SexualOrientationEnum
+  raceEthnicity: RaceEthnicityEnum
 }
 
 type CreateTargetResult {
@@ -57,6 +63,9 @@ input UpdateTargetInput {
   householdSize: Int
   activeTibs: [String!]
   retainAddress: Boolean! = true
+  genderIdentity: GenderIdentityEnum
+  sexualOrientation: SexualOrientationEnum
+  raceEthnicity: RaceEthnicityEnum
 }
 
 type UpdateTargetResult {
