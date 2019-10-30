@@ -8,7 +8,7 @@ import {
   createTestTeam,
   createTestTeamPermissionBit
 } from "../utils/createTestEntities";
-import { intToPerms } from "../utils/permissions/permBitWise";
+// import { intToPerms } from "../utils/permissions/permBitWise";
 
 const CANCEL_TEAM_MEMBERSHIP_REQUEST_MUTATION = `
 mutation cancelTeamMembershipRequest($teamId: String!) {
