@@ -14,6 +14,7 @@ import {
   createTestFormValue
 } from "../utils/createTestEntities";
 import { sq } from "../db";
+import faker from "faker";
 
 const GET_TASK_ASSIGNMENT_QUERY = `
 query taskAssignment($id: String!, $targetId: String!) {
@@ -45,6 +46,10 @@ query taskAssignment($id: String!, $targetId: String!) {
         notAvailableBeforeTs
         notAvailableAfterTs
         sortValue
+        supplementalFields {
+          name
+              value(targetId: $targetId)
+        }
       }
     }
 `;
@@ -402,5 +407,75 @@ describe("Task assignment", () => {
     );
     debugResponse(response);
     expect(response.data.taskAssignment.sortValue).toEqual(2);
+  });
+
+  test("Field supplemental fields works ", async () => {
+    const user = await createAdminUser();
+
+    const team = await createTestTeam();
+    const target = await createTestTarget({ userId: user.id, teamId: team.id });
+
+    const form = await createTestForm(user.id);
+    const taskDefinition = await createTestTaskDefinition(form.id, user.id);
+    const taskAssignment = await createTestTaskAssignment(
+      taskDefinition.id,
+      team.id,
+      {
+        MEMBER: true
+      }
+    );
+
+    const supplementalFields = [
+      {
+        id: faker.random.uuid(),
+        label: "I am the label text",
+        type: "text",
+        name: "alpha"
+      }
+    ];
+
+    await sq`task_assignments`
+      .set({ supplementalFields: JSON.stringify(supplementalFields) })
+      .where({ id: taskAssignment.id });
+
+    const response = await graphqlTestCall(
+      GET_TASK_ASSIGNMENT_QUERY,
+      { id: taskAssignment.id, targetId: target.id },
+      { user: { id: user.id } }
+    );
+    debugResponse(response);
+    expect(response.data.taskAssignment.id).toEqual(taskAssignment.id);
+    // expect(response.data.taskAssignment.definition.id).toEqual(
+    //   taskDefinition.id
+    // );
+    // expect(response.data.taskAssignment.team.id).toEqual(team.id);
+    // expect(response.data.taskAssignment.availableTo).toEqual([
+    //   {
+    //     role: "APPLICANT",
+    //     available: false
+    //   },
+    //   {
+    //     role: "TRAINING",
+    //     available: false
+    //   },
+    //   {
+    //     role: "ELEVATED",
+    //     available: false
+    //   },
+    //   {
+    //     role: "MEMBER",
+    //     available: true
+    //   },
+    //   {
+    //     role: "ADMIN",
+    //     available: false
+    //   },
+    //   {
+    //     role: "DENIED",
+    //     available: false
+    //   }
+    // ]);
+    // expect(response.data.taskAssignment.available.available).toEqual(true);
+    // expect(response.data.taskAssignment.sortValue).toBeNull();
   });
 });

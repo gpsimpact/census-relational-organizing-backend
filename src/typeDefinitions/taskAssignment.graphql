@@ -12,6 +12,7 @@ type TaskAssignment {
   notAvailableAfterTs: GraphQLDateTime
   notAvailableUntilCompletionOf: TaskAssignment
   sortValue: Int
+  supplementalFields: [FormField]
 }
 
 type TaskAssignmentRoles {
