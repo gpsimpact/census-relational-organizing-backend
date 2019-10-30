@@ -88,6 +88,7 @@ import taskDefinition from "./query/taskDefinition";
 import createTaskAssignment from "./mutation/createTaskAssignment";
 import setTaskAssignmentSortOrder from "./mutation/setTaskAssignmentSortOrder";
 import updateTaskAssignment from "./mutation/updateTaskAssignment";
+import supplementalFields from "./taskAssignment/supplementalFields";
 
 export default {
   Query: {
@@ -204,6 +205,7 @@ export default {
     availableTo: taskAssignmentAvailableTo,
     available: taskAssignmentAvailable,
     complete: taskAssignmentComplete,
-    notAvailableUntilCompletionOf: taskAssignmentNotAvailableUntilCompletionOf
+    notAvailableUntilCompletionOf: taskAssignmentNotAvailableUntilCompletionOf,
+    supplementalFields
   }
 };

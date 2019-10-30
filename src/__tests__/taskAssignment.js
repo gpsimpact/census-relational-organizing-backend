@@ -14,7 +14,7 @@ import {
   createTestFormValue
 } from "../utils/createTestEntities";
 import { sq } from "../db";
-import faker from "faker";
+import _ from "lodash";
 
 const GET_TASK_ASSIGNMENT_QUERY = `
 query taskAssignment($id: String!, $targetId: String!) {
@@ -47,8 +47,10 @@ query taskAssignment($id: String!, $targetId: String!) {
         notAvailableAfterTs
         sortValue
         supplementalFields {
+          label
           name
-              value(targetId: $targetId)
+          type
+          value(targetId: $targetId)
         }
       }
     }
@@ -427,16 +429,23 @@ describe("Task assignment", () => {
 
     const supplementalFields = [
       {
-        id: faker.random.uuid(),
         label: "I am the label text",
         type: "text",
-        name: "alpha"
+        name: "testingSupplemental"
       }
     ];
 
     await sq`task_assignments`
       .set({ supplementalFields: JSON.stringify(supplementalFields) })
       .where({ id: taskAssignment.id });
+
+    // test form value carries over
+    const formValue = await createTestFormValue(
+      form.id,
+      user.id,
+      target.id,
+      supplementalFields[0].name
+    );
 
     const response = await graphqlTestCall(
       GET_TASK_ASSIGNMENT_QUERY,
@@ -445,37 +454,13 @@ describe("Task assignment", () => {
     );
     debugResponse(response);
     expect(response.data.taskAssignment.id).toEqual(taskAssignment.id);
-    // expect(response.data.taskAssignment.definition.id).toEqual(
-    //   taskDefinition.id
-    // );
-    // expect(response.data.taskAssignment.team.id).toEqual(team.id);
-    // expect(response.data.taskAssignment.availableTo).toEqual([
-    //   {
-    //     role: "APPLICANT",
-    //     available: false
-    //   },
-    //   {
-    //     role: "TRAINING",
-    //     available: false
-    //   },
-    //   {
-    //     role: "ELEVATED",
-    //     available: false
-    //   },
-    //   {
-    //     role: "MEMBER",
-    //     available: true
-    //   },
-    //   {
-    //     role: "ADMIN",
-    //     available: false
-    //   },
-    //   {
-    //     role: "DENIED",
-    //     available: false
-    //   }
-    // ]);
-    // expect(response.data.taskAssignment.available.available).toEqual(true);
-    // expect(response.data.taskAssignment.sortValue).toBeNull();
+    expect(response.data.taskAssignment.supplementalFields.length).toBe(1);
+    expect(
+      _.omit(response.data.taskAssignment.supplementalFields[0], "value")
+    ).toEqual(supplementalFields[0]);
+
+    expect(response.data.taskAssignment.supplementalFields[0].value).toEqual(
+      formValue.value
+    );
   });
 });
