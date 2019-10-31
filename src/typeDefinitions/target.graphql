@@ -20,6 +20,7 @@ type Target {
   genderIdentity: GenderIdentityEnum
   sexualOrientation: SexualOrientationEnum
   raceEthnicity: RaceEthnicityEnum
+  isNameAlias: Boolean!
 }
 
 input CreateTargetInput {
@@ -40,6 +41,7 @@ input CreateTargetInput {
   genderIdentity: GenderIdentityEnum
   sexualOrientation: SexualOrientationEnum
   raceEthnicity: RaceEthnicityEnum
+  isNameAlias: Boolean
 }
 
 type CreateTargetResult {
@@ -66,6 +68,7 @@ input UpdateTargetInput {
   genderIdentity: GenderIdentityEnum
   sexualOrientation: SexualOrientationEnum
   raceEthnicity: RaceEthnicityEnum
+  isNameAlias: Boolean
 }
 
 type UpdateTargetResult {

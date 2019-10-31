@@ -32,6 +32,7 @@ const CREATE_TARGET_MUTATION = `
         twitterHandle
         facebookProfile
         householdSize
+        isNameAlias
       }
     }
   }
@@ -46,7 +47,7 @@ afterAll(async () => {
 });
 
 describe("Create Target", () => {
-  test("Happy Path", async () => {
+  test.only("Happy Path", async () => {
     const user = await createTestUser();
     const team = await createTestTeam();
     await createTestTeamPermissionBit(user.id, team.id, { MEMBER: true });
@@ -69,7 +70,8 @@ describe("Create Target", () => {
         min: 1,
         max: 10
       }),
-      teamId: team.id
+      teamId: team.id,
+      isNameAlias: true
     };
 
     const response = await graphqlTestCall(
@@ -96,6 +98,7 @@ describe("Create Target", () => {
     expect(dbTarget.email).toEqual(newTargetData.email.toLowerCase());
     expect(dbTarget.userId).toBe(user.id);
     expect(dbTarget.teamId).toBe(team.id);
+    expect(dbTarget.isNameAlias).toBe(true);
   });
 
   test("set activeTibs", async () => {
