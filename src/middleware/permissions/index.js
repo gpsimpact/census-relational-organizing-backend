@@ -564,7 +564,8 @@ export default shield(
     DesignateTeamEligibleTaskResult: allow,
     CreateTaskAssignmentResult: allow,
     SetTaskAssignmentSortOrderResult: allow,
-    UpdateTaskAssignmentResult: allow
+    UpdateTaskAssignmentResult: allow,
+    HouseholdMember: allow
   },
   {
     fallbackError: "Not Authorized!", // default error spelling is Authorised.

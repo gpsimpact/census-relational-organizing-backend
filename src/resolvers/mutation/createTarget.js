@@ -46,6 +46,10 @@ export default async (root, args, context) => {
     writeInput = _.omit(writeInput, ["address", "city", "state"]);
   }
 
+  if (writeInput.householdMembers) {
+    writeInput.householdMembers = JSON.stringify(writeInput.householdMembers);
+  }
+
   const writeArgs = Object.assign({}, args, { input: writeInput });
 
   const target = await addOneHOR(
