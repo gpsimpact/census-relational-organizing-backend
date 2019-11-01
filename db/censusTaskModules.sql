@@ -24,28 +24,63 @@ VALUES
 
 -- module 1
 INSERT INTO "public"."task_assignments"("team_id","task_definition_id","active","task_required_roles","not_until_completion_of","not_available_before_ts","not_available_after_ts","sort_value")
-SELECT id,'d6a2beda-6a38-4ca8-a64d-02b7b961e498',TRUE,8,NULL,NULL,NULL,0 FROM teams;
+SELECT id,'d6a2beda-6a38-4ca8-a64d-02b7b961e498',TRUE,8,NULL,NULL,NULL,0 FROM teams
+WHERE NOT EXISTS (
+	SELECT 1 from task_assignments 
+	WHERE task_definition_id = 'd6a2beda-6a38-4ca8-a64d-02b7b961e498'
+	AND team_id = teams.id
+);
 
 -- module 2
 INSERT INTO "public"."task_assignments"("team_id","task_definition_id","active","task_required_roles","not_until_completion_of","not_available_before_ts","not_available_after_ts","sort_value")
-SELECT id,'f9af66e4-1171-4652-a7d4-12cd223b5636',TRUE,8,NULL,NULL,NULL,1 FROM teams;
+SELECT id,'f9af66e4-1171-4652-a7d4-12cd223b5636',TRUE,8,NULL,NULL,NULL,1 FROM teams
+WHERE NOT EXISTS (
+	SELECT 1 from task_assignments 
+	WHERE task_definition_id = 'f9af66e4-1171-4652-a7d4-12cd223b5636'
+	AND team_id = teams.id
+);
 
 -- module 3
 INSERT INTO "public"."task_assignments"("team_id","task_definition_id","active","task_required_roles","not_until_completion_of","not_available_before_ts","not_available_after_ts","sort_value")
-SELECT id,'10cadb7e-670f-4f85-93c1-fb2a7b842bc5',TRUE,8,NULL,NULL,NULL,2 FROM teams;
+SELECT id,'10cadb7e-670f-4f85-93c1-fb2a7b842bc5',TRUE,8,NULL,NULL,NULL,2 FROM teams
+WHERE NOT EXISTS (
+	SELECT 1 from task_assignments 
+	WHERE task_definition_id = '10cadb7e-670f-4f85-93c1-fb2a7b842bc5'
+	AND team_id = teams.id
+);
 
 -- module 4
 INSERT INTO "public"."task_assignments"("team_id","task_definition_id","active","task_required_roles","not_until_completion_of","not_available_before_ts","not_available_after_ts","sort_value")
-SELECT id,'4567d2a8-61db-41d2-b9c1-46ebe85752dc',TRUE,8,NULL,NULL,NULL,3 FROM teams;
+SELECT id,'4567d2a8-61db-41d2-b9c1-46ebe85752dc',TRUE,8,NULL,NULL,NULL,3 FROM teams
+WHERE NOT EXISTS (
+	SELECT 1 from task_assignments 
+	WHERE task_definition_id = '14567d2a8-61db-41d2-b9c1-46ebe85752dc'
+	AND team_id = teams.id
+);
 
 -- module 5
 INSERT INTO "public"."task_assignments"("team_id","task_definition_id","active","task_required_roles","not_until_completion_of","not_available_before_ts","not_available_after_ts","sort_value")
-SELECT id,'7f9d1954-4998-449a-8989-f91026f0855e',TRUE,8,NULL,NULL,NULL,4 FROM teams;
+SELECT id,'7f9d1954-4998-449a-8989-f91026f0855e',TRUE,8,NULL,NULL,NULL,4 FROM teams
+WHERE NOT EXISTS (
+	SELECT 1 from task_assignments 
+	WHERE task_definition_id = '7f9d1954-4998-449a-8989-f91026f0855e'
+	AND team_id = teams.id
+);
 
 -- module 6
 INSERT INTO "public"."task_assignments"("team_id","task_definition_id","active","task_required_roles","not_until_completion_of","not_available_before_ts","not_available_after_ts","sort_value")
-SELECT id,'768b5fec-a661-4ae5-b899-c41a6d135e3e',TRUE,8,NULL,NULL,NULL,5 FROM teams;
+SELECT id,'768b5fec-a661-4ae5-b899-c41a6d135e3e',TRUE,8,NULL,NULL,NULL,5 FROM teams
+WHERE NOT EXISTS (
+	SELECT 1 from task_assignments 
+	WHERE task_definition_id = '768b5fec-a661-4ae5-b899-c41a6d135e3e'
+	AND team_id = teams.id
+);
 
 -- module 7
 INSERT INTO "public"."task_assignments"("team_id","task_definition_id","active","task_required_roles","not_until_completion_of","not_available_before_ts","not_available_after_ts","sort_value")
-SELECT id,'8ae13a94-b563-4b6a-ac95-201b986081f1',TRUE,8,NULL,NULL,NULL,6 FROM teams;
+SELECT id,'8ae13a94-b563-4b6a-ac95-201b986081f1',TRUE,8,NULL,NULL,NULL,6 FROM teams
+WHERE NOT EXISTS (
+	SELECT 1 from task_assignments 
+	WHERE task_definition_id = '8ae13a94-b563-4b6a-ac95-201b986081f1'
+	AND team_id = teams.id
+);
