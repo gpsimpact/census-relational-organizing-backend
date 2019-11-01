@@ -7,7 +7,8 @@ import {
   //   createTestGlobalPerm,
   createTestTeam,
   // createTestOLPermission,
-  createTestTeamPermissionBit
+  createTestTeamPermissionBit,
+  createAdminUser
 } from "../utils/createTestEntities";
 import { intToPerms } from "../utils/permissions/permBitWise";
 
@@ -33,11 +34,14 @@ describe("User", () => {
   test("Happy Path", async () => {
     const user = await createTestUser();
     const team = await createTestTeam();
+    const teamAdmin = await createTestUser();
+    await createTestTeamPermissionBit(teamAdmin.id, team.id, { ADMIN: true });
+    const mockSendEmail = jest.fn();
 
     const response = await graphqlTestCall(
       REQUEST_TEAM_MEMBERSHIP_MUTATION,
       { teamId: team.id },
-      { user: { id: user.id } }
+      { user: { id: user.id }, sendEmail: mockSendEmail }
     );
     debugResponse(response);
     expect(response.data.requestTeamMembership.code).toEqual("OK");
@@ -52,6 +56,18 @@ describe("User", () => {
     });
     expect(dbUserPerms).not.toBeNull();
     expect(intToPerms(dbUserPerms.permission).APPLICANT).toBe(true);
+
+    expect(mockSendEmail).toHaveBeenCalled();
+    expect(mockSendEmail).toHaveBeenCalledWith({
+      to: [teamAdmin.email],
+      from: process.env.EMAIL_SENDER,
+      templateId: "d-7b546784ced74cb7b6192588ca2feaee",
+      dynamic_template_data: {
+        TEAM_NAME: team.name,
+        APPLICANT_NAME: `${user.firstName} ${user.lastName}`,
+        DASHBOARD_LINK: `${process.env.FRONTEND_HOST}/dash/vols?team=${team.id}`
+      }
+    });
   });
 
   test("fails if not authed", async () => {
