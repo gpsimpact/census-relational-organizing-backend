@@ -1,5 +1,5 @@
 import faker from "faker";
-import { graphqlTestCall } from "../utils/graphqlTestCall";
+import { graphqlTestCall, debugResponse } from "../utils/graphqlTestCall";
 import { dbUp, dbDown } from "../utils/testDbOps";
 import {
   createTestUser,
@@ -7,6 +7,7 @@ import {
   createAdminUser,
   createTestTeamPermissionBit
 } from "../utils/createTestEntities";
+import { sq } from "../db";
 
 const GET_USER_QUERY = `
 query User($id: String, $email: String) {
@@ -26,6 +27,7 @@ query User($id: String, $email: String) {
             id
           }
           permissions
+          acceptedTos
         }
     }
 }
@@ -128,6 +130,7 @@ describe("User", () => {
       { id: user.id },
       { user: { id: adminUser.id } }
     );
+    debugResponse(response);
     expect(response.data.user.teamPermissions.length).toBe(1);
     expect(response.data.user.teamPermissions[0].permissions.length).toBe(2);
     expect(response.data.user.teamPermissions[0].permissions).toContain(
@@ -137,6 +140,17 @@ describe("User", () => {
       "ADMIN"
     );
     expect(response.data.user.teamPermissions[0].team.id).toEqual(team.id);
+    expect(response.data.user.teamPermissions[0].acceptedTos).toEqual(false);
+    await sq`team_permissions_bit`
+      .set({ acceptedTos: true })
+      .where({ teamId: team.id, userId: user.id });
+    const response2 = await graphqlTestCall(
+      GET_USER_QUERY,
+      { id: user.id },
+      { user: { id: adminUser.id } }
+    );
+    debugResponse(response2);
+    expect(response2.data.user.teamPermissions[0].acceptedTos).toEqual(true);
   });
 
   test("Team Permissions null", async () => {

@@ -496,7 +496,8 @@ export default shield(
       updateTaskAssignment: and(
         isAuthenticated,
         or(has_GP_ADMIN, userIsTeamAdminofTaskAssignmentTeam)
-      )
+      ),
+      setTeamTosAcceptance: isAuthenticated
     },
     Team: {
       userPermissions: allow, // <- Make this go away soon in favor of own root query
@@ -565,7 +566,8 @@ export default shield(
     CreateTaskAssignmentResult: allow,
     SetTaskAssignmentSortOrderResult: allow,
     UpdateTaskAssignmentResult: allow,
-    HouseholdMember: allow
+    HouseholdMember: allow,
+    SetTeamTosAcceptanceResult: allow
   },
   {
     fallbackError: "Not Authorized!", // default error spelling is Authorised.

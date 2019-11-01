@@ -60,4 +60,7 @@ type Mutation {
   updateTaskAssignment(
     input: UpdateTaskAssignmentInput!
   ): UpdateTaskAssignmentResult!
+  setTeamTosAcceptance(
+    input: SetTeamTosAcceptanceInput!
+  ): SetTeamTosAcceptanceResult!
 }

@@ -17,6 +17,7 @@ query team($id: String, $slug: String) {
           permission
           count
         }
+        tos
     }
 }
 `;
@@ -52,6 +53,7 @@ describe("Team", () => {
     // should return correct data
     expect(response.data.team.id).toEqual(team.id);
     expect(response.data.team.name).toEqual(team.name);
+    expect(response.data.team.tos).toEqual(team.tos);
   });
 
   test("Happy Path By Slug", async () => {

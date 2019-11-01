@@ -89,6 +89,7 @@ import createTaskAssignment from "./mutation/createTaskAssignment";
 import setTaskAssignmentSortOrder from "./mutation/setTaskAssignmentSortOrder";
 import updateTaskAssignment from "./mutation/updateTaskAssignment";
 import supplementalFields from "./taskAssignment/supplementalFields";
+import setTeamTosAcceptance from "./mutation/setTeamTosAcceptance";
 
 export default {
   Query: {
@@ -159,7 +160,8 @@ export default {
     designateTeamEligibleTask,
     createTaskAssignment,
     setTaskAssignmentSortOrder,
-    updateTaskAssignment
+    updateTaskAssignment,
+    setTeamTosAcceptance
   },
   User: {
     globalPermissions,

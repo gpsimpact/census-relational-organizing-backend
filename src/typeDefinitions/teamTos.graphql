@@ -1,0 +1,11 @@
+input SetTeamTosAcceptanceInput {
+  teamId: String!
+  acceptTos: Boolean!
+}
+
+type SetTeamTosAcceptanceResult {
+  code: MutationCodeEnum!
+  success: Boolean!
+  message: String!
+  item: User!
+}
