@@ -1,6 +1,7 @@
 type OLUserPerms {
   team: Team
   permissions: [String]!
+  acceptedTos: Boolean!
 }
 
 type OLTeamPerms {

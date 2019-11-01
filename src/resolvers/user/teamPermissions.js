@@ -22,9 +22,13 @@ export default async (root, args, ctx) => {
     }
 
     const team = await ctx.dataSource.team.byIdLoader.load(pd.teamId);
-    // console.log({ team, permissions });
+    // console.log({ team, permissions, pd });
     if (team.active) {
-      teamPermissions.push({ teamId: pd.teamId, permissions });
+      teamPermissions.push({
+        teamId: pd.teamId,
+        permissions,
+        acceptedTos: pd.acceptedTos
+      });
     }
   }
 
