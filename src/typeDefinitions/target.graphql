@@ -21,6 +21,7 @@ type Target {
   sexualOrientation: SexualOrientationEnum
   raceEthnicity: RaceEthnicityEnum
   isNameAlias: Boolean!
+  householdMembers: [HouseholdMember]
 }
 
 input CreateTargetInput {
@@ -42,6 +43,7 @@ input CreateTargetInput {
   sexualOrientation: SexualOrientationEnum
   raceEthnicity: RaceEthnicityEnum
   isNameAlias: Boolean
+  householdMembers: [HouseholdMemberInput]
 }
 
 type CreateTargetResult {
@@ -69,6 +71,7 @@ input UpdateTargetInput {
   sexualOrientation: SexualOrientationEnum
   raceEthnicity: RaceEthnicityEnum
   isNameAlias: Boolean
+  householdMembers: [HouseholdMemberInput]
 }
 
 type UpdateTargetResult {

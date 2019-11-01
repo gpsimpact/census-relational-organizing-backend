@@ -1,0 +1,16 @@
+type HouseholdMember {
+  relationship: HouseholdRelationshipEnum!
+  name: String!
+}
+
+input HouseholdMemberInput {
+  relationship: HouseholdRelationshipEnum!
+  name: String!
+}
+
+enum HouseholdRelationshipEnum {
+  PRIMARY
+  CHILD
+  ELDER
+  SIBLING
+}

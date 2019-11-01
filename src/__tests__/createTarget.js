@@ -33,6 +33,10 @@ const CREATE_TARGET_MUTATION = `
         facebookProfile
         householdSize
         isNameAlias
+        householdMembers {
+          relationship
+          name
+        }
       }
     }
   }
@@ -47,7 +51,7 @@ afterAll(async () => {
 });
 
 describe("Create Target", () => {
-  test.only("Happy Path", async () => {
+  test("Happy Path", async () => {
     const user = await createTestUser();
     const team = await createTestTeam();
     await createTestTeamPermissionBit(user.id, team.id, { MEMBER: true });
@@ -71,7 +75,10 @@ describe("Create Target", () => {
         max: 10
       }),
       teamId: team.id,
-      isNameAlias: true
+      isNameAlias: true,
+      householdMembers: [
+        { relationship: "CHILD", name: faker.name.firstName() }
+      ]
     };
 
     const response = await graphqlTestCall(
@@ -88,6 +95,10 @@ describe("Create Target", () => {
     expect(response.data.createTarget.item.email).toEqual(
       newTargetData.email.toLowerCase()
     );
+    expect(
+      response.data.createTarget.item.householdMembers.length
+    ).not.toBeNull();
+    expect(response.data.createTarget.item.householdMembers.length).toEqual(1);
 
     const [dbTarget] = await sq.from`targets`.where({
       id: response.data.createTarget.item.id
@@ -99,6 +110,8 @@ describe("Create Target", () => {
     expect(dbTarget.userId).toBe(user.id);
     expect(dbTarget.teamId).toBe(team.id);
     expect(dbTarget.isNameAlias).toBe(true);
+    expect(dbTarget.householdMembers.length).toBe(1);
+    expect(dbTarget.householdMembers[0].relationship).toBe("CHILD");
   });
 
   test("set activeTibs", async () => {
