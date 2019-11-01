@@ -4,11 +4,8 @@ import { dbUp, dbDown } from "../utils/testDbOps";
 import { sq } from "../db";
 import {
   createTestUser,
-  //   createTestGlobalPerm,
   createTestTeam,
-  // createTestOLPermission,
-  createTestTeamPermissionBit,
-  createAdminUser
+  createTestTeamPermissionBit
 } from "../utils/createTestEntities";
 import { intToPerms } from "../utils/permissions/permBitWise";
 
@@ -74,9 +71,15 @@ describe("User", () => {
     // const user = await createTestUser();
     const team = await createTestTeam();
 
-    const response = await graphqlTestCall(REQUEST_TEAM_MEMBERSHIP_MUTATION, {
-      teamId: team.id
-    });
+    const mockSendEmail = jest.fn();
+
+    const response = await graphqlTestCall(
+      REQUEST_TEAM_MEMBERSHIP_MUTATION,
+      {
+        teamId: team.id
+      },
+      { sendEmail: mockSendEmail }
+    );
     // expect(response.data.requestTeamMembership).toBeNull();
     expect(response.errors.length).toEqual(1);
     expect(response.errors[0].message).toEqual("Not Authorized!");
@@ -86,12 +89,14 @@ describe("User", () => {
     const user = await createTestUser();
     const team = await createTestTeam();
     await createTestTeamPermissionBit(user.id, team.id, { APPLICANT: true });
+    const mockSendEmail = jest.fn();
+
     const response = await graphqlTestCall(
       REQUEST_TEAM_MEMBERSHIP_MUTATION,
       {
         teamId: team.id
       },
-      { user: { id: user.id } }
+      { user: { id: user.id }, sendEmail: mockSendEmail }
     );
     debugResponse(response);
     expect(response.data.requestTeamMembership.code).toEqual("DUPLICATE");
@@ -107,12 +112,14 @@ describe("User", () => {
     await createTestTeamPermissionBit(user.id, team.id, {
       DENIED: true
     });
+    const mockSendEmail = jest.fn();
+
     const response = await graphqlTestCall(
       REQUEST_TEAM_MEMBERSHIP_MUTATION,
       {
         teamId: team.id
       },
-      { user: { id: user.id } }
+      { user: { id: user.id }, sendEmail: mockSendEmail }
     );
     debugResponse(response);
     expect(response.data.requestTeamMembership.code).toEqual("INELIGIBLE");

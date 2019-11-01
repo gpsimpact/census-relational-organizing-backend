@@ -59,6 +59,33 @@ export default async (root, args, context) => {
       .where({ teamId: args.input.teamId, userId: args.input.userId });
   }
 
+  // send an email
+  if (
+    args.input.permission !== "DENIED" &&
+    args.input.permission !== "APPLICANT"
+  ) {
+    const applicant = await context.dataSource.user.byIdLoader.load(
+      args.input.userId
+    );
+    const team = await context.dataSource.team.byIdLoader.load(
+      args.input.teamId
+    );
+
+    const messageData = {
+      to: applicant.email,
+      from: process.env.EMAIL_SENDER,
+      templateId: "d-c339968d7dea473db309b6c4a673d42b",
+      dynamic_template_data: {
+        APPLICATION_PERMISSION: args.input.permission,
+        TEAM_NAME: team.name,
+        APPLICANT_NAME: `${applicant.firstName} ${applicant.lastName}`,
+        DASHBOARD_LINK: `${process.env.FRONTEND_HOST}/dash?team=${team.id}`
+      }
+    };
+    // send email
+    await context.sendEmail(messageData);
+  }
+
   // Remove applicant status if exists
   // await context.dataSource.olPerms.remove({
   //   userId: args.input.userId,
