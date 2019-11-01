@@ -44,13 +44,14 @@ describe("User", () => {
     const granteeUser = await createTestUser();
     const permission = "MEMBER";
     const team = await createTestTeam();
+    const mockSendEmail = jest.fn();
 
     const response = await graphqlTestCall(
       GRANT_TEAM_PERMISSION_MUTATION,
       {
         input: { userId: granteeUser.id, teamId: team.id, permission }
       },
-      { user: { id: adminUser.id } }
+      { user: { id: adminUser.id }, sendEmail: mockSendEmail }
     );
     debugResponse(response);
     expect(response.data.toggleTeamPermission.code).toEqual("OK");
@@ -76,6 +77,19 @@ describe("User", () => {
     });
     expect(dbUserPerms).not.toBeNull();
     expect(intToPerms(dbUserPerms.permission)[permission]).toBe(true);
+
+    expect(mockSendEmail).toHaveBeenCalled();
+    expect(mockSendEmail).toHaveBeenCalledWith({
+      to: granteeUser.email,
+      from: process.env.EMAIL_SENDER,
+      templateId: "d-c339968d7dea473db309b6c4a673d42b",
+      dynamic_template_data: {
+        APPLICATION_PERMISSION: permission,
+        TEAM_NAME: team.name,
+        APPLICANT_NAME: `${granteeUser.firstName} ${granteeUser.lastName}`,
+        DASHBOARD_LINK: `${process.env.FRONTEND_HOST}/dash?team=${team.id}`
+      }
+    });
   });
 
   test("fails if not authed", async () => {
@@ -83,10 +97,15 @@ describe("User", () => {
     const granteeUser = await createTestUser();
     const permission = "APPLICANT";
     const team = await createTestTeam();
+    const mockSendEmail = jest.fn();
 
-    const response = await graphqlTestCall(GRANT_TEAM_PERMISSION_MUTATION, {
-      input: { userId: granteeUser.id, teamId: team.id, permission }
-    });
+    const response = await graphqlTestCall(
+      GRANT_TEAM_PERMISSION_MUTATION,
+      {
+        input: { userId: granteeUser.id, teamId: team.id, permission }
+      },
+      { sendEmail: mockSendEmail }
+    );
     expect(response.errors.length).toEqual(1);
     expect(response.errors[0].message).toEqual("Not Authorized!");
   });
@@ -96,6 +115,7 @@ describe("User", () => {
     const granteeUser = await createTestUser();
     const permission = "APPLICANT";
     const team = await createTestTeam();
+    const mockSendEmail = jest.fn();
 
     const response = await graphqlTestCall(
       GRANT_TEAM_PERMISSION_MUTATION,
@@ -113,7 +133,7 @@ describe("User", () => {
       {
         input: { userId: granteeUser.id, teamId: team.id, permission }
       },
-      { user: { id: grantorUser.id } }
+      { user: { id: grantorUser.id }, sendEmail: mockSendEmail }
     );
     expect(response2.data.toggleTeamPermission.code).toEqual("OK");
     expect(response2.data.toggleTeamPermission.success).toEqual(true);
@@ -127,13 +147,14 @@ describe("User", () => {
     const granteeUser = await createTestUser();
     const permission = "MEMBER";
     const team = await createTestTeam();
+    const mockSendEmail = jest.fn();
 
     const response = await graphqlTestCall(
       GRANT_TEAM_PERMISSION_MUTATION,
       {
         input: { userId: granteeUser.id, teamId: team.id, permission }
       },
-      { user: { id: grantorUser.id } }
+      { user: { id: grantorUser.id }, sendEmail: mockSendEmail }
     );
     expect(response.errors.length).toEqual(1);
     expect(response.errors[0].message).toEqual("Not Authorized!");
@@ -145,7 +166,7 @@ describe("User", () => {
       {
         input: { userId: granteeUser.id, teamId: team.id, permission }
       },
-      { user: { id: grantorUser.id } }
+      { user: { id: grantorUser.id }, sendEmail: mockSendEmail }
     );
     expect(response2.data.toggleTeamPermission.code).toEqual("OK");
     expect(response2.data.toggleTeamPermission.success).toEqual(true);
@@ -164,13 +185,14 @@ describe("User", () => {
     await createTestTeamPermissionBit(granteeUser.id, team.id, {
       [permission]: true
     });
+    const mockSendEmail = jest.fn();
 
     const response = await graphqlTestCall(
       GRANT_TEAM_PERMISSION_MUTATION,
       {
         input: { userId: granteeUser.id, teamId: team.id, permission }
       },
-      { user: { id: adminUser.id } }
+      { user: { id: adminUser.id }, sendEmail: mockSendEmail }
     );
     debugResponse(response);
     expect(response.data.toggleTeamPermission.code).toEqual("DUPLICATE");
@@ -190,13 +212,14 @@ describe("User", () => {
     await createTestTeamPermissionBit(granteeUser.id, team.id, {
       APPLICANT: true
     });
+    const mockSendEmail = jest.fn();
 
     const response = await graphqlTestCall(
       GRANT_TEAM_PERMISSION_MUTATION,
       {
         input: { userId: granteeUser.id, teamId: team.id, permission }
       },
-      { user: { id: adminUser.id } }
+      { user: { id: adminUser.id }, sendEmail: mockSendEmail }
     );
     expect(response.data.toggleTeamPermission.code).toEqual("OK");
     expect(response.data.toggleTeamPermission.success).toEqual(true);
@@ -221,13 +244,14 @@ describe("User", () => {
 
     // await createTestOLPermission(granteeUser.id, team.id, "ADMIN");
     await createTestTeamPermissionBit(granteeUser.id, team.id, { ADMIN: true });
+    const mockSendEmail = jest.fn();
 
     const response = await graphqlTestCall(
       GRANT_TEAM_PERMISSION_MUTATION,
       {
         input: { userId: granteeUser.id, teamId: team.id, permission }
       },
-      { user: { id: adminUser.id } }
+      { user: { id: adminUser.id }, sendEmail: mockSendEmail }
     );
     expect(response.data.toggleTeamPermission.code).toEqual("OK");
     expect(response.data.toggleTeamPermission.success).toEqual(true);
@@ -256,13 +280,14 @@ describe("User", () => {
     await createTestTeamPermissionBit(granteeUser.id, team.id, {
       MEMBER: true
     });
+    const mockSendEmail = jest.fn();
 
     const response = await graphqlTestCall(
       GRANT_TEAM_PERMISSION_MUTATION,
       {
         input: { userId: granteeUser.id, teamId: team.id, permission }
       },
-      { user: { id: adminUser.id } }
+      { user: { id: adminUser.id }, sendEmail: mockSendEmail }
     );
     expect(response.data.toggleTeamPermission.code).toEqual("OK");
     expect(response.data.toggleTeamPermission.success).toEqual(true);

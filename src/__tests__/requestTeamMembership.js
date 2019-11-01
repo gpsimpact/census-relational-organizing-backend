@@ -4,9 +4,7 @@ import { dbUp, dbDown } from "../utils/testDbOps";
 import { sq } from "../db";
 import {
   createTestUser,
-  //   createTestGlobalPerm,
   createTestTeam,
-  // createTestOLPermission,
   createTestTeamPermissionBit
 } from "../utils/createTestEntities";
 import { intToPerms } from "../utils/permissions/permBitWise";
@@ -33,11 +31,14 @@ describe("User", () => {
   test("Happy Path", async () => {
     const user = await createTestUser();
     const team = await createTestTeam();
+    const teamAdmin = await createTestUser();
+    await createTestTeamPermissionBit(teamAdmin.id, team.id, { ADMIN: true });
+    const mockSendEmail = jest.fn();
 
     const response = await graphqlTestCall(
       REQUEST_TEAM_MEMBERSHIP_MUTATION,
       { teamId: team.id },
-      { user: { id: user.id } }
+      { user: { id: user.id }, sendEmail: mockSendEmail }
     );
     debugResponse(response);
     expect(response.data.requestTeamMembership.code).toEqual("OK");
@@ -52,15 +53,33 @@ describe("User", () => {
     });
     expect(dbUserPerms).not.toBeNull();
     expect(intToPerms(dbUserPerms.permission).APPLICANT).toBe(true);
+
+    expect(mockSendEmail).toHaveBeenCalled();
+    expect(mockSendEmail).toHaveBeenCalledWith({
+      to: [teamAdmin.email],
+      from: process.env.EMAIL_SENDER,
+      templateId: "d-7b546784ced74cb7b6192588ca2feaee",
+      dynamic_template_data: {
+        TEAM_NAME: team.name,
+        APPLICANT_NAME: `${user.firstName} ${user.lastName}`,
+        DASHBOARD_LINK: `${process.env.FRONTEND_HOST}/dash/vols?team=${team.id}`
+      }
+    });
   });
 
   test("fails if not authed", async () => {
     // const user = await createTestUser();
     const team = await createTestTeam();
 
-    const response = await graphqlTestCall(REQUEST_TEAM_MEMBERSHIP_MUTATION, {
-      teamId: team.id
-    });
+    const mockSendEmail = jest.fn();
+
+    const response = await graphqlTestCall(
+      REQUEST_TEAM_MEMBERSHIP_MUTATION,
+      {
+        teamId: team.id
+      },
+      { sendEmail: mockSendEmail }
+    );
     // expect(response.data.requestTeamMembership).toBeNull();
     expect(response.errors.length).toEqual(1);
     expect(response.errors[0].message).toEqual("Not Authorized!");
@@ -70,12 +89,14 @@ describe("User", () => {
     const user = await createTestUser();
     const team = await createTestTeam();
     await createTestTeamPermissionBit(user.id, team.id, { APPLICANT: true });
+    const mockSendEmail = jest.fn();
+
     const response = await graphqlTestCall(
       REQUEST_TEAM_MEMBERSHIP_MUTATION,
       {
         teamId: team.id
       },
-      { user: { id: user.id } }
+      { user: { id: user.id }, sendEmail: mockSendEmail }
     );
     debugResponse(response);
     expect(response.data.requestTeamMembership.code).toEqual("DUPLICATE");
@@ -91,12 +112,14 @@ describe("User", () => {
     await createTestTeamPermissionBit(user.id, team.id, {
       DENIED: true
     });
+    const mockSendEmail = jest.fn();
+
     const response = await graphqlTestCall(
       REQUEST_TEAM_MEMBERSHIP_MUTATION,
       {
         teamId: team.id
       },
-      { user: { id: user.id } }
+      { user: { id: user.id }, sendEmail: mockSendEmail }
     );
     debugResponse(response);
     expect(response.data.requestTeamMembership.code).toEqual("INELIGIBLE");

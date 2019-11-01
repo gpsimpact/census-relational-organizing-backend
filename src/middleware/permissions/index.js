@@ -497,7 +497,8 @@ export default shield(
         isAuthenticated,
         or(has_GP_ADMIN, userIsTeamAdminofTaskAssignmentTeam)
       ),
-      setTeamTosAcceptance: isAuthenticated
+      setTeamTosAcceptance: isAuthenticated,
+      sendGlobalAdminsEmail: isAuthenticated
     },
     Team: {
       userPermissions: allow, // <- Make this go away soon in favor of own root query
@@ -567,7 +568,8 @@ export default shield(
     SetTaskAssignmentSortOrderResult: allow,
     UpdateTaskAssignmentResult: allow,
     HouseholdMember: allow,
-    SetTeamTosAcceptanceResult: allow
+    SetTeamTosAcceptanceResult: allow,
+    SendGlobalAdminsEmaiResult: allow
   },
   {
     fallbackError: "Not Authorized!", // default error spelling is Authorised.

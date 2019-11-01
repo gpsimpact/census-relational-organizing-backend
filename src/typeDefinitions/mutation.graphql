@@ -63,4 +63,7 @@ type Mutation {
   setTeamTosAcceptance(
     input: SetTeamTosAcceptanceInput!
   ): SetTeamTosAcceptanceResult!
+  sendGlobalAdminsEmail(
+    input: SendGlobalAdminsEmailInput!
+  ): SendGlobalAdminsEmaiResult!
 }

@@ -1,3 +1,4 @@
+import _ from "lodash";
 import {
   permsToInt,
   intToPerms,
@@ -55,6 +56,41 @@ export default async (root, args, context) => {
     permission: permsToInt(permSeed)
   });
   // }
+
+  // get team info
+  const team = await context.dataSource.team.byIdLoader.load(args.teamId);
+  // get applicant info
+  const applicant = await context.dataSource.user.byIdLoader.load(userId);
+
+  let teamAdminEmails = await context.sq.sql`
+  SELECT 
+    email 
+  FROM USERS u
+  WHERE EXISTS (
+    SELECT 
+      user_id 
+    FROM team_permissions_bit 
+    WHERE (permission & 16 ) > 0 
+    AND u.id = user_id
+    AND team_id = ${args.teamId}
+  ) AND u.active;
+  `;
+
+  teamAdminEmails = _.map(teamAdminEmails, "email");
+
+  const messageData = {
+    to: teamAdminEmails,
+    from: process.env.EMAIL_SENDER,
+    templateId: "d-7b546784ced74cb7b6192588ca2feaee",
+    dynamic_template_data: {
+      TEAM_NAME: team.name,
+      APPLICANT_NAME: `${applicant.firstName} ${applicant.lastName}`,
+      DASHBOARD_LINK: `${process.env.FRONTEND_HOST}/dash/vols?team=${team.id}`
+    }
+  };
+
+  // send email
+  await context.sendEmail(messageData);
 
   return {
     success: true,
