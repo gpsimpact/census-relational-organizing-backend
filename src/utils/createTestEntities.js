@@ -34,7 +34,8 @@ export const createTestTeam = async (active = true) =>
   createGDS(sq.from`teams`)({
     name: faker.company.companyName(),
     slug: faker.lorem.slug(),
-    active
+    active,
+    tos: faker.lorem.paragraphs()
   });
 
 export const createTestOLPermission = async (userId, teamId, permission) =>

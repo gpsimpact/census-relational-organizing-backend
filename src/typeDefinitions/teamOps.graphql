@@ -7,6 +7,7 @@ type Team {
   slug: String!
   createdAt: GraphQLDateTime!
   updatedAt: GraphQLDateTime!
+  tos: String
   # userPermissions: [OLTeamPerms]
 }
 
@@ -21,6 +22,7 @@ input UpdateTeamInput {
   name: String
   description: String
   active: Boolean
+  tos: String
 }
 
 type UpdateTeamResult {
@@ -33,6 +35,7 @@ type UpdateTeamResult {
 input CreateTeamInput {
   name: String!
   description: String
+  tos: String
 }
 
 type CreateTeamResult {
