@@ -90,6 +90,7 @@ import setTaskAssignmentSortOrder from "./mutation/setTaskAssignmentSortOrder";
 import updateTaskAssignment from "./mutation/updateTaskAssignment";
 import supplementalFields from "./taskAssignment/supplementalFields";
 import setTeamTosAcceptance from "./mutation/setTeamTosAcceptance";
+import sendGlobalAdminsEmail from "./mutation/sendGlobalAdminsEmail";
 
 export default {
   Query: {
@@ -161,7 +162,8 @@ export default {
     createTaskAssignment,
     setTaskAssignmentSortOrder,
     updateTaskAssignment,
-    setTeamTosAcceptance
+    setTeamTosAcceptance,
+    sendGlobalAdminsEmail
   },
   User: {
     globalPermissions,

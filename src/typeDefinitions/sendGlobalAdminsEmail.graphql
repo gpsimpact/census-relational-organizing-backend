@@ -1,0 +1,11 @@
+input SendGlobalAdminsEmailInput {
+  subject: String!
+  body: String!
+}
+
+type SendGlobalAdminsEmaiResult {
+  code: MutationCodeEnum!
+  success: Boolean!
+  message: String!
+  item: Target
+}
