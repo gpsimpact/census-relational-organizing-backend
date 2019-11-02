@@ -498,7 +498,8 @@ export default shield(
         or(has_GP_ADMIN, userIsTeamAdminofTaskAssignmentTeam)
       ),
       setTeamTosAcceptance: isAuthenticated,
-      sendGlobalAdminsEmail: isAuthenticated
+      sendGlobalAdminsEmail: isAuthenticated,
+      sendTeamAdminsEmail: and(isAuthenticated, or(has_GP_ADMIN, has_TP_MEMBER))
     },
     Team: {
       userPermissions: allow, // <- Make this go away soon in favor of own root query
@@ -569,7 +570,8 @@ export default shield(
     UpdateTaskAssignmentResult: allow,
     HouseholdMember: allow,
     SetTeamTosAcceptanceResult: allow,
-    SendGlobalAdminsEmaiResult: allow
+    SendGlobalAdminsEmailResult: allow,
+    SendTeamAdminsEmailResult: allow
   },
   {
     fallbackError: "Not Authorized!", // default error spelling is Authorised.
