@@ -1,9 +1,10 @@
-input SendGlobalAdminsEmailInput {
+input SendTeamAdminsEmailInput {
+  teamId: String!
   subject: String!
   body: String!
 }
 
-type SendGlobalAdminsEmailResult {
+type SendTeamAdminsEmailResult {
   code: MutationCodeEnum!
   success: Boolean!
   message: String!
