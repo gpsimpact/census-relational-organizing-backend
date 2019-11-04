@@ -61,8 +61,8 @@ describe("Send team admin email", () => {
       to: [teamAdminUser.email],
       from: process.env.EMAIL_SENDER,
       templateId: "d-1b37f21d9f474bbbbdae4d97b2fcf178",
-      subject: email.subject,
       dynamic_template_data: {
+        SUBJECT: email.subject,
         USER_NAME: `${user.firstName} ${user.lastName}`,
         USER_EMAIL: user.email,
         MESSAGE: email.body

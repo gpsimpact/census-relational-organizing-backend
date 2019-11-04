@@ -28,8 +28,8 @@ export default async (root, args, context) => {
     to: teamAdminEmails,
     from: process.env.EMAIL_SENDER,
     templateId: "d-1b37f21d9f474bbbbdae4d97b2fcf178",
-    subject: args.input.subject,
     dynamic_template_data: {
+      SUBJECT: args.input.subject,
       USER_NAME: `${user.firstName} ${user.lastName}`,
       USER_EMAIL: user.email,
       MESSAGE: args.input.body
