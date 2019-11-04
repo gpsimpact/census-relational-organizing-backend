@@ -69,4 +69,5 @@ type Mutation {
   sendTeamAdminsEmail(
     input: SendTeamAdminsEmailInput!
   ): SendGlobalAdminsEmailResult!
+  reassignTarget(input: ReassignTargetInput!): ReassignTargetResult!
 }

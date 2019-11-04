@@ -503,7 +503,11 @@ export default shield(
       ),
       setTeamTosAcceptance: isAuthenticated,
       sendGlobalAdminsEmail: isAuthenticated,
-      sendTeamAdminsEmail: and(isAuthenticated, or(has_GP_ADMIN, has_TP_MEMBER))
+      sendTeamAdminsEmail: and(
+        isAuthenticated,
+        or(has_GP_ADMIN, has_TP_MEMBER)
+      ),
+      reassignTarget: and(isAuthenticated, or(has_TP_ADMIN, has_GP_ADMIN))
     },
     Team: {
       userPermissions: allow, // <- Make this go away soon in favor of own root query
@@ -575,7 +579,8 @@ export default shield(
     HouseholdMember: allow,
     SetTeamTosAcceptanceResult: allow,
     SendGlobalAdminsEmailResult: allow,
-    SendTeamAdminsEmailResult: allow
+    SendTeamAdminsEmailResult: allow,
+    ReassignTargetResult: allow
   },
   {
     fallbackError: "Not Authorized!", // default error spelling is Authorised.
