@@ -38,4 +38,5 @@ type Query {
   targetTasks(targetId: String!, active: Boolean! = true): [TaskAssignment]
   teamEligibleTasks(input: TeamEligibleTasksInput!): [TaskDefinition]
   taskDefinition(input: TaskDefinitionInput!): TaskDefinition
+  teamTargets(teamId: String!, input: TargetsInput): TargetsResult!
 }

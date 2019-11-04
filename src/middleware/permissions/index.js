@@ -420,7 +420,11 @@ export default shield(
         )
       ),
       teamEligibleTasks: and(isAuthenticated, or(has_TP_ADMIN, has_GP_ADMIN)),
-      taskDefinition: isAuthenticated
+      taskDefinition: isAuthenticated,
+      teamTargets: and(
+        isAuthenticated,
+        or(has_TP_ADMIN_ROOT_TEAMID, has_GP_ADMIN)
+      )
     },
     Mutation: {
       removeUser: and(isAuthenticated, has_GP_ADMIN),
