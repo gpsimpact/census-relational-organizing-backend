@@ -1,0 +1,12 @@
+input ReassignTargetInput {
+  teamId: String!
+  targetId: String!
+  newOwnerUserId: String!
+}
+
+type ReassignTargetResult {
+  code: MutationCodeEnum!
+  success: Boolean!
+  message: String!
+  item: Target
+}
