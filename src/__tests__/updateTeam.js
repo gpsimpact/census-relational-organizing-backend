@@ -50,13 +50,15 @@ describe("Create Team", () => {
       { user: { id: adminUser.id } }
     );
     expect(response.data.updateTeam).not.toBeNull();
-    expect(response.data.updateTeam.item.name).toEqual(newData.name);
+    expect(response.data.updateTeam.item.name).toEqual(
+      newData.name.toUpperCase()
+    );
     expect(response.data.updateTeam.item.abbreviation).toEqual(
       team.abbreviation
     );
     const [dbTeam] = await sq.from`teams`.where({ id: team.id });
     expect(dbTeam).toBeDefined();
-    expect(dbTeam.name).toEqual(newData.name);
+    expect(dbTeam.name).toEqual(newData.name.toUpperCase());
     expect(dbTeam.abbreviation).toEqual(team.abbreviation);
   });
 
@@ -103,13 +105,15 @@ describe("Create Team", () => {
       { user: { id: user.id } }
     );
     expect(response.data.updateTeam).not.toBeNull();
-    expect(response.data.updateTeam.item.name).toEqual(newData.name);
+    expect(response.data.updateTeam.item.name).toEqual(
+      newData.name.toUpperCase()
+    );
     expect(response.data.updateTeam.item.abbreviation).toEqual(
       team.abbreviation
     );
     const [dbTeam] = await sq.from`teams`.where({ id: team.id });
     expect(dbTeam).toBeDefined();
-    expect(dbTeam.name).toEqual(newData.name);
+    expect(dbTeam.name).toEqual(newData.name.toUpperCase());
     expect(dbTeam.abbreviation).toEqual(team.abbreviation);
   });
 
