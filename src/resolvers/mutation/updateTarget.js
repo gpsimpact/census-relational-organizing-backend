@@ -27,6 +27,10 @@ export default async (root, args, context) => {
     writeInput = _.omit(writeInput, "activeTibs");
   }
 
+  if (writeInput.householdMembers) {
+    writeInput.householdMembers = JSON.stringify(writeInput.householdMembers);
+  }
+
   let addressData;
   // If have address in it, grab it into own element
   if (writeInput.address) {
