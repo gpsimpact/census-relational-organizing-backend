@@ -271,4 +271,34 @@ describe("Update Form", () => {
     expect(dbTarget.zip5).toBe(newData.zip5);
     expect(dbTarget.retainAddress).toBe(false);
   });
+
+  test("Can update household members", async () => {
+    const user = await createTestUser();
+    const team = await createTestTeam();
+    const target = await createTestTarget({ userId: user.id, teamId: team.id });
+
+    const newData = {
+      householdMembers: [{ relationship: "PRIMARY", name: "Bruno" }]
+    };
+
+    const response = await graphqlTestCall(
+      UPDATE_TARGET_MUTATION,
+      {
+        id: target.id,
+        input: newData
+      },
+      { user: { id: user.id } }
+    );
+    debugResponse(response);
+    expect(response.data.updateTarget).not.toBeNull();
+    expect(response.data.updateTarget.code).toBe("OK");
+    expect(response.data.updateTarget.success).toBe(true);
+    expect(response.data.updateTarget.message).toBe("Target updated.");
+
+    const [dbTarget] = await sq.from`targets`.where({ id: target.id });
+    expect(dbTarget).toBeDefined();
+    expect(dbTarget.householdMembers).toEqual([
+      { relationship: "PRIMARY", name: "Bruno" }
+    ]);
+  });
 });
