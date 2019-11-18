@@ -73,7 +73,13 @@ export default async (root, args, context) => {
     WHERE (permission & 16 ) > 0 
     AND u.id = user_id
     AND team_id = ${args.teamId}
-  ) AND u.active;
+  ) AND u.active
+  OR EXISTS (
+    SELECT 1
+    FROM global_permissions
+    WHERE u.id = user_id
+    AND permission = 'ADMIN'
+  );
   `;
 
   teamAdminEmails = _.map(teamAdminEmails, "email");
