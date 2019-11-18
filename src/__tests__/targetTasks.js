@@ -12,14 +12,15 @@ import {
   createTestTarget,
   createTestFormValue
 } from "../utils/createTestEntities";
+import { sq } from "../db";
 
 const GET_TARGET_TASKS_QUERY = `
-query targetTasks($targetId: String!) {
+query targetTasks($targetId: String! $language: LanguageCodeEnum ) {
     targetTasks(targetId: $targetId) {
         id
         definition {
           id
-          form {
+          form(language: $language) {
             id
             fields {
               name
@@ -192,5 +193,58 @@ describe("Task assignment", () => {
     );
     debugResponse(response);
     expect(response.data.targetTasks.length).toBe(1);
+  });
+
+  test("If specified language is not available, it falls back to english.", async () => {
+    const user = await createAdminUser();
+
+    const team = await createTestTeam();
+    const target = await createTestTarget({ userId: user.id, teamId: team.id });
+
+    const formA = await createTestForm(user.id);
+
+    // create spanish version
+    // const formA_ES = Object.assign({}, formA, {
+    //   language: "ES",
+    //   fields: JSON.stringify(formA.fields)
+    // });
+    // await sq`forms`.insert(formA_ES);
+
+    const taskDefinitionA = await createTestTaskDefinition(formA.id, user.id);
+    const taskAssignmentA = await createTestTaskAssignment(
+      taskDefinitionA.id,
+      team.id,
+      {
+        MEMBER: true
+      }
+    );
+
+    const formValue = await createTestFormValue(
+      formA.id,
+      user.id,
+      target.id,
+      formA.fields[0].name
+    );
+
+    const responseEs = await graphqlTestCall(
+      GET_TARGET_TASKS_QUERY,
+      { targetId: target.id, language: "ES" },
+      { user: { id: user.id } }
+    );
+    debugResponse(responseEs);
+    expect(responseEs.data.targetTasks.length).toEqual(1);
+    const taskAResponse = _.find(responseEs.data.targetTasks, x => {
+      return (x.id = taskAssignmentA.id);
+    });
+    expect(taskAResponse.definition.form.fields[0].value).toEqual(
+      formValue.value
+    );
+
+    const responseEn = await graphqlTestCall(
+      GET_TARGET_TASKS_QUERY,
+      { targetId: target.id, language: "EN" },
+      { user: { id: user.id } }
+    );
+    expect(responseEn).toEqual(responseEs);
   });
 });
