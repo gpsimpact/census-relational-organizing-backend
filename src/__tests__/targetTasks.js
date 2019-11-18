@@ -12,7 +12,6 @@ import {
   createTestTarget,
   createTestFormValue
 } from "../utils/createTestEntities";
-import { sq } from "../db";
 
 const GET_TARGET_TASKS_QUERY = `
 query targetTasks($targetId: String! $language: LanguageCodeEnum ) {
@@ -246,5 +245,12 @@ describe("Task assignment", () => {
       { user: { id: user.id } }
     );
     expect(responseEn).toEqual(responseEs);
+
+    const responseNone = await graphqlTestCall(
+      GET_TARGET_TASKS_QUERY,
+      { targetId: target.id },
+      { user: { id: user.id } }
+    );
+    expect(responseNone).toEqual(responseEs);
   });
 });
