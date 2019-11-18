@@ -5,7 +5,8 @@ import { sq } from "../db";
 import {
   createTestUser,
   createTestTeam,
-  createTestTeamPermissionBit
+  createTestTeamPermissionBit,
+  createAdminUser
 } from "../utils/createTestEntities";
 import { intToPerms } from "../utils/permissions/permBitWise";
 
@@ -30,6 +31,7 @@ afterAll(async () => {
 describe("User", () => {
   test("Happy Path", async () => {
     const user = await createTestUser();
+    const admin = await createAdminUser();
     const team = await createTestTeam();
     const teamAdmin = await createTestUser();
     await createTestTeamPermissionBit(teamAdmin.id, team.id, { ADMIN: true });
@@ -56,7 +58,7 @@ describe("User", () => {
 
     expect(mockSendEmail).toHaveBeenCalled();
     expect(mockSendEmail).toHaveBeenCalledWith({
-      to: [teamAdmin.email],
+      to: [admin.email, teamAdmin.email], // is this ordering stable?
       from: process.env.EMAIL_SENDER,
       templateId: "d-7b546784ced74cb7b6192588ca2feaee",
       dynamic_template_data: {

@@ -1,7 +1,7 @@
 type TaskDefinition {
   id: String!
   active: Boolean!
-  form: Form!
+  form(language: LanguageCodeEnum = "EN"): Form!
   createdBy: User!
   lastEditedBy: User
   points: Int!

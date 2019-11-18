@@ -57,7 +57,7 @@ describe("Create Target Contact Attempt", () => {
     const newTargetContactAttemptData = {
       targetId: target.id,
       content: faker.lorem.paragraph(),
-      disposition: "NOT_HOME",
+      disposition: "PHONE__NOT_HOME",
       method: "PHONE"
     };
 
@@ -109,7 +109,7 @@ describe("Create Target Contact Attempt", () => {
         input: {
           targetId: faker.random.uuid(),
           content: faker.lorem.paragraph(),
-          disposition: "NOT_HOME",
+          disposition: "PHONE__NOT_HOME",
           method: "PHONE"
         }
       },
@@ -137,7 +137,7 @@ describe("Create Target Contact Attempt", () => {
         input: {
           targetId: target.id,
           content: faker.lorem.paragraph(),
-          disposition: "NOT_HOME",
+          disposition: "PHONE__NOT_HOME",
           method: "PHONE"
         }
       },
@@ -165,7 +165,7 @@ describe("Create Target Contact Attempt", () => {
         input: {
           targetId: target.id,
           content: faker.lorem.paragraph(),
-          disposition: "NOT_HOME",
+          disposition: "PHONE__NOT_HOME",
           method: "PHONE"
         }
       },

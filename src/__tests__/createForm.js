@@ -81,7 +81,8 @@ describe("RequestLoginResolver", () => {
     expect(dbForm).toEqual(
       Object.assign({}, formData, {
         id: response.data.createForm.item.id,
-        userId: adminUser.id
+        userId: adminUser.id,
+        language: "EN"
       })
     );
   });
