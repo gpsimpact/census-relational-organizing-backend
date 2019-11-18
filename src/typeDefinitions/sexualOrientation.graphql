@@ -1,4 +1,8 @@
 enum SexualOrientationEnum {
-    TBD1
-    TBD2
+  STRAIGHT
+  GAY
+  BISEXUAL
+  ASEXUAL
+  QUEER
+  CHOOSE_NOT_TO_IDENTIFY
 }

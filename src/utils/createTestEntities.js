@@ -221,7 +221,7 @@ export const createTestTargetContactAttempt = async (userId, targetId) => {
     targetId,
     createdBy: userId,
     content: faker.lorem.paragraph(),
-    disposition: "NOT_HOME",
+    disposition: "PHONE__NOT_HOME",
     method: "PHONE"
   };
   return createGDS(sq.from`target_contact_attempts`)(data);

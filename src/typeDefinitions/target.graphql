@@ -19,7 +19,7 @@ type Target {
   censusTract: String
   genderIdentity: GenderIdentityEnum
   sexualOrientation: SexualOrientationEnum
-  raceEthnicity: RaceEthnicityEnum
+  raceEthnicity: [RaceEthnicityEnum]
   isNameAlias: Boolean!
   householdMembers: [HouseholdMember]
 }
@@ -41,7 +41,7 @@ input CreateTargetInput {
   retainAddress: Boolean! = true
   genderIdentity: GenderIdentityEnum
   sexualOrientation: SexualOrientationEnum
-  raceEthnicity: RaceEthnicityEnum
+  raceEthnicity: [RaceEthnicityEnum]
   isNameAlias: Boolean
   householdMembers: [HouseholdMemberInput]
 }
@@ -69,7 +69,7 @@ input UpdateTargetInput {
   retainAddress: Boolean! = true
   genderIdentity: GenderIdentityEnum
   sexualOrientation: SexualOrientationEnum
-  raceEthnicity: RaceEthnicityEnum
+  raceEthnicity: [RaceEthnicityEnum]
   isNameAlias: Boolean
   householdMembers: [HouseholdMemberInput]
 }

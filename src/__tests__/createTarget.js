@@ -78,7 +78,8 @@ describe("Create Target", () => {
       isNameAlias: true,
       householdMembers: [
         { relationship: "CHILD", name: faker.name.firstName() }
-      ]
+      ],
+      raceEthnicity: ["WHITE", "LATINO"]
     };
 
     const response = await graphqlTestCall(
@@ -112,6 +113,7 @@ describe("Create Target", () => {
     expect(dbTarget.isNameAlias).toBe(true);
     expect(dbTarget.householdMembers.length).toBe(1);
     expect(dbTarget.householdMembers[0].relationship).toBe("CHILD");
+    expect(dbTarget.raceEthnicity.length).toBe(2);
   });
 
   test("set activeTibs", async () => {

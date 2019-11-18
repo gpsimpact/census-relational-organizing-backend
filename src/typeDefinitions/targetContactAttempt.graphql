@@ -12,15 +12,21 @@ type TargetContactAttempt {
 }
 
 enum TargetContactAttemptDispositionEnum {
-  NOT_HOME
-  WRONG_NUMBER
-  BOUNCED
+  PHONE__NOT_HOME
+  PHONE__BUSY
+  PHONE__CANVASSED
+  PHONE__LEFT_MESSAGE
+  PHONE__REFUSED
+  INPERSON__NOT_HOME
+  INPERSON__BUSY
+  INPERSON__CANVASSED
+  INPERSON__REFUSED
+  INPERSON__NO_CALL_NO_SHOW
 }
 
 enum TargetContactAttemptMethodEnum {
-  EMAIL
   PHONE
-  FACEBOOK
+  IN_PERSON
 }
 
 input CreateTargetContactAttemptInput {
