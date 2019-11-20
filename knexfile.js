@@ -32,5 +32,10 @@ const configuration = {
   }
 };
 
+if (environment === "production") {
+  console.log("PRODUCTION, SSL TRUE");
+  configuration.ssl = true;
+}
+
 module.exports = configuration;
 module.exports[environment] = configuration;
