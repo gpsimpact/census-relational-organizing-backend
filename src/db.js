@@ -7,6 +7,11 @@ const sqorn = require("@sqorn/pg");
 
 const environment = process.env.NODE_ENV || "development";
 
+if (environment === "production") {
+  console.log("PRODUCTION, SSL TRUE");
+  pg.defaults.ssl = true;
+}
+
 const testDbURL =
   process.env.CI === "true"
     ? process.env.DATABASE_URL
