@@ -31,6 +31,11 @@ export default async (root, args, context) => {
     writeInput = _.omit(writeInput, "activeTibs");
   }
 
+  if (writeInput.phone) {
+    // strip all non digits out.
+    writeInput.phone = writeInput.phone.replace(/\D/g, "");
+  }
+
   let addressData;
   // If have address in it, grab it into own element
   if (writeInput.address) {
