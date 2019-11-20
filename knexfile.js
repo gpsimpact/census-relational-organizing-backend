@@ -34,7 +34,7 @@ const configuration = {
 
 if (environment === "production") {
   console.log("PRODUCTION, SSL TRUE");
-  configuration.ssl = true;
+  pg.defaults.ssl = true;
 }
 
 module.exports = configuration;
