@@ -52,7 +52,6 @@ export default async (root, { teamId }, context) => {
         SUM(count_complete) as count_complete
       FROM task_completion_status tcs
       WHERE team_id = ${teamId}
-      AND user_id = ${context.user.id}
       GROUP BY 1,2,3
     ) core
     LEFT JOIN form_language_variations flv USING(form_id)

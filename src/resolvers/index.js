@@ -95,6 +95,7 @@ import sendTeamAdminsEmail from "./mutation/sendTeamAdminsEmail";
 import teamTargets from "./query/teamTargets";
 import reassignTarget from "./mutation/reassignTarget";
 import summaryCountMyTeamTasks from "./query/summaryCountMyTeamTasks";
+import summaryCountAllTeamTasks from "./query/summaryCountAllTeamTasks";
 
 export default {
   Query: {
@@ -132,7 +133,8 @@ export default {
     teamEligibleTasks,
     taskDefinition,
     teamTargets,
-    summaryCountMyTeamTasks
+    summaryCountMyTeamTasks,
+    summaryCountAllTeamTasks
   },
   Mutation: {
     createUser,

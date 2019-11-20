@@ -29,6 +29,7 @@ type Query {
   summaryCountAllTeamUsers(teamId: String!): Int!
   summaryCountAllUsers: Int!
   summaryCountMyTeamTasks(teamId: String!): [SummaryTaskTotal]!
+  summaryCountAllTeamTasks(teamId: String!): [SummaryTaskTotal]!
   targetNote(id: String!): TargetNote
   targetNotes(input: TargetNotesInput!): TargetNotesResult!
   targetContactAttempt(id: String!): TargetContactAttempt
