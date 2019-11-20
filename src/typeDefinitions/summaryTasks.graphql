@@ -1,0 +1,10 @@
+type SummaryTaskTotal {
+  languageVariations: [SummaryTaskLanguageVariation]!
+  countComplete: Int!
+  teamTargetsCount: Int!
+}
+
+type SummaryTaskLanguageVariation {
+  title: String!
+  language: String!
+}
