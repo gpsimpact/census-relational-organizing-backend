@@ -443,7 +443,7 @@ export default shield(
       updateTeam: and(isAuthenticated, or(has_TP_ADMIN_ROOT, has_GP_ADMIN)),
       updateUser: and(isAuthenticated, or(has_GP_ADMIN, isSelfRootId)),
       createTeam: and(isAuthenticated, has_GP_ADMIN),
-      confirmLogin: isNotAuthenticated,
+      confirmLogin: allow,
       requestTeamMembership: isAuthenticated,
       cancelTeamMembershipRequest: isAuthenticated,
       requestLogin: isNotAuthenticated,

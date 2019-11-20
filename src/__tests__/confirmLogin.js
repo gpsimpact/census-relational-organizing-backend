@@ -1,6 +1,6 @@
 // import faker from "faker";
 import jsonwebtoken from "jsonwebtoken";
-import { graphqlTestCall } from "../utils/graphqlTestCall";
+import { graphqlTestCall, debugResponse } from "../utils/graphqlTestCall";
 import { dbUp, dbDown } from "../utils/testDbOps";
 import { createTestUser } from "../utils/createTestEntities";
 import setLoginToken from "../dataSources/users/setLoginToken";
@@ -55,7 +55,7 @@ describe("confirmLoginResolver", () => {
     expect(rToken2).toBeNull();
   });
 
-  test("throws error if logged in", async () => {
+  test("does not throw error if logged in", async () => {
     const user = await createTestUser();
     const token = "fdsfdsafdsfew23r4ewr432r";
     await setToken(user.id, token);
@@ -67,8 +67,12 @@ describe("confirmLoginResolver", () => {
       },
       { user: { id: user.id } }
     );
-    expect(res.errors.length).toBe(1);
-    expect(res.errors[0].message).toEqual("You are already authenticated");
+    debugResponse(res);
+    expect(res.data.confirmLogin.code).toBe("OK");
+    expect(res.data.confirmLogin.success).toBe(true);
+    expect(res.data.confirmLogin.message).toBe(
+      "You have successfully logged in. You may close this window and return to your previous tab to continue!"
+    );
   });
 
   test("response if no matching user", async () => {
