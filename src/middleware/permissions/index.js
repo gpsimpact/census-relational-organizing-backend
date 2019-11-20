@@ -424,7 +424,8 @@ export default shield(
       teamTargets: and(
         isAuthenticated,
         or(has_TP_ADMIN_ROOT_TEAMID, has_GP_ADMIN)
-      )
+      ),
+      summaryCountMyTeamTasks: isAuthenticated
     },
     Mutation: {
       removeUser: and(isAuthenticated, has_GP_ADMIN),
@@ -580,7 +581,9 @@ export default shield(
     SetTeamTosAcceptanceResult: allow,
     SendGlobalAdminsEmailResult: allow,
     SendTeamAdminsEmailResult: allow,
-    ReassignTargetResult: allow
+    ReassignTargetResult: allow,
+    SummaryTaskTotal: allow,
+    SummaryTaskLanguageVariation: allow
   },
   {
     fallbackError: "Not Authorized!", // default error spelling is Authorised.
