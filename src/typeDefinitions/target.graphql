@@ -21,6 +21,7 @@ type Target {
   sexualOrientation: String
   raceEthnicity: [String]
   isNameAlias: Boolean!
+  isPhoneMobile: Boolean!
   householdMembers: [HouseholdMember]
 }
 
@@ -43,6 +44,7 @@ input CreateTargetInput {
   sexualOrientation: String
   raceEthnicity: [String]
   isNameAlias: Boolean
+  isPhoneMobile: Boolean
   householdMembers: [HouseholdMemberInput]
 }
 
@@ -71,6 +73,7 @@ input UpdateTargetInput {
   sexualOrientation: String
   raceEthnicity: [String]
   isNameAlias: Boolean
+  isPhoneMobile: Boolean
   householdMembers: [HouseholdMemberInput]
 }
 

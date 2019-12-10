@@ -76,6 +76,7 @@ describe("Create Target", () => {
       }),
       teamId: team.id,
       isNameAlias: true,
+      isPhoneMobile: true,
       householdMembers: [
         { relationship: "CHILD", name: faker.name.firstName() }
       ],
@@ -111,6 +112,7 @@ describe("Create Target", () => {
     expect(dbTarget.userId).toBe(user.id);
     expect(dbTarget.teamId).toBe(team.id);
     expect(dbTarget.isNameAlias).toBe(true);
+    expect(dbTarget.isPhoneMobile).toBe(true);
     expect(dbTarget.householdMembers.length).toBe(1);
     expect(dbTarget.householdMembers[0].relationship).toBe("CHILD");
     expect(dbTarget.raceEthnicity.length).toBe(2);
