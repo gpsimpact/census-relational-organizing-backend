@@ -21,7 +21,10 @@ const connectionString =
   environment === "test" ? testDbURL : process.env.DATABASE_URL;
 
 export const pool = new pg.Pool({
-  connectionString: connectionString,
+  connectionString:
+    environment === "production"
+      ? `${connectionString}?ssl=true`
+      : connectionString,
   min: 1,
   max: 10
 });
