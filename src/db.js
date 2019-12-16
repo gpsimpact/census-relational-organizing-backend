@@ -6,7 +6,6 @@ const pg = require("pg");
 const sqorn = require("@sqorn/pg");
 
 const environment = process.env.NODE_ENV || "development";
-console.log("!!!!!, ENVIRONMENT", { environment });
 
 if (environment === "production") {
   console.log("PRODUCTION, SSL TRUE");

@@ -102,6 +102,10 @@ const options = {
   formatError: err => {
     logger.error({ err });
     return { message: err.message };
+  },
+  formatResponse: response => {
+    logger.debug(response);
+    return response;
   }
 };
 
