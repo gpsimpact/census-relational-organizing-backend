@@ -44,7 +44,7 @@ describe("Remove Team", () => {
     expect(dbTeam.length).toBe(0);
 
     // verify it cascades delete on perms
-    const dbTeamPerm = await sq.from`team_permissions_bit`;
+    const dbTeamPerm = await sq.from`team_permissions`;
     expect(dbTeamPerm.length).toBe(0);
   });
 

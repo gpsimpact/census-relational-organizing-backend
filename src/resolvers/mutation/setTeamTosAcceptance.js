@@ -7,7 +7,7 @@
 export default async (root, args, context) => {
   // using compound loader to check.
 
-  await context.sq`team_permissions_bit`
+  await context.sq`team_permissions`
     .set({ acceptedTos: args.input.acceptTos })
     .where({ teamId: args.input.teamId, userId: context.user.id });
 

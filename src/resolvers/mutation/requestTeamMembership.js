@@ -1,9 +1,9 @@
 import _ from "lodash";
-import {
-  permsToInt,
-  intToPerms,
-  makeDefaultState
-} from "../../utils/permissions/permBitWise";
+// import {
+//   permsToInt,
+//   intToPerms,
+//   makeDefaultState
+// } from "../../utils/permissions/permBitWise";
 
 export default async (root, args, context) => {
   const userId = context.user.id;
@@ -14,16 +14,7 @@ export default async (root, args, context) => {
     teamId: args.teamId
   });
 
-  let permSeed = makeDefaultState();
-
-  if (existing) {
-    // consosle.log("???? here");
-    permSeed = Object.assign({}, permSeed, intToPerms(existing.permission));
-  }
-
-  // console.log({ existing, permSeed });
-
-  if (permSeed.APPLICANT === true) {
+  if (existing && existing.permission === "APPLICANT") {
     return {
       success: false,
       code: "DUPLICATE",
@@ -31,31 +22,62 @@ export default async (root, args, context) => {
     };
   }
 
-  if (existing && existing.permission > 0) {
+  if (existing) {
     return {
       success: false,
       code: "INELIGIBLE",
       message: "You are ineligible to apply for membership."
     };
   }
-  // }
 
-  // set bit
-  permSeed.APPLICANT = true;
-
-  // if (existing) {
-  //   await context.dataSource.teamPermission.update({
-  //     userId,
-  //     teamId: args.teamId,
-  //     permission: permsToInt(permSeed)
-  //   });
-  // } else {
   await context.dataSource.teamPermission.create({
     userId,
     teamId: args.teamId,
-    permission: permsToInt(permSeed)
+    permission: "APPLICANT"
   });
+
+  // let permSeed = makeDefaultState();
+
+  // if (existing) {
+  //   // consosle.log("???? here");
+  //   permSeed = Object.assign({}, permSeed, intToPerms(existing.permission));
   // }
+
+  // console.log({ existing, permSeed });
+
+  // if (permSeed.APPLICANT === true) {
+  //   return {
+  //     success: false,
+  //     code: "DUPLICATE",
+  //     message: "An application for membership is already pending."
+  //   };
+  // }
+
+  // if (existing && existing.permission > 0) {
+  //   return {
+  //     success: false,
+  //     code: "INELIGIBLE",
+  //     message: "You are ineligible to apply for membership."
+  //   };
+  // }
+  // }
+
+  // set bit
+  // permSeed.APPLICANT = true;
+
+  // // if (existing) {
+  // //   await context.dataSource.teamPermission.update({
+  // //     userId,
+  // //     teamId: args.teamId,
+  // //     permission: permsToInt(permSeed)
+  // //   });
+  // // } else {
+  // await context.dataSource.teamPermission.create({
+  //   userId,
+  //   teamId: args.teamId,
+  //   permission: permsToInt(permSeed)
+  // });
+  // // }
 
   // get team info
   const team = await context.dataSource.team.byIdLoader.load(args.teamId);
@@ -63,14 +85,14 @@ export default async (root, args, context) => {
   const applicant = await context.dataSource.user.byIdLoader.load(userId);
 
   let teamAdminEmails = await context.sq.sql`
-  SELECT 
-    email 
+  SELECT
+    email
   FROM USERS u
   WHERE EXISTS (
-    SELECT 
-      user_id 
-    FROM team_permissions_bit 
-    WHERE (permission & 16 ) > 0 
+    SELECT
+      user_id
+    FROM team_permissions
+    WHERE permission = 'ADMIN'
     AND u.id = user_id
     AND team_id = ${args.teamId}
   ) AND u.active

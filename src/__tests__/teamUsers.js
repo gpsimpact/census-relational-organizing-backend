@@ -4,7 +4,7 @@ import {
   createTestUser,
   createAdminUser,
   createTestTeam,
-  createTestTeamPermissionBit
+  createTestTeamPermission
 } from "../utils/createTestEntities";
 
 const GET_ALL_USERS_QUERY = `
@@ -40,7 +40,7 @@ describe("Users", () => {
   test("Happy Path no where", async () => {
     const user = await createTestUser();
     const team = await createTestTeam();
-    await createTestTeamPermissionBit(user.id, team.id, { MEMBER: true });
+    await createTestTeamPermission(user.id, team.id, "MEMBER");
     const adminUser = await createAdminUser();
 
     // no input
@@ -64,8 +64,8 @@ describe("Users", () => {
     const user = await createTestUser();
     const user2 = await createTestUser();
     const team = await createTestTeam();
-    await createTestTeamPermissionBit(user.id, team.id, { MEMBER: true });
-    await createTestTeamPermissionBit(user2.id, team.id, { MEMBER: true });
+    await createTestTeamPermission(user.id, team.id, "MEMBER");
+    await createTestTeamPermission(user2.id, team.id, "MEMBER");
     const adminUser = await createAdminUser();
 
     // no input

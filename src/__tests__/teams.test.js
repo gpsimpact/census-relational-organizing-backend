@@ -115,9 +115,9 @@ describe("Teams", () => {
   //   await createTestTeam();
   //   const user = await createTestUser();
   //   await createTestGlobalPerm(user.id, "ADMIN_TEAMS");
-  //   await createTestOLPermission(user.id, team.id, "ALPHA");
-  //   await createTestOLPermission(user.id, team.id, "BETA");
-  //   await createTestOLPermission(user.id, team.id, "CHARLIE");
+  //   await createTesTeamPermission(user.id, team.id, "ALPHA");
+  //   await createTesTeamPermission(user.id, team.id, "BETA");
+  //   await createTesTeamPermission(user.id, team.id, "CHARLIE");
 
   //   const response = await graphqlTestCall(
   //     GET_ALL_TEAMS_QUERY,

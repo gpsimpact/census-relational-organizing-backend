@@ -5,7 +5,7 @@ import {
   createTestUser,
   createTestTeam,
   createTestTarget,
-  createTestTeamPermissionBit
+  createTestTeamPermission
 } from "../utils/createTestEntities";
 
 const GET_ALL_TEAM_TARGETS_QUERY = `
@@ -38,9 +38,9 @@ describe("User Targets", () => {
     await createTestTarget({ userId: user.id, teamId: team.id });
     await createTestTarget({ userId: user.id, teamId: team.id });
     await createTestTarget({ userId: user2.id, teamId: team.id });
-    // await createTestOLPermission(user.id, team.id, "MEMBER");
+    // await createTestTeamPermission(user.id, team.id, "MEMBER");
 
-    await createTestTeamPermissionBit(user.id, team.id, { ADMIN: true });
+    await createTestTeamPermission(user.id, team.id, "ADMIN");
 
     // no input
     const response1 = await graphqlTestCall(
@@ -103,7 +103,7 @@ describe("User Targets", () => {
     await createTestTarget({ userId: user.id, teamId: team.id });
     await createTestTarget({ userId: user.id, teamId: team.id });
     await createTestTarget({ userId: user2.id, teamId: team.id });
-    // await createTestOLPermission(user.id, team.id, "MEMBER");
+    // await createTestTeamPermission(user.id, team.id, "MEMBER");
 
     // no input
     const response1 = await graphqlTestCall(

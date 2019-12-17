@@ -6,7 +6,7 @@ import {
   createAdminUser,
   createTestTaskDefinition,
   createTestForm,
-  createTestTeamPermissionBit,
+  createTestTeamPermission,
   createTestUser
   // createTestFormValue
 } from "../utils/createTestEntities";
@@ -33,10 +33,6 @@ mutation createTaskAssignment($input: CreateTaskAssignmentInput! ) {
             id
           }
           active
-          availableTo {
-            role
-            available
-          }
           notAvailableBeforeTs
           notAvailableAfterTs
           sortValue
@@ -76,7 +72,7 @@ describe("Task assignment", () => {
         input: {
           teamId: team.id,
           taskDefinitionId: taskDefinition.id,
-          taskRequiredRoles: ["MEMBER", "TRAINING"],
+          // taskRequiredRoles: ["MEMBER", "TRAINING"],
           supplementalFields
         }
       },
@@ -91,7 +87,7 @@ describe("Task assignment", () => {
       id: response.data.createTaskAssignment.item.id
     });
     expect(dbCheck.length).toBe(1);
-    expect(dbCheck[0].taskRequiredRoles).toEqual(10);
+    // expect(dbCheck[0].taskRequiredRoles).toEqual(10);
     expect(dbCheck[0].supplementalFields[0]).toEqual(supplementalFields[0]);
 
     expect(response.data.createTaskAssignment.item.sortValue).toBe(0);
@@ -104,8 +100,8 @@ describe("Task assignment", () => {
       {
         input: {
           teamId: team.id,
-          taskDefinitionId: taskDefinition2.id,
-          taskRequiredRoles: ["MEMBER", "TRAINING"]
+          taskDefinitionId: taskDefinition2.id
+          // taskRequiredRoles: ["MEMBER", "TRAINING"]
         }
       },
       { user: { id: user.id } }
@@ -118,7 +114,7 @@ describe("Task assignment", () => {
   test("Team Admin can ", async () => {
     const teamAdmin = await createTestUser();
     const team = await createTestTeam();
-    await createTestTeamPermissionBit(teamAdmin.id, team.id, { ADMIN: true });
+    await createTestTeamPermission(teamAdmin.id, team.id, "ADMIN");
 
     const form = await createTestForm(teamAdmin.id);
     const taskDefinition = await createTestTaskDefinition(
@@ -131,8 +127,8 @@ describe("Task assignment", () => {
       {
         input: {
           teamId: team.id,
-          taskDefinitionId: taskDefinition.id,
-          taskRequiredRoles: ["MEMBER", "TRAINING"]
+          taskDefinitionId: taskDefinition.id
+          // taskRequiredRoles: ["MEMBER", "TRAINING"]
         }
       },
       { user: { id: teamAdmin.id } }
@@ -154,8 +150,8 @@ describe("Task assignment", () => {
       {
         input: {
           teamId: team.id,
-          taskDefinitionId: taskDefinition.id,
-          taskRequiredRoles: ["MEMBER", "TRAINING"]
+          taskDefinitionId: taskDefinition.id
+          // taskRequiredRoles: ["MEMBER", "TRAINING"]
         }
       },
       { user: { id: user.id } }

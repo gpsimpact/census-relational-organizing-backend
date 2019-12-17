@@ -7,9 +7,8 @@ import {
   createTestGlobalPerm,
   createTestTeam,
   createAdminUser,
-  createTestTeamPermissionBit
+  createTestTeamPermission
 } from "../utils/createTestEntities";
-import { intToPerms } from "../utils/permissions/permBitWise";
 
 const REMOVE_TEAM_PERMISSION_MUTATION = `
 mutation removeTeamPermission($input: RemoveTeamPermissionInput!) {
@@ -35,9 +34,7 @@ describe("User", () => {
     const granteeUser = await createTestUser();
     const permission = "MEMBER";
     const team = await createTestTeam();
-    await createTestTeamPermissionBit(granteeUser.id, team.id, {
-      [permission]: true
-    });
+    await createTestTeamPermission(granteeUser.id, team.id, permission);
 
     const response = await graphqlTestCall(
       REMOVE_TEAM_PERMISSION_MUTATION,
@@ -53,11 +50,11 @@ describe("User", () => {
       "Permission removed."
     );
 
-    const dbUserPerms = await sq.from`team_permissions_bit`.where({
+    const dbUserPerms = await sq.from`team_permissions`.where({
       userId: granteeUser.id,
       teamId: team.id
     });
-    expect(intToPerms(dbUserPerms)[permission]).toBe(false);
+    expect(dbUserPerms.permission).not.toBe("MEMBER");
   });
 
   test("fails if not authed", async () => {
@@ -65,9 +62,7 @@ describe("User", () => {
     const granteeUser = await createTestUser();
     const permission = "APPLICANT";
     const team = await createTestTeam();
-    await createTestTeamPermissionBit(granteeUser.id, team.id, {
-      [permission]: true
-    });
+    await createTestTeamPermission(granteeUser.id, team.id, permission);
     const response = await graphqlTestCall(REMOVE_TEAM_PERMISSION_MUTATION, {
       input: { userId: granteeUser.id, teamId: team.id, permission }
     });
@@ -80,9 +75,7 @@ describe("User", () => {
     const granteeUser = await createTestUser();
     const permission = "APPLICANT";
     const team = await createTestTeam();
-    await createTestTeamPermissionBit(granteeUser.id, team.id, {
-      [permission]: true
-    });
+    await createTestTeamPermission(granteeUser.id, team.id, permission);
     const response = await graphqlTestCall(
       REMOVE_TEAM_PERMISSION_MUTATION,
       {
@@ -113,9 +106,7 @@ describe("User", () => {
     const granteeUser = await createTestUser();
     const permission = "MEMBER";
     const team = await createTestTeam();
-    await createTestTeamPermissionBit(granteeUser.id, team.id, {
-      [permission]: true
-    });
+    await createTestTeamPermission(granteeUser.id, team.id, permission);
     const response = await graphqlTestCall(
       REMOVE_TEAM_PERMISSION_MUTATION,
       {
@@ -127,7 +118,7 @@ describe("User", () => {
     expect(response.errors.length).toEqual(1);
     expect(response.errors[0].message).toEqual("Not Authorized!");
 
-    await createTestTeamPermissionBit(grantorUser.id, team.id, { ADMIN: true });
+    await createTestTeamPermission(grantorUser.id, team.id, "ADMIN");
 
     const response2 = await graphqlTestCall(
       REMOVE_TEAM_PERMISSION_MUTATION,

@@ -76,7 +76,7 @@ import taskDefForm from "./taskDefinition/form";
 import taskAssignment from "./query/taskAssignment";
 import taskAssignmentTaskDefinition from "./taskAssignment/taskDefinition";
 import taskAssignmentTeam from "./taskAssignment/team";
-import taskAssignmentAvailableTo from "./taskAssignment/availableTo";
+// import taskAssignmentAvailableTo from "./taskAssignment/availableTo";
 import taskAssignmentAvailable from "./taskAssignment/available";
 import taskAssignmentComplete from "./taskAssignment/complete";
 import targetTasks from "./query/targetTasks";
@@ -216,7 +216,7 @@ export default {
   TaskAssignment: {
     definition: taskAssignmentTaskDefinition,
     team: taskAssignmentTeam,
-    availableTo: taskAssignmentAvailableTo,
+    // availableTo: taskAssignmentAvailableTo,
     available: taskAssignmentAvailable,
     complete: taskAssignmentComplete,
     notAvailableUntilCompletionOf: taskAssignmentNotAvailableUntilCompletionOf,

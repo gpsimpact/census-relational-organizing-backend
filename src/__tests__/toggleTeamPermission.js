@@ -7,9 +7,8 @@ import {
   createTestGlobalPerm,
   createTestTeam,
   createAdminUser,
-  createTestTeamPermissionBit
+  createTestTeamPermission
 } from "../utils/createTestEntities";
-import { intToPerms } from "../utils/permissions/permBitWise";
 
 const GRANT_TEAM_PERMISSION_MUTATION = `
 mutation toggleTeamPermission($input: ToggleTeamPermissionInput!) {
@@ -71,12 +70,12 @@ describe("User", () => {
       ]
     });
 
-    const [dbUserPerms] = await sq.from`team_permissions_bit`.where({
+    const [dbUserPerms] = await sq.from`team_permissions`.where({
       userId: granteeUser.id,
       teamId: team.id
     });
     expect(dbUserPerms).not.toBeNull();
-    expect(intToPerms(dbUserPerms.permission)[permission]).toBe(true);
+    expect(dbUserPerms.permission).toBe(permission);
 
     expect(mockSendEmail).toHaveBeenCalled();
     expect(mockSendEmail).toHaveBeenCalledWith({
@@ -159,7 +158,7 @@ describe("User", () => {
     expect(response.errors.length).toEqual(1);
     expect(response.errors[0].message).toEqual("Not Authorized!");
 
-    await createTestTeamPermissionBit(grantorUser.id, team.id, { ADMIN: true });
+    await createTestTeamPermission(grantorUser.id, team.id, "ADMIN");
 
     const response2 = await graphqlTestCall(
       GRANT_TEAM_PERMISSION_MUTATION,
@@ -181,10 +180,8 @@ describe("User", () => {
     const permission = "APPLICANT";
     const team = await createTestTeam();
 
-    // await createTestOLPermission(granteeUser.id, team.id, permission);
-    await createTestTeamPermissionBit(granteeUser.id, team.id, {
-      [permission]: true
-    });
+    // await createTestTeamPermission(granteeUser.id, team.id, permission);
+    await createTestTeamPermission(granteeUser.id, team.id, permission);
     const mockSendEmail = jest.fn();
 
     const response = await graphqlTestCall(
@@ -208,10 +205,8 @@ describe("User", () => {
     const permission = "MEMBER";
     const team = await createTestTeam();
 
-    // await createTestOLPermission(granteeUser.id, team.id, "APPLICANT");
-    await createTestTeamPermissionBit(granteeUser.id, team.id, {
-      APPLICANT: true
-    });
+    // await createTestTeamPermission(granteeUser.id, team.id, "APPLICANT");
+    await createTestTeamPermission(granteeUser.id, team.id, "APPLICANT");
     const mockSendEmail = jest.fn();
 
     const response = await graphqlTestCall(
@@ -227,13 +222,13 @@ describe("User", () => {
       "Permission granted."
     );
 
-    const [dbUserPerms] = await sq.from`team_permissions_bit`.where({
+    const [dbUserPerms] = await sq.from`team_permissions`.where({
       userId: granteeUser.id,
       teamId: team.id
     });
     expect(dbUserPerms).not.toBeNull();
-    expect(intToPerms(dbUserPerms.permission)[permission]).toBe(true);
-    expect(intToPerms(dbUserPerms.permission)["APPLICANT"]).toBe(false);
+    expect(dbUserPerms.permission).toBe(permission);
+    expect(dbUserPerms.permission).not.toBe("APPLICANT");
   });
 
   test("User can have more than one team perm at a time.", async () => {
@@ -242,8 +237,8 @@ describe("User", () => {
     const permission = "MEMBER";
     const team = await createTestTeam();
 
-    // await createTestOLPermission(granteeUser.id, team.id, "ADMIN");
-    await createTestTeamPermissionBit(granteeUser.id, team.id, { ADMIN: true });
+    // await createTestTeamPermission(granteeUser.id, team.id, "ADMIN");
+    await createTestTeamPermission(granteeUser.id, team.id, "ADMIN");
     const mockSendEmail = jest.fn();
 
     const response = await graphqlTestCall(
@@ -259,16 +254,16 @@ describe("User", () => {
       "Permission granted."
     );
 
-    const [dbUserPerms] = await sq.from`team_permissions_bit`.where({
+    const [dbUserPerms] = await sq.from`team_permissions`.where({
       userId: granteeUser.id,
       teamId: team.id
     });
     expect(dbUserPerms).not.toBeNull();
-    expect(intToPerms(dbUserPerms.permission)[permission]).toBe(true);
+    expect(dbUserPerms.permission).toBe(permission);
     // FALSE vvv  because Joshua wants to stick with model for now where each
     // member can only have one permission. If we move to multi, should expect true
     // on next line
-    expect(intToPerms(dbUserPerms.permission)["ADMIN"]).toBe(false);
+    expect(dbUserPerms.permission).not.toBe("ADMIN");
   });
 
   test("Can Deny", async () => {
@@ -277,9 +272,7 @@ describe("User", () => {
     const permission = "DENIED";
     const team = await createTestTeam();
 
-    await createTestTeamPermissionBit(granteeUser.id, team.id, {
-      MEMBER: true
-    });
+    await createTestTeamPermission(granteeUser.id, team.id, "MEMBER");
     const mockSendEmail = jest.fn();
 
     const response = await graphqlTestCall(
@@ -306,13 +299,13 @@ describe("User", () => {
       ]
     });
 
-    const [dbUserPerms] = await sq.from`team_permissions_bit`.where({
+    const [dbUserPerms] = await sq.from`team_permissions`.where({
       userId: granteeUser.id,
       teamId: team.id
     });
     expect(dbUserPerms).not.toBeNull();
-    expect(intToPerms(dbUserPerms.permission)[permission]).toBe(true);
+    expect(dbUserPerms.permission).toBe(permission);
     // When deny, all other should be false
-    expect(intToPerms(dbUserPerms.permission)["MEMBER"]).toBe(false);
+    expect(dbUserPerms.permission).not.toBe("MEMBER");
   });
 });

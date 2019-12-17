@@ -1,7 +1,7 @@
-import {
-  makeDefaultState,
-  permsToInt
-} from "../../utils/permissions/permBitWise";
+// import {
+//   makeDefaultState,
+//   permsToInt
+// } from "../../utils/permissions/permBitWise";
 // import _ from "lodash";
 
 export default async (
@@ -12,7 +12,7 @@ export default async (
       taskDefinitionId,
       notAvailableBeforeTs,
       notAvailableAfterTs,
-      taskRequiredRoles,
+      // taskRequiredRoles,
       notUntilCompletionOf,
       supplementalFields
     }
@@ -63,11 +63,11 @@ export default async (
   }
 
   // convert required roles to bit value
-  const perms = makeDefaultState();
-  taskRequiredRoles.forEach(x => {
-    perms[x] = true;
-  });
-  const permInt = permsToInt(perms);
+  // const perms = makeDefaultState();
+  // taskRequiredRoles.forEach(x => {
+  //   perms[x] = true;
+  // });
+  // const permInt = permsToInt(perms);
 
   // get count of existing team taskAssignments.
   const [teamTaskAssignmentCount] = await context.sq`task_assignments`.where({
@@ -79,7 +79,7 @@ export default async (
     taskDefinitionId,
     notAvailableBeforeTs,
     notAvailableAfterTs,
-    taskRequiredRoles: permInt,
+    // taskRequiredRoles: permInt,
     notUntilCompletionOf,
     supplementalFields,
     sortValue: teamTaskAssignmentCount.count || 0

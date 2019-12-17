@@ -7,7 +7,7 @@ import {
   createTestTaskDefinition,
   createTestForm,
   createTestUser,
-  createTestTeamPermissionBit
+  createTestTeamPermission
 } from "../utils/createTestEntities";
 import { sq } from "../db";
 
@@ -93,7 +93,7 @@ describe("Task assignment", () => {
     const teamAdmin = await createTestUser();
     const team = await createTestTeam();
 
-    await createTestTeamPermissionBit(teamAdmin.id, team.id, { ADMIN: true });
+    await createTestTeamPermission(teamAdmin.id, team.id, "ADMIN");
 
     const formA = await createTestForm(teamAdmin.id);
     const globalTaskDefinition = await createTestTaskDefinition(

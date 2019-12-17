@@ -6,7 +6,7 @@ import {
   createAdminUser,
   createTestTaskDefinition,
   createTestForm,
-  createTestTeamPermissionBit,
+  createTestTeamPermission,
   createTestUser,
   createTestTaskAssignment
   // createTestFormValue
@@ -38,10 +38,6 @@ mutation setTaskAssignmentSortOrder($input: SetTaskAssignmentSortOrderInput! ) {
             id
           }
           active
-          availableTo {
-            role
-            available
-          }
           notAvailableBeforeTs
           notAvailableAfterTs
           sortValue
@@ -151,7 +147,7 @@ describe("Set Task Assignment Sort Order", () => {
   test("Team Admin can ", async () => {
     const teamAdmin = await createTestUser();
     const team = await createTestTeam();
-    await createTestTeamPermissionBit(teamAdmin.id, team.id, { ADMIN: true });
+    await createTestTeamPermission(teamAdmin.id, team.id, "ADMIN");
 
     const formA = await createTestForm(teamAdmin.id);
     const taskDefinitionA = await createTestTaskDefinition(

@@ -4,11 +4,9 @@ import { dbUp, dbDown } from "../utils/testDbOps";
 import { sq } from "../db";
 import {
   createTestUser,
-  //   createTestGlobalPerm,
   createTestTeam,
-  createTestTeamPermissionBit
+  createTestTeamPermission
 } from "../utils/createTestEntities";
-// import { intToPerms } from "../utils/permissions/permBitWise";
 
 const CANCEL_TEAM_MEMBERSHIP_REQUEST_MUTATION = `
 mutation cancelTeamMembershipRequest($teamId: String!) {
@@ -32,8 +30,7 @@ describe("User", () => {
   test("Happy Path", async () => {
     const user = await createTestUser();
     const team = await createTestTeam();
-    // await createTestOLPermission(user.id, team.id, "APPLICANT");
-    await createTestTeamPermissionBit(user.id, team.id, { APPLICANT: true });
+    await createTestTeamPermission(user.id, team.id, "APPLICANT");
     const response = await graphqlTestCall(
       CANCEL_TEAM_MEMBERSHIP_REQUEST_MUTATION,
       { teamId: team.id },
@@ -46,12 +43,11 @@ describe("User", () => {
       "Application Successfully Cancelled."
     );
 
-    const [dbUserPerms] = await sq.from`team_permissions_bit`.where({
+    const [dbUserPerms] = await sq.from`team_permissions`.where({
       userId: user.id,
       teamId: team.id
     });
     expect(dbUserPerms).toBeUndefined();
-    // expect(intToPerms(dbUserPerms.permission)["APPLICANT"]).toBe(false);
   });
 
   test("fails if not authed", async () => {
@@ -64,7 +60,6 @@ describe("User", () => {
         teamId: team.id
       }
     );
-    // expect(response.data.requestTeamMembership).toBeNull();
     expect(response.errors.length).toEqual(1);
     expect(response.errors[0].message).toEqual("Not Authorized!");
   });

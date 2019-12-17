@@ -12,8 +12,8 @@ export default async (root, args, context) => {
     WHERE EXISTS (
       SELECT 
         user_id 
-      FROM team_permissions_bit 
-      WHERE (permission & 16 ) > 0 
+      FROM team_permissions 
+      WHERE permission = 'ADMIN'
       AND u.id = user_id
       AND team_id = ${args.input.teamId}
     ) AND u.active;

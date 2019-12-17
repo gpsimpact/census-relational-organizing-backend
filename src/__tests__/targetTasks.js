@@ -8,7 +8,7 @@ import {
   createTestTaskAssignment,
   createTestForm,
   createTestUser,
-  createTestTeamPermissionBit,
+  createTestTeamPermission,
   createTestTarget,
   createTestFormValue
 } from "../utils/createTestEntities";
@@ -34,10 +34,6 @@ query targetTasks($targetId: String! $language: LanguageCodeEnum ) {
         available(targetId: $targetId) {
           available
           nonAvailableCode
-        }
-        availableTo {
-          role
-          available
         }
         complete(targetId: $targetId)
       }
@@ -147,7 +143,7 @@ describe("Task assignment", () => {
     const teamAdmin = await createTestUser();
     const team = await createTestTeam();
 
-    await createTestTeamPermissionBit(teamAdmin.id, team.id, { ADMIN: true });
+    await createTestTeamPermission(teamAdmin.id, team.id, "ADMIN");
 
     const target = await createTestTarget({
       userId: owner.id,

@@ -6,8 +6,7 @@ import {
   createTestUser,
   createTestTeam,
   createTestTtib,
-  // createTestOLPermission,
-  createTestTeamPermissionBit
+  createTestTeamPermission
 } from "../utils/createTestEntities";
 import { sq } from "../db";
 
@@ -54,7 +53,7 @@ describe("Create Target", () => {
   test("Happy Path", async () => {
     const user = await createTestUser();
     const team = await createTestTeam();
-    await createTestTeamPermissionBit(user.id, team.id, { MEMBER: true });
+    await createTestTeamPermission(user.id, team.id, 'MEMBER');
 
     const newTargetData = {
       firstName: faker.name.firstName(),
@@ -121,7 +120,7 @@ describe("Create Target", () => {
   test("set activeTibs", async () => {
     const user = await createTestUser();
     const team = await createTestTeam();
-    await createTestTeamPermissionBit(user.id, team.id, { MEMBER: true });
+    await createTestTeamPermission(user.id, team.id, 'MEMBER');
 
     const newTargetData = {
       firstName: faker.name.firstName(),
@@ -199,8 +198,7 @@ describe("Create Target", () => {
   test("Calls pubsub for tract encoding", async () => {
     const user = await createTestUser();
     const team = await createTestTeam();
-    // await createTestOLPermission(user.id, team.id, "MEMBER");
-    await createTestTeamPermissionBit(user.id, team.id, { MEMBER: true });
+    await createTestTeamPermission(user.id, team.id, 'MEMBER');
 
     const newTargetData = {
       firstName: faker.name.firstName(),
@@ -255,8 +253,7 @@ describe("Create Target", () => {
   test("Happy Path, no retain address", async () => {
     const user = await createTestUser();
     const team = await createTestTeam();
-    // await createTestOLPermission(user.id, team.id, "MEMBER");
-    await createTestTeamPermissionBit(user.id, team.id, { MEMBER: true });
+    await createTestTeamPermission(user.id, team.id, 'MEMBER');
 
     const newTargetData = {
       firstName: faker.name.firstName(),

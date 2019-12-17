@@ -1,7 +1,6 @@
 import faker from "faker";
 import { createGDS } from "@jakelowen/sqorn-graphql-filters";
 import { sq } from "../db";
-import { permsToInt, makeDefaultState } from "./permissions/permBitWise";
 
 export const uuid = () => faker.random.uuid();
 
@@ -38,23 +37,23 @@ export const createTestTeam = async (active = true) =>
     tos: faker.lorem.paragraphs()
   });
 
-export const createTestOLPermission = async (userId, teamId, permission) =>
+export const createTestTeamPermission = async (userId, teamId, permission) =>
   createGDS(sq.from`team_permissions`)({
     teamId,
     userId,
     permission
   });
 
-export const createTestTeamPermissionBit = async (userId, teamId, permObJ) => {
-  const defState = makeDefaultState();
-  const perms = Object.assign({}, defState, permObJ);
+// export const createTestTeamPermissionBit = async (userId, teamId, permObJ) => {
+//   const defState = makeDefaultState();
+//   const perms = Object.assign({}, defState, permObJ);
 
-  return createGDS(sq.from`team_permissions_bit`)({
-    teamId,
-    userId,
-    permission: permsToInt(perms)
-  });
-};
+//   return createGDS(sq.from`team_permissions_bit`)({
+//     teamId,
+//     userId,
+//     permission: permsToInt(perms)
+//   });
+// };
 
 export const createTestTarget = async data => {
   const fakeData = {
@@ -81,36 +80,36 @@ export const createTestTarget = async data => {
   return createGDS(sq.from`targets`)(writeData);
 };
 
-export const createTestFormField = async data => {
-  const fakeData = {
-    id: faker.random.uuid(),
-    label: "I am the label text",
-    type: "text",
-    name: "alpha",
-    selectOptions: JSON.stringify([
-      {
-        value: "alpha",
-        label: "alpha"
-      },
-      {
-        value: "beta",
-        label: "beta"
-      }
-    ]),
-    placeholder: "I am a place holder",
-    validationType: "string",
-    validationTests: JSON.stringify([
-      { method: "required", message: "Value is required." },
-      {
-        method: "min",
-        value: "2",
-        message: "Must have length of 2."
-      }
-    ])
-  };
-  const writeData = Object.assign({}, fakeData, data);
-  return createGDS(sq.from`form_fields`)(writeData);
-};
+// export const createTestFormField = async data => {
+//   const fakeData = {
+//     id: faker.random.uuid(),
+//     label: "I am the label text",
+//     type: "text",
+//     name: "alpha",
+//     selectOptions: JSON.stringify([
+//       {
+//         value: "alpha",
+//         label: "alpha"
+//       },
+//       {
+//         value: "beta",
+//         label: "beta"
+//       }
+//     ]),
+//     placeholder: "I am a place holder",
+//     validationType: "string",
+//     validationTests: JSON.stringify([
+//       { method: "required", message: "Value is required." },
+//       {
+//         method: "min",
+//         value: "2",
+//         message: "Must have length of 2."
+//       }
+//     ])
+//   };
+//   const writeData = Object.assign({}, fakeData, data);
+//   return createGDS(sq.from`form_fields`)(writeData);
+// };
 
 export const createTestFormValue = async (formId, userId, targetId, name) => {
   const data = {
@@ -238,13 +237,13 @@ export const createTestTaskDefinition = async (formId, userId) => {
 
 export const createTestTaskAssignment = async (
   taskDefinitionId,
-  teamId,
-  permissions
+  teamId
+  // permissions
 ) => {
   const data = {
     teamId,
-    taskDefinitionId,
-    taskRequiredRoles: permsToInt(permissions)
+    taskDefinitionId
+    // taskRequiredRoles: permsToInt(permissions)
   };
 
   return createGDS(sq.from`task_assignments`)(data);

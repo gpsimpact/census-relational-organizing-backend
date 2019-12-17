@@ -5,7 +5,7 @@ import {
   createTestTtib,
   createTestTeam,
   createAdminUser,
-  createTestTeamPermissionBit
+  createTestTeamPermission
 } from "../utils/createTestEntities";
 import { sq } from "../db";
 
@@ -72,7 +72,7 @@ describe("UpdateTTib Resovler", () => {
   test("happy path as team admin", async () => {
     const user = await createTestUser();
     const team = await createTestTeam();
-    await createTestTeamPermissionBit(user.id, team.id, { ADMIN: true });
+    await createTestTeamPermission(user.id, team.id, 'ADMIN');
     const ttib = await createTestTtib(user.id, team.id);
     const updateData = {
       text: "I am text!"

@@ -172,14 +172,14 @@ export default (req, res, logger, gcPubsub) => {
       byTeamIdLoader: simpleManyLoader(sq`task_assignments`, "teamId")
     },
     teamPermission: {
-      create: createGDS(sq.from`team_permissions_bit`),
-      loadOne: compoundOneLoader(sq.from`team_permissions_bit`, [
+      create: createGDS(sq.from`team_permissions`),
+      loadOne: compoundOneLoader(sq.from`team_permissions`, [
         "userId",
         "teamId"
       ]),
-      update: updateGDS(sq.from`team_permissions_bit`),
-      byUserIdLoader: simpleManyLoader(sq.from`team_permissions_bit`, "userId"),
-      byTeamIdLoader: simpleManyLoader(sq.from`team_permissions_bit`, "teamId")
+      update: updateGDS(sq.from`team_permissions`),
+      byUserIdLoader: simpleManyLoader(sq.from`team_permissions`, "userId"),
+      byTeamIdLoader: simpleManyLoader(sq.from`team_permissions`, "teamId")
     },
     taskAssignmentStatus: {
       loadOne: compoundOneLoader(sq.from`task_assignment_status`, [

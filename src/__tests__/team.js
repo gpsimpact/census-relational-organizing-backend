@@ -4,7 +4,7 @@ import {
   createTestUser,
   createTestTeam,
   createTestGlobalPerm,
-  createTestTeamPermissionBit
+  createTestTeamPermission
 } from "../utils/createTestEntities";
 
 const GET_TEAM_QUERY = `
@@ -120,8 +120,8 @@ describe("Team", () => {
   //   const adminUser = await createAdminUser();
   //   const team = await createTestTeam();
 
-  //   const cp1 = await createTestTeamPermissionBit(adminUser.id, team.id, "MEMBER");
-  //   const cp2 = await createTestTeamPermissionBit(
+  //   const cp1 = await createTestTeamPermission(adminUser.id, team.id, "MEMBER");
+  //   const cp2 = await createTestTeamPermission(
   //     adminUser.id,
   //     team.id,
   //     "APPLICANT"
@@ -157,14 +157,11 @@ describe("Team", () => {
     const team = await createTestTeam();
     await createTestGlobalPerm(adminUser.id, "ADMIN_TEAMS");
 
-    await createTestTeamPermissionBit(user2.id, team.id, { MEMBER: true });
-    await createTestTeamPermissionBit(user3.id, team.id, {
-      MEMBER: true,
-      ELEVATED: true
-    });
-    await createTestTeamPermissionBit(user4.id, team.id, { ADMIN: true });
-    await createTestTeamPermissionBit(user5.id, team.id, { ADMIN: true });
-    await createTestTeamPermissionBit(user6.id, team.id, { ADMIN: true });
+    await createTestTeamPermission(user2.id, team.id, "MEMBER");
+    await createTestTeamPermission(user3.id, team.id, "MEMBER");
+    await createTestTeamPermission(user4.id, team.id, "ADMIN");
+    await createTestTeamPermission(user5.id, team.id, "ADMIN");
+    await createTestTeamPermission(user6.id, team.id, "ADMIN");
 
     const response = await graphqlTestCall(
       GET_TEAM_QUERY,
@@ -186,7 +183,7 @@ describe("Team", () => {
       },
       {
         permission: "ELEVATED",
-        count: 1
+        count: 0
       },
       {
         permission: "MEMBER",

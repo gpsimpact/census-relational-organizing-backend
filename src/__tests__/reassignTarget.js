@@ -5,7 +5,7 @@ import {
   createTestTeam,
   createTestTarget,
   createAdminUser,
-  createTestTeamPermissionBit
+  createTestTeamPermission
 } from "../utils/createTestEntities";
 import { sq } from "../db";
 
@@ -35,13 +35,9 @@ describe("Reassign Target", () => {
   test("Happy Path Global ADMIN", async () => {
     const team = await createTestTeam();
     const originalOwnerUser = await createTestUser();
-    await createTestTeamPermissionBit(originalOwnerUser.id, team.id, {
-      MEMBER: true
-    });
+    await createTestTeamPermission(originalOwnerUser.id, team.id, 'MEMBER');
     const newOwnerUser = await createTestUser();
-    await createTestTeamPermissionBit(newOwnerUser.id, team.id, {
-      MEMBER: true
-    });
+    await createTestTeamPermission(newOwnerUser.id, team.id, 'MEMBER');
     const target = await createTestTarget({
       userId: originalOwnerUser.id,
       teamId: team.id
@@ -73,13 +69,9 @@ describe("Reassign Target", () => {
     const team = await createTestTeam();
     const otherTeam = await createTestTeam();
     const originalOwnerUser = await createTestUser();
-    await createTestTeamPermissionBit(originalOwnerUser.id, team.id, {
-      MEMBER: true
-    });
+    await createTestTeamPermission(originalOwnerUser.id, team.id, 'MEMBER');
     const newOwnerUser = await createTestUser();
-    await createTestTeamPermissionBit(newOwnerUser.id, otherTeam.id, {
-      MEMBER: true
-    });
+    await createTestTeamPermission(newOwnerUser.id, otherTeam.id, 'MEMBER');
     const target = await createTestTarget({
       userId: originalOwnerUser.id,
       teamId: team.id
@@ -113,22 +105,16 @@ describe("Reassign Target", () => {
   test("Happy Path Team ADMIN", async () => {
     const team = await createTestTeam();
     const originalOwnerUser = await createTestUser();
-    await createTestTeamPermissionBit(originalOwnerUser.id, team.id, {
-      MEMBER: true
-    });
+    await createTestTeamPermission(originalOwnerUser.id, team.id, 'MEMBER');
     const newOwnerUser = await createTestUser();
-    await createTestTeamPermissionBit(newOwnerUser.id, team.id, {
-      MEMBER: true
-    });
+    await createTestTeamPermission(newOwnerUser.id, team.id, 'MEMBER');
     const target = await createTestTarget({
       userId: originalOwnerUser.id,
       teamId: team.id
     });
 
     const teamAdminUser = await createTestUser();
-    await createTestTeamPermissionBit(teamAdminUser.id, team.id, {
-      ADMIN: true
-    });
+    await createTestTeamPermission(teamAdminUser.id, team.id, 'ADMIN');
 
     const response = await graphqlTestCall(
       REASSIGN_TARGET_MUTATION,

@@ -4,7 +4,7 @@ import {
   createTestUser,
   createTestTeam,
   createTestGlobalPerm,
-  createTestTeamPermissionBit
+  createTestTeamPermission
 } from "../utils/createTestEntities";
 import { sq } from "../db";
 
@@ -36,7 +36,7 @@ describe("Create Ttib", () => {
   test("happy path as team admin", async () => {
     const user = await createTestUser();
     const team = await createTestTeam();
-    await createTestTeamPermissionBit(user.id, team.id, { ADMIN: true });
+    await createTestTeamPermission(user.id, team.id, "ADMIN");
 
     const newData = {
       text: "I am text!",
