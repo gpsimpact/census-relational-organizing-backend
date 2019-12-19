@@ -6,6 +6,7 @@ import {
   removeManyGDS
 } from "@jakelowen/sqorn-graphql-filters";
 // import _ from "lodash";
+import RedisSMQ from "rsmq";
 
 import { sq } from "./db";
 import simpleSingleLoader from "./dataSources/simpleSingleLoader";
@@ -32,7 +33,7 @@ const setInactiveDataSource = dbHandle => async id => {
   return true;
 };
 
-export default (req, res, logger, gcPubsub) => {
+export default (req, res, logger) => {
   const userByIdLoader = simpleSingleLoader(sq.from`users`, "id");
   const userByEmailLoader = simpleSingleLoader(sq.from`users`, "email");
   const teamByIdLoader = simpleSingleLoader(sq.from`teams`, "id");
@@ -212,6 +213,8 @@ export default (req, res, logger, gcPubsub) => {
     sendEmail,
     user: req.user,
     logger,
-    gcPubsub // google cloud pubsub
+    rsmq: new RedisSMQ(
+      process.env.REDIS_URL && require("redis-url").parse(process.env.REDIS_URL)
+    )
   };
 };

@@ -1,17 +1,16 @@
 import { GraphQLServer } from "graphql-yoga";
 import cors from "cors";
 import jwt from "express-jwt";
-import fs from "fs";
+// import fs from "fs";
 
 // messaging
-import { PubSub } from "@google-cloud/pubsub";
-import messageHandler from "./pubsubMessageHandlers";
-
+// import { PubSub } from "@google-cloud/pubsub";
+// import messageHandler from "./pubsubMessageHandlers";
+import { rsmq, CENSUS_GEOCODE_QUEUE_NAME } from "./redis";
 // Logging
 import bunyan from "bunyan";
-import { LoggingBunyan } from "@google-cloud/logging-bunyan";
+// import { LoggingBunyan } from "@google-cloud/logging-bunyan";
 
-// import redis from "./redis";
 import { default as typeDefs } from "./typeDefinitions";
 import resolvers from "./resolvers";
 import context from "./context";
@@ -29,13 +28,26 @@ require("dotenv").config();
 // use that oneline in ENV SERVICE_ACCOUNT_JSON
 // use a FULL qualified path to where you want key to exist on disk.
 // populate file on disk needed for gcloud credentials
-fs.writeFileSync(
-  process.env.GOOGLE_APPLICATION_CREDENTIALS,
-  process.env.SERVICE_ACCOUNT_JSON
-);
+// fs.writeFileSync(
+//   process.env.GOOGLE_APPLICATION_CREDENTIALS,
+//   process.env.SERVICE_ACCOUNT_JSON
+// );
+
+// set up worker queues
+rsmq.createQueue({ qname: CENSUS_GEOCODE_QUEUE_NAME }, err => {
+  if (err) {
+    if (err.name !== "queueExists") {
+      console.error(err);
+      return;
+    } else {
+      console.log("The queue exists. That's OK.");
+    }
+  }
+  console.log("queue created");
+});
 
 // Creates a Bunyan Stackdriver Logging client
-const loggingBunyan = new LoggingBunyan();
+// const loggingBunyan = new LoggingBunyan();
 
 const level = process.env.LOG_LEVEL || "info";
 
@@ -50,17 +62,16 @@ const logger = bunyan.createLogger({
     // Log to the console at 'info' and above
     { stream: process.stdout, level },
     // And log to Stackdriver Logging, logging at 'info' and above
-    loggingBunyan.stream(level)
   ]
 });
 
 // set up gcloud pubsub messaging
 // Creates a client
-const gcPubsub = new PubSub();
-// References an existing subscription
-const subscription = gcPubsub.subscription(
-  process.env.GCLOUD_PUBSUB_INBOUND_SUBSCRIPTION_NAME
-);
+// const gcPubsub = new PubSub();
+// // References an existing subscription
+// const subscription = gcPubsub.subscription(
+//   process.env.GCLOUD_PUBSUB_INBOUND_SUBSCRIPTION_NAME
+// );
 
 // const isDeployed =
 //   process.env.NODE_ENV === "production" || process.env.NODE_ENV === "staging";
@@ -68,8 +79,7 @@ const subscription = gcPubsub.subscription(
 const server = new GraphQLServer({
   typeDefs,
   resolvers,
-  context: ({ request, response }) =>
-    context(request, response, logger, gcPubsub),
+  context: ({ request, response }) => context(request, response, logger),
   middlewares: [
     loggingMW,
     defaultToAuthedUserMW,
@@ -96,7 +106,7 @@ server.express.use(
 
 const options = {
   endpoint: "/graphql",
-  subscriptions: "/subscriptions",
+  // subscriptions: "/subscriptions",
   playground: "/playground",
   cors: false,
   formatError: err => {
@@ -115,5 +125,5 @@ server.start(options, ({ port }) => {
     `Server started, listening on port ${port} for incoming requests.`
   );
   // Listen for new messages until timeout is hit
-  subscription.on(`message`, messageHandler);
+  // subscription.on(`message`, messageHandler);
 });

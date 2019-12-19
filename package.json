@@ -14,7 +14,8 @@
     "grab": "bash cmds/grab.sh",
     "branch": "bash cmds/branch.sh",
     "start": "yarn migrate-up && yarn serve",
-    "serve": "node build/main.js"
+    "serve": "node build/main.js",
+    "start_workers": "node workers/index.js"
   },
   "dependencies": {
     "@google-cloud/logging-bunyan": "^0.10.1",
@@ -42,6 +43,10 @@
     "performance-now": "^2.1.0",
     "pg": "^7.8.0",
     "pg-range": "^1.0.1",
+    "redis-url": "^1.2.1",
+    "request-promise": "^4.2.5",
+    "rsmq": "^0.11.0",
+    "rsmq-worker": "^0.5.2",
     "slugify": "^1.3.4"
   },
   "devDependencies": {

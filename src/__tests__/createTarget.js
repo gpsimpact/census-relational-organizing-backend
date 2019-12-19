@@ -53,7 +53,7 @@ describe("Create Target", () => {
   test("Happy Path", async () => {
     const user = await createTestUser();
     const team = await createTestTeam();
-    await createTestTeamPermission(user.id, team.id, 'MEMBER');
+    await createTestTeamPermission(user.id, team.id, "MEMBER");
 
     const newTargetData = {
       firstName: faker.name.firstName(),
@@ -120,7 +120,7 @@ describe("Create Target", () => {
   test("set activeTibs", async () => {
     const user = await createTestUser();
     const team = await createTestTeam();
-    await createTestTeamPermission(user.id, team.id, 'MEMBER');
+    await createTestTeamPermission(user.id, team.id, "MEMBER");
 
     const newTargetData = {
       firstName: faker.name.firstName(),
@@ -198,7 +198,7 @@ describe("Create Target", () => {
   test("Calls pubsub for tract encoding", async () => {
     const user = await createTestUser();
     const team = await createTestTeam();
-    await createTestTeamPermission(user.id, team.id, 'MEMBER');
+    await createTestTeamPermission(user.id, team.id, "MEMBER");
 
     const newTargetData = {
       firstName: faker.name.firstName(),
@@ -221,13 +221,9 @@ describe("Create Target", () => {
       teamId: team.id
     };
 
-    const mockPublish = jest.fn();
-    const mockGcPubSub = {
-      topic: () => {
-        return {
-          publish: mockPublish
-        };
-      }
+    const mockSendMessage = jest.fn();
+    const mockRsmq = {
+      sendMessage: mockSendMessage
     };
 
     const response = await graphqlTestCall(
@@ -235,25 +231,27 @@ describe("Create Target", () => {
       {
         input: newTargetData
       },
-      { user: { id: user.id }, gcPubsub: mockGcPubSub }
+      {
+        user: { id: user.id },
+        rsmq: mockRsmq
+      }
     );
     debugResponse(response);
-    expect(mockPublish).toHaveBeenCalled();
-    const calledWith = mockPublish.mock.calls[0][1];
-    expect(calledWith.address).toBe(newTargetData.address);
-    expect(calledWith.city).toBe(newTargetData.city);
-    expect(calledWith.state).toBe(newTargetData.state);
-    expect(calledWith.zip5).toBe(newTargetData.zip5);
-    expect(calledWith.returnTopic).toBe(
-      process.env.GCLOUD_PUBSUB_INBOUND_TOPIC
+    expect(mockSendMessage).toHaveBeenCalled();
+    const calledWithMessage = JSON.parse(
+      mockSendMessage.mock.calls[0][0].message
     );
-    expect(calledWith.targetId).toBe(response.data.createTarget.item.id);
+    expect(calledWithMessage.address).toBe(newTargetData.address);
+    expect(calledWithMessage.city).toBe(newTargetData.city);
+    expect(calledWithMessage.state).toBe(newTargetData.state);
+    expect(calledWithMessage.zip5).toBe(newTargetData.zip5);
+    expect(calledWithMessage.targetId).toBe(response.data.createTarget.item.id);
   });
 
   test("Happy Path, no retain address", async () => {
     const user = await createTestUser();
     const team = await createTestTeam();
-    await createTestTeamPermission(user.id, team.id, 'MEMBER');
+    await createTestTeamPermission(user.id, team.id, "MEMBER");
 
     const newTargetData = {
       firstName: faker.name.firstName(),
