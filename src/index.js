@@ -6,7 +6,8 @@ import jwt from "express-jwt";
 // messaging
 // import { PubSub } from "@google-cloud/pubsub";
 // import messageHandler from "./pubsubMessageHandlers";
-import { rsmq, CENSUS_GEOCODE_QUEUE_NAME } from "./redis";
+const RedisSMQ = require("rsmq");
+
 // Logging
 import bunyan from "bunyan";
 // import { LoggingBunyan } from "@google-cloud/logging-bunyan";
@@ -33,8 +34,12 @@ require("dotenv").config();
 //   process.env.SERVICE_ACCOUNT_JSON
 // );
 
+const rsmq = new RedisSMQ(
+  process.env.REDIS_URL && require("redis-url").parse(process.env.REDIS_URL)
+);
+
 // set up worker queues
-rsmq.createQueue({ qname: CENSUS_GEOCODE_QUEUE_NAME }, err => {
+rsmq.createQueue({ qname: process.env.CENSUS_GEOCODE_QUEUE_NAME }, err => {
   if (err) {
     if (err.name !== "queueExists") {
       console.error(err);
@@ -79,7 +84,7 @@ const logger = bunyan.createLogger({
 const server = new GraphQLServer({
   typeDefs,
   resolvers,
-  context: ({ request, response }) => context(request, response, logger),
+  context: ({ request, response }) => context(request, response, logger, rsmq),
   middlewares: [
     loggingMW,
     defaultToAuthedUserMW,

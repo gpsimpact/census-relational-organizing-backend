@@ -33,7 +33,7 @@ const setInactiveDataSource = dbHandle => async id => {
   return true;
 };
 
-export default (req, res, logger) => {
+export default (req, res, logger, rsmq) => {
   const userByIdLoader = simpleSingleLoader(sq.from`users`, "id");
   const userByEmailLoader = simpleSingleLoader(sq.from`users`, "email");
   const teamByIdLoader = simpleSingleLoader(sq.from`teams`, "id");
@@ -213,8 +213,6 @@ export default (req, res, logger) => {
     sendEmail,
     user: req.user,
     logger,
-    rsmq: new RedisSMQ(
-      process.env.REDIS_URL && require("redis-url").parse(process.env.REDIS_URL)
-    )
+    rsmq
   };
 };
