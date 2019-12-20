@@ -6,7 +6,6 @@ import {
   removeManyGDS
 } from "@jakelowen/sqorn-graphql-filters";
 // import _ from "lodash";
-import RedisSMQ from "rsmq";
 
 import { sq } from "./db";
 import simpleSingleLoader from "./dataSources/simpleSingleLoader";
