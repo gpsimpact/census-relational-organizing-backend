@@ -5,7 +5,7 @@ import {
   createTestTeam,
   createAdminUser,
   createTestUser,
-  createTestOLPermission
+  createTestTeamPermission
 } from "../utils/createTestEntities";
 
 const QUERY = `
@@ -33,12 +33,12 @@ describe("Summary Count orgs users", () => {
     const team = await createTestTeam();
     const team2 = await createTestTeam();
 
-    await createTestOLPermission(adminUser.id, team.id, "ADMIN");
-    await createTestOLPermission(user2.id, team.id, "MEMBER");
-    await createTestOLPermission(user3.id, team.id, "MEMBER");
-    await createTestOLPermission(user4.id, team.id, "MEMBER");
-    await createTestOLPermission(user5.id, team2.id, "MEMBER");
-    await createTestOLPermission(user6.id, team2.id, "APPLICANT"); // holdout
+    await createTestTeamPermission(adminUser.id, team.id, "ADMIN");
+    await createTestTeamPermission(user2.id, team.id, "MEMBER");
+    await createTestTeamPermission(user3.id, team.id, "MEMBER");
+    await createTestTeamPermission(user4.id, team.id, "MEMBER");
+    await createTestTeamPermission(user5.id, team2.id, "MEMBER");
+    await createTestTeamPermission(user6.id, team2.id, "APPLICANT"); // holdout
 
     const response = await graphqlTestCall(
       QUERY,
@@ -59,11 +59,11 @@ describe("Summary Count orgs users", () => {
     const team = await createTestTeam();
     const team2 = await createTestTeam();
 
-    await createTestOLPermission(adminUser.id, team.id, "ADMIN");
-    await createTestOLPermission(user2.id, team.id, "MEMBER");
-    await createTestOLPermission(user3.id, team.id, "MEMBER");
-    await createTestOLPermission(user4.id, team.id, "MEMBER");
-    await createTestOLPermission(user5.id, team2.id, "MEMBER"); // holdout
+    await createTestTeamPermission(adminUser.id, team.id, "ADMIN");
+    await createTestTeamPermission(user2.id, team.id, "MEMBER");
+    await createTestTeamPermission(user3.id, team.id, "MEMBER");
+    await createTestTeamPermission(user4.id, team.id, "MEMBER");
+    await createTestTeamPermission(user5.id, team2.id, "MEMBER"); // holdout
 
     const response = await graphqlTestCall(
       QUERY,

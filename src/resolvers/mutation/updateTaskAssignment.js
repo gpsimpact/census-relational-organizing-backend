@@ -1,8 +1,5 @@
 import _ from "lodash";
-import {
-  makeDefaultState,
-  permsToInt
-} from "../../utils/permissions/permBitWise";
+
 // import _ from "lodash";
 
 export default async (root, { input }, context) => {
@@ -50,22 +47,26 @@ export default async (root, { input }, context) => {
   }
 
   // convert required roles to bit value
-  const perms = makeDefaultState();
-  let permInt = existingTA.taskRequiredRoles;
-  if (input.taskRequiredRoles) {
-    input.taskRequiredRoles.forEach(x => {
-      perms[x] = true;
-    });
-    permInt = permsToInt(perms);
-  }
+  // const perms = makeDefaultState();
+  // let permInt = existingTA.taskRequiredRoles;
+  // if (input.taskRequiredRoles) {
+  //   input.taskRequiredRoles.forEach(x => {
+  //     perms[x] = true;
+  //   });
+  //   permInt = permsToInt(perms);
+  // }
 
   if (input.supplementalFields) {
     input.supplementalFields = JSON.stringify(input.supplementalFields);
   }
 
-  const updateValues = Object.assign({}, _.omit(input, "taskAssignmentId"), {
-    taskRequiredRoles: permInt
-  });
+  const updateValues = Object.assign(
+    {},
+    _.omit(input, "taskAssignmentId")
+    // {
+    //   taskRequiredRoles: permInt
+    // }
+  );
 
   const [updatedTa] = await context.sq`task_assignments`
     .set(updateValues)

@@ -4,7 +4,7 @@ import {
   createTestGtib,
   createAdminUser,
   createTestUser,
-  createTestOLPermission,
+  createTestTeamPermission,
   createTestTeam
 } from "../utils/createTestEntities";
 import { sq } from "../db";
@@ -64,7 +64,7 @@ describe("GTIBS", () => {
   test("Happy path with at least one team admin", async () => {
     const user = await createTestUser();
     const team = await createTestTeam();
-    await createTestOLPermission(user.id, team.id, "ADMIN");
+    await createTestTeamPermission(user.id, team.id, "ADMIN");
     await createTestGtib(user.id);
     await createTestGtib(user.id);
     const gtib3 = await createTestGtib(user.id);

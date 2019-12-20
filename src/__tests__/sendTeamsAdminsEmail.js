@@ -4,7 +4,7 @@ import { dbUp, dbDown } from "../utils/testDbOps";
 import {
   createTestUser,
   createTestTeam,
-  createTestTeamPermissionBit
+  createTestTeamPermission
 } from "../utils/createTestEntities";
 
 const SEND_TEAM_ADMIN_EMAIL_MUTATION = `
@@ -29,11 +29,9 @@ describe("Send team admin email", () => {
   test("Happy Path", async () => {
     const user = await createTestUser();
     const team = await createTestTeam();
-    await createTestTeamPermissionBit(user.id, team.id, { MEMBER: true });
+    await createTestTeamPermission(user.id, team.id, 'MEMBER');
     const teamAdminUser = await createTestUser();
-    await createTestTeamPermissionBit(teamAdminUser.id, team.id, {
-      ADMIN: true
-    });
+    await createTestTeamPermission(teamAdminUser.id, team.id, 'ADMIN');
 
     const email = {
       subject: faker.lorem.sentence(),

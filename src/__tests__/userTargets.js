@@ -5,8 +5,7 @@ import {
   createTestUser,
   createTestTeam,
   createTestTarget,
-  createTestOLPermission,
-  createTestTeamPermissionBit
+  createTestTeamPermission
 } from "../utils/createTestEntities";
 
 const GET_ALL_USER_TARGETS_QUERY = `
@@ -39,9 +38,9 @@ describe("User Targets", () => {
     await createTestTarget({ userId: user.id, teamId: team.id });
     await createTestTarget({ userId: user.id, teamId: team.id });
     await createTestTarget({ userId: user2.id, teamId: team.id });
-    // await createTestOLPermission(user.id, team.id, "MEMBER");
+    // await createTestTeamPermission(user.id, team.id, "MEMBER");
 
-    await createTestTeamPermissionBit(user.id, team.id, { MEMBER: true });
+    await createTestTeamPermission(user.id, team.id, "MEMBER");
 
     // no input
     const response1 = await graphqlTestCall(
@@ -104,7 +103,7 @@ describe("User Targets", () => {
     await createTestTarget({ userId: user.id, teamId: team.id });
     await createTestTarget({ userId: user.id, teamId: team.id });
     await createTestTarget({ userId: user2.id, teamId: team.id });
-    // await createTestOLPermission(user.id, team.id, "MEMBER");
+    // await createTestTeamPermission(user.id, team.id, "MEMBER");
 
     // no input
     const response1 = await graphqlTestCall(
@@ -125,10 +124,8 @@ describe("User Targets", () => {
     await createTestTarget({ userId: user2.id, teamId: team.id });
     await createTestTarget({ userId: user2.id, teamId: team.id });
 
-    await createTestTeamPermissionBit(user2.id, team.id, { MEMBER: true });
-    await createTestTeamPermissionBit(teamAdminUser.id, team.id, {
-      ADMIN: true
-    });
+    await createTestTeamPermission(user2.id, team.id, "MEMBER");
+    await createTestTeamPermission(teamAdminUser.id, team.id, "ADMIN");
 
     // AS TEAM ADMIN
     const response1 = await graphqlTestCall(
@@ -155,8 +152,8 @@ describe("User Targets", () => {
     const team = await createTestTeam();
     await createTestTarget({ userId: user2.id, teamId: team.id });
     await createTestTarget({ userId: user2.id, teamId: team.id });
-    await createTestOLPermission(user2.id, team.id, "MEMBER");
-    await createTestOLPermission(user1.id, team.id, "MEMBER");
+    await createTestTeamPermission(user2.id, team.id, "MEMBER");
+    await createTestTeamPermission(user1.id, team.id, "MEMBER");
 
     // AS TEAM ADMIN
     const response1 = await graphqlTestCall(

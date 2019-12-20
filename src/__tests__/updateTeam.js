@@ -5,7 +5,7 @@ import {
   createTestUser,
   createTestTeam,
   createAdminUser,
-  createTestTeamPermissionBit
+  createTestTeamPermission
 } from "../utils/createTestEntities";
 import { sq } from "../db";
 
@@ -90,7 +90,7 @@ describe("Create Team", () => {
   test("Happy Path by Team  Admin", async () => {
     const team = await createTestTeam();
     const user = await createTestUser();
-    await createTestTeamPermissionBit(user.id, team.id, { ADMIN: true });
+    await createTestTeamPermission(user.id, team.id, 'ADMIN');
 
     const newData = {
       name: faker.company.companyName()

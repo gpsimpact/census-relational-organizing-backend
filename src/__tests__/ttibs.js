@@ -1,10 +1,10 @@
 import { graphqlTestCall, debugResponse } from "../utils/graphqlTestCall";
-import { dbUp, dbDown } from "../utils/testDbOps";
+import { dbUp } from "../utils/testDbOps";
 import {
   createTestUser,
   createTestTtib,
   createTestTeam,
-  createTestTeamPermissionBit
+  createTestTeamPermission
 } from "../utils/createTestEntities";
 import { sq } from "../db";
 
@@ -30,7 +30,7 @@ describe("TTIBS", () => {
   test("Happy Path", async () => {
     const user = await createTestUser();
     const team = await createTestTeam();
-    await createTestTeamPermissionBit(user.id, team.id, { MEMBER: true });
+    await createTestTeamPermission(user.id, team.id, "MEMBER");
     await createTestTtib(user.id, team.id);
     await createTestTtib(user.id, team.id);
     const ttib3 = await createTestTtib(user.id, team.id);
@@ -75,7 +75,7 @@ describe("TTIBS", () => {
   test("Can grab only ACTION tibtypes", async () => {
     const user = await createTestUser();
     const team = await createTestTeam();
-    await createTestTeamPermissionBit(user.id, team.id, { MEMBER: true });
+    await createTestTeamPermission(user.id, team.id, "MEMBER");
     await createTestTtib(user.id, team.id);
     await createTestTtib(user.id, team.id);
     const ttib3 = await createTestTtib(user.id, team.id);

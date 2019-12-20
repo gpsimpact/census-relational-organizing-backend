@@ -3,7 +3,7 @@ import { graphqlTestCall } from "../utils/graphqlTestCall";
 import { dbUp, dbDown } from "../utils/testDbOps";
 import { createTestUser, createTestTeam } from "../utils/createTestEntities";
 import { sq } from "../db";
-import { intToPerms } from "../utils/permissions/permBitWise";
+// import { intToPerms } from "../utils/permissions/permBitWise";
 
 const REGISTER_MUTATION = `
     mutation register($input: RegisterInput!){
@@ -170,12 +170,12 @@ describe("RegisterResolver", () => {
     // get user from db
     const dbUser = await sq`users`.where({ email }).one();
 
-    const [dbUserPerms] = await sq.from`team_permissions_bit`.where({
+    const [dbUserPerms] = await sq.from`team_permissions`.where({
       userId: dbUser.id,
       teamId: team.id
     });
     expect(dbUserPerms).not.toBeNull();
-    expect(intToPerms(dbUserPerms.permission)["APPLICANT"]).toBe(true);
+    expect(dbUserPerms.permission).toBe("APPLICANT");
   });
 
   test("Nonsense team slug fails", async () => {

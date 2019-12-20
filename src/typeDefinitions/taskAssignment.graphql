@@ -6,7 +6,7 @@ type TaskAssignment {
   # calculated field
   available(targetId: String): TaskAssignmentAvailbillityStatus!
   # calculated field
-  availableTo: [TaskAssignmentRoles]!
+  # availableTo: [TaskAssignmentRoles]!
   complete(targetId: String): Boolean
   notAvailableBeforeTs: GraphQLDateTime
   notAvailableAfterTs: GraphQLDateTime
@@ -15,10 +15,10 @@ type TaskAssignment {
   supplementalFields: [FormField]
 }
 
-type TaskAssignmentRoles {
-  role: ObjectLevelPermissionEnum!
-  available: Boolean!
-}
+# type TaskAssignmentRoles {
+#   role: ObjectLevelPermissionEnum!
+#   available: Boolean!
+# }
 
 type TaskAssignmentAvailbillityStatus {
   available: Boolean!
@@ -39,7 +39,7 @@ input CreateTaskAssignmentInput {
   taskDefinitionId: String!
   notAvailableBeforeTs: GraphQLDateTime
   notAvailableAfterTs: GraphQLDateTime
-  taskRequiredRoles: [ObjectLevelPermissionEnum!]!
+  # taskRequiredRoles: [ObjectLevelPermissionEnum!]!
   # task assignment ID
   notUntilCompletionOf: String
   supplementalFields: [CreateFormFieldInput]
@@ -69,7 +69,7 @@ input UpdateTaskAssignmentInput {
   taskDefinitionId: String
   notAvailableBeforeTs: GraphQLDateTime
   notAvailableAfterTs: GraphQLDateTime
-  taskRequiredRoles: [ObjectLevelPermissionEnum!]
+  # taskRequiredRoles: [ObjectLevelPermissionEnum!]
   # task assignment ID
   notUntilCompletionOf: String
   supplementalFields: [CreateFormFieldInput]

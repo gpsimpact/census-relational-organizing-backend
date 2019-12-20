@@ -5,7 +5,7 @@ import {
   createTestUser,
   createTestTeam,
   createAdminUser,
-  createTestTeamPermissionBit
+  createTestTeamPermission
 } from "../utils/createTestEntities";
 import { sq } from "../db";
 
@@ -117,13 +117,10 @@ describe("User", () => {
     const team = await createTestTeam();
     const adminUser = await createAdminUser();
 
-    // const cp1 = await createTestOLPermission(user.id, team.id, "MEMBER");
-    // const cp2 = await createTestOLPermission(user.id, team.id, "ADMIN");
+    // const cp1 = await createTestTeamPermission(user.id, team.id, "MEMBER");
+    // const cp2 = await createTestTeamPermission(user.id, team.id, "ADMIN");
 
-    await createTestTeamPermissionBit(user.id, team.id, {
-      MEMBER: true,
-      ADMIN: true
-    });
+    await createTestTeamPermission(user.id, team.id, "MEMBER");
 
     const response = await graphqlTestCall(
       GET_USER_QUERY,
@@ -132,16 +129,16 @@ describe("User", () => {
     );
     debugResponse(response);
     expect(response.data.user.teamPermissions.length).toBe(1);
-    expect(response.data.user.teamPermissions[0].permissions.length).toBe(2);
+    expect(response.data.user.teamPermissions[0].permissions.length).toBe(1);
     expect(response.data.user.teamPermissions[0].permissions).toContain(
       "MEMBER"
     );
-    expect(response.data.user.teamPermissions[0].permissions).toContain(
-      "ADMIN"
-    );
+    // expect(response.data.user.teamPermissions[0].permissions).toContain(
+    //   "ADMIN"
+    // );
     expect(response.data.user.teamPermissions[0].team.id).toEqual(team.id);
     expect(response.data.user.teamPermissions[0].acceptedTos).toEqual(false);
-    await sq`team_permissions_bit`
+    await sq`team_permissions`
       .set({ acceptedTos: true })
       .where({ teamId: team.id, userId: user.id });
     const response2 = await graphqlTestCall(
@@ -171,14 +168,11 @@ describe("User", () => {
     const user2 = await createTestUser();
     const team = await createTestTeam();
 
-    // await createTestOLPermission(user1.id, team.id, "ADMIN");
+    // await createTestTeamPermission(user1.id, team.id, "ADMIN");
 
-    // await createTestOLPermission(user1.id, team.id, "MEMBER");
+    // await createTestTeamPermission(user1.id, team.id, "MEMBER");
 
-    await createTestTeamPermissionBit(user1.id, team.id, {
-      MEMBER: true,
-      ADMIN: true
-    });
+    await createTestTeamPermission(user1.id, team.id, "MEMBER");
 
     const response = await graphqlTestCall(
       GET_USER_QUERY,
@@ -194,14 +188,11 @@ describe("User", () => {
     const user1 = await createTestUser();
     const team = await createTestTeam();
 
-    // await createTestOLPermission(user1.id, team.id, "ADMIN");
+    // await createTestTeamPermission(user1.id, team.id, "ADMIN");
 
-    // await createTestOLPermission(user1.id, team.id, "MEMBER");
+    // await createTestTeamPermission(user1.id, team.id, "MEMBER");
 
-    await createTestTeamPermissionBit(user1.id, team.id, {
-      MEMBER: true,
-      ADMIN: true
-    });
+    await createTestTeamPermission(user1.id, team.id, "MEMBER");
 
     const response = await graphqlTestCall(
       GET_USER_QUERY,
@@ -211,17 +202,14 @@ describe("User", () => {
     // should return correct data
     expect(response.data.user.teamPermissions[0].team.id).toEqual(team.id);
     expect(response.data.user.teamPermissions.length).toEqual(1);
-    expect(response.data.user.teamPermissions[0].permissions.length).toEqual(2);
+    expect(response.data.user.teamPermissions[0].permissions.length).toEqual(1);
   });
 
   test("Team Permissions NO inactive Teams", async () => {
     const user = await createTestUser();
     const team = await createTestTeam(false);
 
-    await createTestTeamPermissionBit(user.id, team.id, {
-      MEMBER: true,
-      ADMIN: true
-    });
+    await createTestTeamPermission(user.id, team.id, "MEMBER");
 
     const response = await graphqlTestCall(
       GET_USER_QUERY,

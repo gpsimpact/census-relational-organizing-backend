@@ -200,13 +200,9 @@ describe("Update Form", () => {
       zip5: faker.address.zipCode().substring(0, 5)
     };
 
-    const mockPublish = jest.fn();
-    const mockGcPubSub = {
-      topic: () => {
-        return {
-          publish: mockPublish
-        };
-      }
+    const mockSendMessage = jest.fn();
+    const mockRsmq = {
+      sendMessage: mockSendMessage
     };
 
     const response = await graphqlTestCall(
@@ -215,19 +211,18 @@ describe("Update Form", () => {
         id: target.id,
         input: newData
       },
-      { user: { id: user.id }, gcPubsub: mockGcPubSub }
+      { user: { id: user.id }, rsmq: mockRsmq }
     );
     debugResponse(response);
-    expect(mockPublish).toHaveBeenCalled();
-    const calledWith = mockPublish.mock.calls[0][1];
-    expect(calledWith.address).toBe(newData.address);
-    expect(calledWith.city).toBe(newData.city);
-    expect(calledWith.state).toBe(newData.state);
-    expect(calledWith.zip5).toBe(newData.zip5);
-    expect(calledWith.returnTopic).toBe(
-      process.env.GCLOUD_PUBSUB_INBOUND_TOPIC
+    expect(mockSendMessage).toHaveBeenCalled();
+    const calledWithMessage = JSON.parse(
+      mockSendMessage.mock.calls[0][0].message
     );
-    expect(calledWith.targetId).toBe(response.data.updateTarget.item.id);
+    expect(calledWithMessage.address).toBe(newData.address);
+    expect(calledWithMessage.city).toBe(newData.city);
+    expect(calledWithMessage.state).toBe(newData.state);
+    expect(calledWithMessage.zip5).toBe(newData.zip5);
+    expect(calledWithMessage.targetId).toBe(response.data.updateTarget.item.id);
   });
 
   test("Happy Path, no retain address", async () => {

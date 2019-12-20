@@ -5,8 +5,7 @@ import { sq } from "../db";
 import {
   createTestUser,
   createTestTeam,
-  createTestTeamPermissionBit
-  // createTestTeamPermissionBit
+  createTestTeamPermission
 } from "../utils/createTestEntities";
 
 const SET_TEAM_TOS_ACCEPTANCE_MUTATION = `
@@ -42,7 +41,7 @@ describe("User", () => {
     const user = await createTestUser();
     const permission = "MEMBER";
     const team = await createTestTeam();
-    await createTestTeamPermissionBit(user.id, team.id, { MEMBER: true });
+    await createTestTeamPermission(user.id, team.id, "MEMBER");
     const response = await graphqlTestCall(
       SET_TEAM_TOS_ACCEPTANCE_MUTATION,
       {
@@ -69,7 +68,7 @@ describe("User", () => {
       ]
     });
 
-    const [dbUserPerms] = await sq.from`team_permissions_bit`.where({
+    const [dbUserPerms] = await sq.from`team_permissions`.where({
       userId: user.id,
       teamId: team.id
     });

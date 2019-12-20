@@ -73,14 +73,23 @@ export default async (root, args, context) => {
   }
 
   if (addressData) {
-    context.gcPubsub &&
-      context.gcPubsub
-        .topic(process.env.GCLOUD_PUBSUB_NEED_TRACT_TOPIC)
-        .publish(Buffer.from("TARGET_TRACT_UPDATE"), {
-          ...addressData,
-          returnTopic: process.env.GCLOUD_PUBSUB_INBOUND_TOPIC,
-          targetId: target.id
-        });
+    context.rsmq &&
+      context.rsmq.sendMessage(
+        {
+          qname: process.env.CENSUS_GEOCODE_QUEUE_NAME,
+          message: JSON.stringify({
+            ...addressData,
+            targetId: target.id
+          }),
+          delay: 0
+        },
+        err => {
+          if (err) {
+            context.logger && context.logger.error(err);
+            return;
+          }
+        }
+      );
   }
 
   return {

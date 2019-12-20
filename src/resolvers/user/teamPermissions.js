@@ -1,5 +1,4 @@
 // import _ from "lodash";
-import { intToPerms } from "../../utils/permissions/permBitWise";
 
 export default async (root, args, ctx) => {
   const permData = await ctx.dataSource.teamPermission.byUserIdLoader.load(
@@ -10,16 +9,16 @@ export default async (root, args, ctx) => {
 
   for (const pidx in permData) {
     const pd = permData[pidx];
-    const permObj = intToPerms(pd.permission);
+    // const permObj = intToPerms(pd.permission);
 
-    let permissions = [];
+    let permissions = [pd.permission];
 
-    for (const poIdx in permObj) {
-      // console.log(permObj[poIdx], poIdx);
-      if (permObj[poIdx]) {
-        permissions.push(poIdx);
-      }
-    }
+    // for (const poIdx in permObj) {
+    //   // console.log(permObj[poIdx], poIdx);
+    //   if (permObj[poIdx]) {
+    //     permissions.push(poIdx);
+    //   }
+    // }
 
     const team = await ctx.dataSource.team.byIdLoader.load(pd.teamId);
     // console.log({ team, permissions, pd });

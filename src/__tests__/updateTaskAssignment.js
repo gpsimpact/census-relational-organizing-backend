@@ -6,7 +6,7 @@ import {
   createAdminUser,
   createTestTaskDefinition,
   createTestForm,
-  createTestTeamPermissionBit,
+  createTestTeamPermission,
   createTestUser,
   createTestTaskAssignment
   // createTestFormValue
@@ -34,10 +34,6 @@ mutation updateTaskAssignment($input: UpdateTaskAssignmentInput! ) {
             id
           }
           active
-          availableTo {
-            role
-            available
-          }
           notAvailableBeforeTs
           notAvailableAfterTs
           sortValue
@@ -85,7 +81,6 @@ describe("Task assignment", () => {
         input: {
           taskAssignmentId: taskAssignment.id,
           taskDefinitionId: taskDefinition2.id,
-          taskRequiredRoles: ["MEMBER", "TRAINING"],
           supplementalFields
         }
       },
@@ -99,7 +94,7 @@ describe("Task assignment", () => {
     });
     expect(dbCheck.length).toBe(1);
     expect(dbCheck[0].taskDefinitionId).toEqual(taskDefinition2.id);
-    expect(dbCheck[0].taskRequiredRoles).toEqual(10);
+    // expect(dbCheck[0].taskRequiredRoles).toEqual(10);
     expect(dbCheck[0].supplementalFields[0]).toEqual(supplementalFields[0]);
     // expect("non authed user cant").toBe("written");
   });
@@ -108,7 +103,7 @@ describe("Task assignment", () => {
   test("Team Admin can ", async () => {
     const user = await createTestUser();
     const team = await createTestTeam();
-    await createTestTeamPermissionBit(user.id, team.id, { ADMIN: true });
+    await createTestTeamPermission(user.id, team.id, "ADMIN");
 
     const form = await createTestForm(user.id);
     const taskDefinition = await createTestTaskDefinition(form.id, user.id);
@@ -127,8 +122,7 @@ describe("Task assignment", () => {
       {
         input: {
           taskAssignmentId: taskAssignment.id,
-          taskDefinitionId: taskDefinition2.id,
-          taskRequiredRoles: ["MEMBER", "TRAINING"]
+          taskDefinitionId: taskDefinition2.id
         }
       },
       { user: { id: user.id } }
@@ -141,7 +135,7 @@ describe("Task assignment", () => {
     });
     expect(dbCheck.length).toBe(1);
     expect(dbCheck[0].taskDefinitionId).toEqual(taskDefinition2.id);
-    expect(dbCheck[0].taskRequiredRoles).toEqual(10);
+    // expect(dbCheck[0].taskRequiredRoles).toEqual(10);
   });
 
   // perm check. not normal user
@@ -166,8 +160,8 @@ describe("Task assignment", () => {
       {
         input: {
           taskAssignmentId: taskAssignment.id,
-          taskDefinitionId: taskDefinition2.id,
-          taskRequiredRoles: ["MEMBER", "TRAINING"]
+          taskDefinitionId: taskDefinition2.id
+          // taskRequiredRoles: ["MEMBER", "TRAINING"]
         }
       },
       { user: { id: user.id } }

@@ -1,6 +1,6 @@
 import { shield, and, or, allow, deny, rule } from "graphql-shield";
 import _ from "lodash";
-import { intToPerms } from "../../utils/permissions/permBitWise";
+// import { intToPerms } from "../../utils/permissions/permBitWise";
 
 /* ************************************************************************* 
   CHECKS - isolated testable logic 
@@ -59,7 +59,7 @@ const isTeamAdminOfTeamOwningTargetAsTargetIdCheck = async (
     return false;
   }
 
-  return intToPerms(existingTeamPerm.permission)["ADMIN"];
+  return existingTeamPerm.permission === "ADMIN";
 };
 
 const userOwnsTargetNoteSubjectCheckRoot = async (parent, args, ctx) => {
@@ -120,8 +120,7 @@ const hasTeamPermCheck = (teamIdPath, requiredTP) => async (
   });
 
   if (existing) {
-    const teamPerms = intToPerms(existing.permission);
-    if (teamPerms[requiredTP] === true) {
+    if (existing.permission === requiredTP) {
       return true;
     } else {
       return false;
@@ -183,7 +182,7 @@ const userIsTeamAdminofUpdatingTtibCheck = async (parent, args, ctx) => {
     return false;
   }
 
-  return intToPerms(existingTeamPerm.permission)["ADMIN"];
+  return existingTeamPerm.permission === "ADMIN";
 
   // return !!existingTeamAdminPerm;
 };
@@ -203,7 +202,7 @@ const userIsTeamAdminofTaskAssignmentTeamCheck = async (parent, args, ctx) => {
     return false;
   }
 
-  return intToPerms(existingTeamPerm.permission)["ADMIN"];
+  return existingTeamPerm.permission === "ADMIN";
 
   // return !!existingTeamAdminPerm;
 };
@@ -574,7 +573,7 @@ export default shield(
     CreateTaskDefinitionResult: allow,
     TaskDefinition: allow,
     TaskAssignment: allow,
-    TaskAssignmentRoles: allow,
+    // TaskAssignmentRoles: allow,
     TaskAssignmentAvailbillityStatus: allow,
     UpdateTargetTaskResult: allow,
     DesignateTeamEligibleTaskResult: allow,

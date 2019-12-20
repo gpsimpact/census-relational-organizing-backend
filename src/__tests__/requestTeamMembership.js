@@ -5,10 +5,10 @@ import { sq } from "../db";
 import {
   createTestUser,
   createTestTeam,
-  createTestTeamPermissionBit,
-  createAdminUser
+  createAdminUser,
+  createTestTeamPermission
 } from "../utils/createTestEntities";
-import { intToPerms } from "../utils/permissions/permBitWise";
+// import { intToPerms } from "../utils/permissions/permBitWise";
 
 const REQUEST_TEAM_MEMBERSHIP_MUTATION = `
 mutation requestTeamMembership($teamId: String!) {
@@ -34,7 +34,7 @@ describe("User", () => {
     const admin = await createAdminUser();
     const team = await createTestTeam();
     const teamAdmin = await createTestUser();
-    await createTestTeamPermissionBit(teamAdmin.id, team.id, { ADMIN: true });
+    await createTestTeamPermission(teamAdmin.id, team.id, "ADMIN");
     const mockSendEmail = jest.fn();
 
     const response = await graphqlTestCall(
@@ -49,12 +49,12 @@ describe("User", () => {
       "Application Successful."
     );
 
-    const [dbUserPerms] = await sq.from`team_permissions_bit`.where({
+    const [dbUserPerms] = await sq.from`team_permissions`.where({
       userId: user.id,
       teamId: team.id
     });
     expect(dbUserPerms).not.toBeNull();
-    expect(intToPerms(dbUserPerms.permission).APPLICANT).toBe(true);
+    expect(dbUserPerms.permission).toBe("APPLICANT");
 
     expect(mockSendEmail).toHaveBeenCalled();
     expect(mockSendEmail).toHaveBeenCalledWith({
@@ -90,7 +90,7 @@ describe("User", () => {
   test("fails if already applicant", async () => {
     const user = await createTestUser();
     const team = await createTestTeam();
-    await createTestTeamPermissionBit(user.id, team.id, { APPLICANT: true });
+    await createTestTeamPermission(user.id, team.id, "APPLICANT");
     const mockSendEmail = jest.fn();
 
     const response = await graphqlTestCall(
@@ -111,9 +111,7 @@ describe("User", () => {
   test("fails if any type permission already set on team", async () => {
     const user = await createTestUser();
     const team = await createTestTeam();
-    await createTestTeamPermissionBit(user.id, team.id, {
-      DENIED: true
-    });
+    await createTestTeamPermission(user.id, team.id, "DENIED");
     const mockSendEmail = jest.fn();
 
     const response = await graphqlTestCall(

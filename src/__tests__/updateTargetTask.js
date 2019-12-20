@@ -7,7 +7,7 @@ import {
   createTestTaskAssignment,
   createTestForm,
   createTestUser,
-  createTestTeamPermissionBit,
+  createTestTeamPermission,
   createTestTarget
 } from "../utils/createTestEntities";
 import faker from "faker";
@@ -37,10 +37,6 @@ mutation updateTargetTask($taskAssignmentId: String!, $targetId: String!, $input
           available(targetId: $targetId) {
             available
             nonAvailableCode
-          }
-          availableTo {
-            role
-            available
           }
           complete(targetId: $targetId)
         }
@@ -233,7 +229,7 @@ describe("Task assignment", () => {
     const owner = await createTestUser();
     const nonOwner = await createTestUser();
     const team = await createTestTeam();
-    await createTestTeamPermissionBit(nonOwner.id, team.id, { ADMIN: true });
+    await createTestTeamPermission(nonOwner.id, team.id, "ADMIN");
     const target = await createTestTarget({
       userId: owner.id,
       teamId: team.id
