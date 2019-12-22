@@ -222,8 +222,10 @@ describe("Create Target", () => {
     };
 
     const mockSendMessage = jest.fn();
-    const mockRsmq = {
-      sendMessage: mockSendMessage
+    const workerQueues = {
+      censusGeocode: {
+        add: mockSendMessage
+      }
     };
 
     const response = await graphqlTestCall(
@@ -233,19 +235,25 @@ describe("Create Target", () => {
       },
       {
         user: { id: user.id },
-        rsmq: mockRsmq
+        workerQueues
       }
     );
     debugResponse(response);
     expect(mockSendMessage).toHaveBeenCalled();
-    const calledWithMessage = JSON.parse(
-      mockSendMessage.mock.calls[0][0].message
-    );
+    const calledWithMessage = mockSendMessage.mock.calls[0][0];
     expect(calledWithMessage.address).toBe(newTargetData.address);
     expect(calledWithMessage.city).toBe(newTargetData.city);
     expect(calledWithMessage.state).toBe(newTargetData.state);
     expect(calledWithMessage.zip5).toBe(newTargetData.zip5);
     expect(calledWithMessage.targetId).toBe(response.data.createTarget.item.id);
+    expect(mockSendMessage.mock.calls[0][1]).toEqual({
+      removeOnComplete: true,
+      attempts: 10,
+      backoff: {
+        type: "exponential",
+        delay: 1000
+      }
+    });
   });
 
   test("Happy Path, no retain address", async () => {

@@ -23,6 +23,7 @@
     "@jakelowen/sqorn-graphql-filters": "0.4.5",
     "@sendgrid/mail": "^6.3.1",
     "@sqorn/pg": "^0.0.45",
+    "bull": "^3.12.1",
     "bunyan": "^1.8.12",
     "cors": "^2.8.5",
     "dataloader": "^1.4.0",
@@ -45,7 +46,6 @@
     "pg-range": "^1.0.1",
     "redis-url": "^1.2.1",
     "request-promise": "^4.2.5",
-    "rsmq": "^0.11.0",
     "rsmq-worker": "^0.5.2",
     "slugify": "^1.3.4"
   },

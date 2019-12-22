@@ -24,7 +24,7 @@ const schemaWithMiddleware = applyMiddleware(
 );
 
 export const makeTestContext = contextOverRides => {
-  const context = makeContext({}, {});
+  const context = makeContext({}, {}, null, null);
   const testContext = Object.assign(context, contextOverRides);
   return testContext;
 };

@@ -1,12 +1,13 @@
 import { GraphQLServer } from "graphql-yoga";
 import cors from "cors";
 import jwt from "express-jwt";
+var Queue = require("bull");
+
 // import fs from "fs";
 
 // messaging
 // import { PubSub } from "@google-cloud/pubsub";
 // import messageHandler from "./pubsubMessageHandlers";
-const RedisSMQ = require("rsmq");
 
 // Logging
 import bunyan from "bunyan";
@@ -34,23 +35,6 @@ require("dotenv").config();
 //   process.env.SERVICE_ACCOUNT_JSON
 // );
 
-const rsmq = new RedisSMQ(
-  process.env.REDIS_URL && require("redis-url").parse(process.env.REDIS_URL)
-);
-
-// set up worker queues
-rsmq.createQueue({ qname: process.env.CENSUS_GEOCODE_QUEUE_NAME }, err => {
-  if (err) {
-    if (err.name !== "queueExists") {
-      console.error(err);
-      return;
-    } else {
-      console.log("The queue exists. That's OK.");
-    }
-  }
-  console.log("queue created");
-});
-
 // Creates a Bunyan Stackdriver Logging client
 // const loggingBunyan = new LoggingBunyan();
 
@@ -65,7 +49,7 @@ const logger = bunyan.createLogger({
   devEnv: process.env.NODE_ENV,
   streams: [
     // Log to the console at 'info' and above
-    { stream: process.stdout, level },
+    { stream: process.stdout, level }
     // And log to Stackdriver Logging, logging at 'info' and above
   ]
 });
@@ -81,10 +65,16 @@ const logger = bunyan.createLogger({
 // const isDeployed =
 //   process.env.NODE_ENV === "production" || process.env.NODE_ENV === "staging";
 
+const workerQueues = () => {
+  console.log("INVOKED!!!!!");
+  censusGeocode: new Queue("censusGeocodeQueue", process.env.REDIS_URL);
+};
+
 const server = new GraphQLServer({
   typeDefs,
   resolvers,
-  context: ({ request, response }) => context(request, response, logger, rsmq),
+  context: ({ request, response }) =>
+    context(request, response, logger, workerQueues()),
   middlewares: [
     loggingMW,
     defaultToAuthedUserMW,

@@ -32,7 +32,7 @@ const setInactiveDataSource = dbHandle => async id => {
   return true;
 };
 
-export default (req, res, logger, rsmq) => {
+export default (req, res, logger, workerQueues) => {
   const userByIdLoader = simpleSingleLoader(sq.from`users`, "id");
   const userByEmailLoader = simpleSingleLoader(sq.from`users`, "email");
   const teamByIdLoader = simpleSingleLoader(sq.from`teams`, "id");
@@ -212,6 +212,6 @@ export default (req, res, logger, rsmq) => {
     sendEmail,
     user: req.user,
     logger,
-    rsmq
+    workerQueues
   };
 };
