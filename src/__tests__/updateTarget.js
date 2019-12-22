@@ -201,8 +201,10 @@ describe("Update Form", () => {
     };
 
     const mockSendMessage = jest.fn();
-    const mockRsmq = {
-      sendMessage: mockSendMessage
+    const workerQueues = {
+      censusGeocode: {
+        add: mockSendMessage
+      }
     };
 
     const response = await graphqlTestCall(
@@ -211,18 +213,24 @@ describe("Update Form", () => {
         id: target.id,
         input: newData
       },
-      { user: { id: user.id }, rsmq: mockRsmq }
+      { user: { id: user.id }, workerQueues }
     );
     debugResponse(response);
     expect(mockSendMessage).toHaveBeenCalled();
-    const calledWithMessage = JSON.parse(
-      mockSendMessage.mock.calls[0][0].message
-    );
+    const calledWithMessage = mockSendMessage.mock.calls[0][0];
     expect(calledWithMessage.address).toBe(newData.address);
     expect(calledWithMessage.city).toBe(newData.city);
     expect(calledWithMessage.state).toBe(newData.state);
     expect(calledWithMessage.zip5).toBe(newData.zip5);
     expect(calledWithMessage.targetId).toBe(response.data.updateTarget.item.id);
+    expect(mockSendMessage.mock.calls[0][1]).toEqual({
+      removeOnComplete: true,
+      attempts: 10,
+      backoff: {
+        type: "exponential",
+        delay: 1000
+      }
+    });
   });
 
   test("Happy Path, no retain address", async () => {

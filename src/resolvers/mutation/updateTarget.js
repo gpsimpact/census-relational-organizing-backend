@@ -89,20 +89,19 @@ export default async (root, args, context) => {
   )(root, writeArgs, context);
 
   if (addressData) {
-    context.rsmq &&
-      context.rsmq.sendMessage(
+    context.workerQueues &&
+      context.workerQueues.censusGeocode &&
+      context.workerQueues.censusGeocode.add(
         {
-          qname: process.env.CENSUS_GEOCODE_QUEUE_NAME,
-          message: JSON.stringify({
-            ...addressData,
-            targetId: target.id
-          }),
-          delay: 0
+          ...addressData,
+          targetId: target.id
         },
-        err => {
-          if (err) {
-            context.logger && context.logger.error(err);
-            return;
+        {
+          removeOnComplete: true,
+          attempts: 10,
+          backoff: {
+            type: "exponential",
+            delay: 1000
           }
         }
       );
