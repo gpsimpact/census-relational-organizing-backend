@@ -1,5 +1,4 @@
 import { updateOneHOR } from "@jakelowen/sqorn-graphql-filters";
-import _ from "lodash";
 
 export default async (root, args, context) => {
   // make sure team exists
@@ -107,11 +106,6 @@ export default async (root, args, context) => {
         }
       }
     );
-  } else {
-    console.log("Can't enqueue job", {
-      addressData,
-      queue: context.workerQueues
-    });
   }
 
   return {

@@ -1,11 +1,9 @@
 import faker from "faker";
-import _ from "lodash";
 import { graphqlTestCall, debugResponse } from "../utils/graphqlTestCall";
 import { dbUp, dbDown } from "../utils/testDbOps";
 import {
   createTestUser,
   createTestTeam,
-  createTestTtib,
   createTestTeamPermission
 } from "../utils/createTestEntities";
 import { sq } from "../db";
@@ -117,57 +115,57 @@ describe("Create Target", () => {
     expect(dbTarget.raceEthnicity.length).toBe(2);
   });
 
-  test("set activeTibs", async () => {
-    const user = await createTestUser();
-    const team = await createTestTeam();
-    await createTestTeamPermission(user.id, team.id, "MEMBER");
+  // test("set activeTibs", async () => {
+  //   const user = await createTestUser();
+  //   const team = await createTestTeam();
+  //   await createTestTeamPermission(user.id, team.id, "MEMBER");
 
-    const newTargetData = {
-      firstName: faker.name.firstName(),
-      lastName: faker.name.lastName(),
-      email: faker.internet.email(),
-      address: faker.address.streetAddress(),
-      city: faker.address.city(),
-      state: faker.address.state(),
-      zip5: faker.address.zipCode().substring(0, 5),
-      phone: `+${faker.random.number({
-        min: 10000000000,
-        max: 19999999999
-      })}`,
-      twitterHandle: `@${faker.random.word()}`,
-      facebookProfile: faker.random.word(),
-      householdSize: faker.random.number({
-        min: 1,
-        max: 10
-      }),
-      teamId: team.id
-    };
+  //   const newTargetData = {
+  //     firstName: faker.name.firstName(),
+  //     lastName: faker.name.lastName(),
+  //     email: faker.internet.email(),
+  //     address: faker.address.streetAddress(),
+  //     city: faker.address.city(),
+  //     state: faker.address.state(),
+  //     zip5: faker.address.zipCode().substring(0, 5),
+  //     phone: `+${faker.random.number({
+  //       min: 10000000000,
+  //       max: 19999999999
+  //     })}`,
+  //     twitterHandle: `@${faker.random.word()}`,
+  //     facebookProfile: faker.random.word(),
+  //     householdSize: faker.random.number({
+  //       min: 1,
+  //       max: 10
+  //     }),
+  //     teamId: team.id
+  //   };
 
-    const tib1 = await createTestTtib(user.id, team.id);
-    const tib2 = await createTestTtib(user.id, team.id);
-    const tib3 = await createTestTtib(user.id, team.id);
+  //   const tib1 = await createTestTtib(user.id, team.id);
+  //   const tib2 = await createTestTtib(user.id, team.id);
+  //   const tib3 = await createTestTtib(user.id, team.id);
 
-    newTargetData.activeTibs = [tib1.id, tib2.id];
+  //   newTargetData.activeTibs = [tib1.id, tib2.id];
 
-    // no input
-    const response = await graphqlTestCall(
-      CREATE_TARGET_MUTATION,
-      {
-        input: newTargetData
-      },
-      { user: { id: user.id } }
-    );
-    debugResponse(response);
+  //   // no input
+  //   const response = await graphqlTestCall(
+  //     CREATE_TARGET_MUTATION,
+  //     {
+  //       input: newTargetData
+  //     },
+  //     { user: { id: user.id } }
+  //   );
+  //   debugResponse(response);
 
-    const dbTibs = await sq.from`target_true_tibs`.return(`tib_id`).where({
-      targetId: response.data.createTarget.item.id
-    });
-    expect(dbTibs.length).toBe(2);
-    const activeTibIds = _.map(dbTibs, "tibId");
-    expect(_.includes(activeTibIds, tib1.id)).toBe(true);
-    expect(_.includes(activeTibIds, tib2.id)).toBe(true);
-    expect(_.includes(activeTibIds, tib3.id)).toBe(false);
-  });
+  //   const dbTibs = await sq.from`target_true_tibs`.return(`tib_id`).where({
+  //     targetId: response.data.createTarget.item.id
+  //   });
+  //   expect(dbTibs.length).toBe(2);
+  //   const activeTibIds = _.map(dbTibs, "tibId");
+  //   expect(_.includes(activeTibIds, tib1.id)).toBe(true);
+  //   expect(_.includes(activeTibIds, tib2.id)).toBe(true);
+  //   expect(_.includes(activeTibIds, tib3.id)).toBe(false);
+  // });
 
   test("perm check. Must be team member", async () => {
     const user = await createTestUser();
