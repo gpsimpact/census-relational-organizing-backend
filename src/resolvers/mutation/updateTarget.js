@@ -20,12 +20,12 @@ export default async (root, args, context) => {
     writeInput.email = lowerEmail;
   }
 
-  let activeTibs = [];
-  // extract activeTibs from dbWrite
-  if (writeInput.activeTibs) {
-    activeTibs = activeTibs.concat(writeInput.activeTibs);
-    writeInput = _.omit(writeInput, "activeTibs");
-  }
+  // let activeTibs = [];
+  // // extract activeTibs from dbWrite
+  // if (writeInput.activeTibs) {
+  //   activeTibs = activeTibs.concat(writeInput.activeTibs);
+  //   writeInput = _.omit(writeInput, "activeTibs");
+  // }
 
   if (writeInput.householdMembers) {
     writeInput.householdMembers = JSON.stringify(writeInput.householdMembers);
@@ -58,27 +58,27 @@ export default async (root, args, context) => {
   const writeArgs = Object.assign({}, args, { input: writeInput });
 
   // now apply activeTibs
-  if (activeTibs.length > 0) {
-    const writeTibs = _.map(activeTibs, x => {
-      return { targetId: existing.id, tibId: x };
-    });
-    // delete all true_tibs for target
-    await context.sq.delete.from`target_true_tibs`.where({
-      targetId: existing.id
-    });
-    // write trues
-    await context.sq`target_true_tibs`.insert(writeTibs);
-  }
+  // if (activeTibs.length > 0) {
+  //   const writeTibs = _.map(activeTibs, x => {
+  //     return { targetId: existing.id, tibId: x };
+  //   });
+  //   // delete all true_tibs for target
+  //   await context.sq.delete.from`target_true_tibs`.where({
+  //     targetId: existing.id
+  //   });
+  //   // write trues
+  //   await context.sq`target_true_tibs`.insert(writeTibs);
+  // }
 
   // check condition where activeTibs was only edit.
-  if (activeTibs.length > 0 && _.keys(writeInput).length == 0) {
-    return {
-      success: true,
-      code: "OK",
-      message: "Target updated.",
-      item: existing
-    };
-  }
+  // if (activeTibs.length > 0 && _.keys(writeInput).length == 0) {
+  //   return {
+  //     success: true,
+  //     code: "OK",
+  //     message: "Target updated.",
+  //     item: existing
+  //   };
+  // }
 
   // proceed to update target object
   const target = await updateOneHOR(
@@ -88,23 +88,30 @@ export default async (root, args, context) => {
     "UPDATE_TARGET"
   )(root, writeArgs, context);
 
-  if (addressData) {
+  if (
+    addressData &&
     context.workerQueues &&
-      context.workerQueues.censusGeocode &&
-      context.workerQueues.censusGeocode.add(
-        {
-          ...addressData,
-          targetId: target.id
-        },
-        {
-          removeOnComplete: true,
-          attempts: 10,
-          backoff: {
-            type: "exponential",
-            delay: 1000
-          }
+    context.workerQueues.censusGeocode
+  ) {
+    context.workerQueues.censusGeocode.add(
+      {
+        ...addressData,
+        targetId: target.id
+      },
+      {
+        removeOnComplete: true,
+        attempts: 10,
+        backoff: {
+          type: "exponential",
+          delay: 1000
         }
-      );
+      }
+    );
+  } else {
+    console.log("Can't enqueue job", {
+      addressData,
+      queue: context.workerQueues
+    });
   }
 
   return {

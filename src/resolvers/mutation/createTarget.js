@@ -24,12 +24,12 @@ export default async (root, args, context) => {
     writeInput.email = lowerEmail;
   }
 
-  let activeTibs = [];
+  // let activeTibs = [];
   // extract activeTibs from dbWrite
-  if (writeInput.activeTibs) {
-    activeTibs = activeTibs.concat(writeInput.activeTibs);
-    writeInput = _.omit(writeInput, "activeTibs");
-  }
+  // if (writeInput.activeTibs) {
+  //   activeTibs = activeTibs.concat(writeInput.activeTibs);
+  //   writeInput = _.omit(writeInput, "activeTibs");
+  // }
 
   if (writeInput.phone) {
     // strip all non digits out.
@@ -64,31 +64,33 @@ export default async (root, args, context) => {
   )(root, writeArgs, context);
 
   // now apply activeTibs
-  if (activeTibs.length > 0) {
-    const writeTibs = _.map(activeTibs, x => {
-      return { targetId: target.id, tibId: x };
-    });
+  // if (activeTibs.length > 0) {
+  //   const writeTibs = _.map(activeTibs, x => {
+  //     return { targetId: target.id, tibId: x };
+  //   });
 
-    await context.sq`target_true_tibs`.insert(writeTibs);
-  }
+  //   await context.sq`target_true_tibs`.insert(writeTibs);
+  // }
 
-  if (addressData) {
+  if (
+    addressData &&
     context.workerQueues &&
-      context.workerQueues.censusGeocode &&
-      context.workerQueues.censusGeocode.add(
-        {
-          ...addressData,
-          targetId: target.id
-        },
-        {
-          removeOnComplete: true,
-          attempts: 10,
-          backoff: {
-            type: "exponential",
-            delay: 1000
-          }
+    context.workerQueues.censusGeocode
+  ) {
+    context.workerQueues.censusGeocode.add(
+      {
+        ...addressData,
+        targetId: target.id
+      },
+      {
+        removeOnComplete: true,
+        attempts: 10,
+        backoff: {
+          type: "exponential",
+          delay: 1000
         }
-      );
+      }
+    );
   }
 
   return {

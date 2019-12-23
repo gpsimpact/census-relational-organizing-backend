@@ -65,16 +65,15 @@ const logger = bunyan.createLogger({
 // const isDeployed =
 //   process.env.NODE_ENV === "production" || process.env.NODE_ENV === "staging";
 
-const workerQueues = () => {
-  console.log("INVOKED!!!!!");
-  censusGeocode: new Queue("censusGeocodeQueue", process.env.REDIS_URL);
+const workerQueues = {
+  censusGeocode: new Queue("censusGeocodeQueue", process.env.REDIS_URL)
 };
 
 const server = new GraphQLServer({
   typeDefs,
   resolvers,
   context: ({ request, response }) =>
-    context(request, response, logger, workerQueues()),
+    context(request, response, logger, workerQueues),
   middlewares: [
     loggingMW,
     defaultToAuthedUserMW,
