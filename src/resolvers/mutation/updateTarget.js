@@ -35,14 +35,21 @@ export default async (root, args, context) => {
     writeInput.phone = writeInput.phone.replace(/\D/g, "");
   }
 
+  let dirtyAddress = false;
   let addressData;
   // If have address in it, grab it into own element
-  if (writeInput.address) {
+  if (
+    writeInput.address ||
+    writeInput.city ||
+    writeInput.state ||
+    writeInput.zip5
+  ) {
+    dirtyAddress = true;
     addressData = {
-      address: writeInput.address,
-      city: writeInput.city,
-      state: writeInput.state,
-      zip5: writeInput.zip5
+      address: writeInput.address || existing.address,
+      city: writeInput.city || existing.city,
+      state: writeInput.state || existing.state,
+      zip5: writeInput.zip5 || existing.zip5
     };
   }
 
@@ -88,10 +95,12 @@ export default async (root, args, context) => {
   )(root, writeArgs, context);
 
   if (
+    dirtyAddress &&
     addressData &&
     context.workerQueues &&
     context.workerQueues.censusGeocode
   ) {
+    // context.logger.debug(addressData, "Enqueing census geocode");
     context.workerQueues.censusGeocode.add(
       {
         ...addressData,
