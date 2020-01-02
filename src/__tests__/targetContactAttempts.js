@@ -49,10 +49,15 @@ describe("Target contact attempts", () => {
     const user = await createTestUser();
     const team = await createTestTeam();
     const target = await createTestTarget({ userId: user.id, teamId: team.id });
+    const target2 = await createTestTarget({
+      userId: user.id,
+      teamId: team.id
+    });
     await createTestTargetContactAttempt(user.id, target.id);
     await createTestTargetContactAttempt(user.id, target.id);
     await createTestTargetContactAttempt(user.id, target.id);
     await createTestTargetContactAttempt(user.id, target.id);
+    await createTestTargetContactAttempt(user.id, target2.id);
 
     const response1 = await graphqlTestCall(
       GET_ALL_TARGET_CONTACT_ATTEMPTS,

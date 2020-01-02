@@ -48,10 +48,15 @@ describe("Target Notes", () => {
     const user = await createTestUser();
     const team = await createTestTeam();
     const target = await createTestTarget({ userId: user.id, teamId: team.id });
+    const target2 = await createTestTarget({
+      userId: user.id,
+      teamId: team.id
+    });
     await createTestTargetNote(user.id, target.id);
     await createTestTargetNote(user.id, target.id);
     await createTestTargetNote(user.id, target.id);
     await createTestTargetNote(user.id, target.id);
+    await createTestTargetNote(user.id, target2.id);
 
     const response1 = await graphqlTestCall(
       GET_ALL_TARGET_NOTES_QUERY,
