@@ -3,10 +3,8 @@ require("dotenv").config();
 
 // let throng = require("throng");
 var Queue = require("bull");
-// const bunyan = require("bunyan");
+const bunyan = require("bunyan");
 
-// let REDIS_URL = process.env.REDIS_URL || "redis://127.0.0.1:6379";
-// let workers = process.env.WEB_CONCURRENCY || 2;
 let maxJobsPerWorker = 50;
 
 var censusGeocodeQueue = new Queue("censusGeocodeQueue", process.env.REDIS_URL);
@@ -15,13 +13,11 @@ const config = require("../knexfile.js");
 const db = require("knex")(config);
 var rp = require("request-promise");
 
-// const level = process.env.LOG_LEVEL || "info";
-
-// const logger = bunyan.createLogger({
-//   name: "census-backend-workers",
-//   devEnv: process.env.NODE_ENV,
-//   streams: [{ stream: process.stdout, level }]
-// });
+const logger = bunyan.createLogger({
+  name: "census-backend-workers",
+  devEnv: process.env.NODE_ENV,
+  streams: [{ stream: process.stdout }]
+});
 
 const tractLookup = async (street, city, state, zip) => {
   var options = {
@@ -46,12 +42,11 @@ const tractLookup = async (street, city, state, zip) => {
 };
 
 function start() {
-  console.log("Starting workers", { redis: process.env.REDIS_URL });
+  logger.info("started worker process");
   censusGeocodeQueue.process(maxJobsPerWorker, async ({ data }, done) => {
     // job.data contains the custom data passed when the job was created
     // job.id contains id of this job.
-    // logger.info({ jobData: data });
-    console.log({ jobData: data });
+    logger.info({ jobData: data });
     let tract;
     try {
       const cdata = await tractLookup(
@@ -70,21 +65,7 @@ function start() {
       done(new Error("Can not call census api"));
     }
 
-    // logger.info(
-    //   {
-    //     geocodeResults: {
-    //       tract_geoid: tract && tract.GEOID,
-    //       tract_centlat: tract && tract.CENTLAT,
-    //       tract_centlon: tract && tract.CENTLON,
-    //       tract_state: tract && tract.STATE,
-    //       tract_name: tract && tract.NAME,
-    //       tract_county: tract && tract.COUNTY,
-    //       targetId: data.targetId
-    //     }
-    //   },
-    //   "geocode results"
-    // );
-    console.log(
+    logger.info(
       {
         geocodeResults: {
           tract_geoid: tract && tract.GEOID,
@@ -109,14 +90,6 @@ function start() {
     }
   });
 }
-
-// This will only be called once
-// function startMaster() {
-//   console.log("started Worker process");
-//   // logger.info("started worker process");
-// }
-
-// throng({ workers, start, master: startMaster });
 
 // censusGeocodeQueue.add(
 //   {
