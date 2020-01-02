@@ -33,25 +33,25 @@ export default async (root, args, context) => {
     };
   }
 
-  const isGlobalAdminCheck = await context.dataSource.globalPermissions.byUserIdLoader.load(
-    target.userId
-  );
+  // const isGlobalAdminCheck = await context.dataSource.globalPermissions.byUserIdLoader.load(
+  //   target.userId
+  // );
 
-  const isGlobalAdmin = isGlobalAdminCheck && isGlobalAdminCheck.length >= 1;
+  // const isGlobalAdmin = isGlobalAdminCheck && isGlobalAdminCheck.length >= 1;
 
-  const perms = await context.dataSource.teamPermission.loadOne.load({
-    userId: target.userId,
-    teamId: root.teamId
-  });
+  // const perms = await context.dataSource.teamPermission.loadOne.load({
+  //   userId: target.userId,
+  //   teamId: root.teamId
+  // });
 
-  let permHolder = perms && perms.permission ? perms.permission : 0;
+  // let permHolder = perms && perms.permission ? perms.permission : 0;
 
-  if (!isGlobalAdmin && !(permHolder & root.taskRequiredRoles)) {
-    return {
-      available: false,
-      nonAvailableCode: "WRONG_PERMISSIONS"
-    };
-  }
+  // if (!isGlobalAdmin && !(permHolder & root.taskRequiredRoles)) {
+  //   return {
+  //     available: false,
+  //     nonAvailableCode: "WRONG_PERMISSIONS"
+  //   };
+  // }
 
   if (root.notUntilCompletionOf && args && args.targetId) {
     const parentTaskAssignmentStatus = await context.dataSource.taskAssignmentStatus.loadOne.load(
