@@ -17,6 +17,9 @@ query teamTargets($teamId: String!, $input:TargetsInput) {
             id
             firstName
             lastName
+            user {
+              id
+            }
         }
     }
 }
@@ -94,6 +97,7 @@ describe("User Targets", () => {
     expect(response1.data.teamTargets.hasMore).toBeFalsy();
     expect(response1.data.teamTargets.totalCount).toBe(3);
     expect(response1.data.teamTargets.items.length).toBe(3);
+    expect(response1.data.teamTargets.items[0].user.id).toBe(user.id);
   });
 
   test("PermCheck no team member", async () => {
