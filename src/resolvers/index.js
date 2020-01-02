@@ -96,6 +96,7 @@ import teamTargets from "./query/teamTargets";
 import reassignTarget from "./mutation/reassignTarget";
 import summaryCountMyTeamTasks from "./query/summaryCountMyTeamTasks";
 import summaryCountAllTeamTasks from "./query/summaryCountAllTeamTasks";
+import targetUser from "./target/user";
 
 export default {
   Query: {
@@ -196,7 +197,8 @@ export default {
     value
   },
   Target: {
-    tibs
+    tibs,
+    user: targetUser
   },
   TargetNote: {
     createdBy: targetNoteCreatedBy,
