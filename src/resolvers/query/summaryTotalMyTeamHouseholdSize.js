@@ -5,5 +5,5 @@ export default async (root, args, context) => {
     .where({ userId: context.user.id })
     .where({ teamId: args.teamId })
     .one();
-  return result.hhSum;
+  return result.hhSum || 0;
 };

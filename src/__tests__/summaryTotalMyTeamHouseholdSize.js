@@ -48,4 +48,19 @@ describe("Summary Count team HH size - one user", () => {
       expectedTotalHHsize
     );
   });
+
+  test("Null Case", async () => {
+    const user = await createAdminUser();
+    const team = await createTestTeam();
+    
+    const response = await graphqlTestCall(
+      SUMMARY_COUNT_USER_TEAM_HH_QUERY,
+      { teamId: team.id },
+      { user: { id: user.id } }
+    );
+    debugResponse(response);
+    expect(response.data.summaryTotalMyTeamHouseholdSize).toEqual(
+      0
+    );
+  });
 });
