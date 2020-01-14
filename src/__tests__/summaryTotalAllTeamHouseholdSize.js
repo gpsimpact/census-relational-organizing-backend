@@ -52,6 +52,19 @@ describe("Summary Count team HH size - all users", () => {
     );
   });
 
+  test("Happy Path, Null case", async () => {
+    const user = await createAdminUser();
+    const team = await createTestTeam();
+
+    const response = await graphqlTestCall(
+      SUMMARY_COUNT_TEAM_HH_QUERY,
+      { teamId: team.id },
+      { user: { id: user.id } }
+    );
+    debugResponse(response);
+    expect(response.data.summaryTotalAllTeamHouseholdSize).toEqual(0);
+  });
+
   // perm check
   test("Must be team admin or global admin.", async () => {
     const user = await createTestUser();
