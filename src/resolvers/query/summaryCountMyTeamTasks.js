@@ -61,7 +61,8 @@ export default async (root, { teamId }, context) => {
   // ORDER BY core.task_assignment_sort_value;
   // `;
 
-  const data = await context.sq.sql`WITH active_task_assignments AS (
+  const data = await context.sq.sql`
+  WITH active_task_assignments AS (
     SELECT 
         ta.team_id AS team_id,
         td.form_id AS form_id,
@@ -92,6 +93,7 @@ export default async (root, { teamId }, context) => {
     LEFT JOIN teams tm ON t.team_id = tm.id
     WHERE t.active = true
     AND t.user_id = ${context.user.id}
+    AND t.team_id = ${teamId}
     GROUP BY 1
   ),
   task_assignment_status AS (
