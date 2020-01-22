@@ -88,4 +88,46 @@ describe("Summary Count all team tasks", () => {
       teamTargetsCount: 2
     });
   });
+
+  test("Null case", async () => {
+    const user = await createAdminUser();
+    const team = await createTestTeam();
+
+    const formA = await createTestForm(user.id);
+
+    // create spanish version
+    const formA_ES = Object.assign({}, formA, {
+      language: "ES",
+      title: `${formA.title} - ES`,
+      fields: JSON.stringify(formA.fields)
+    });
+    await sq`forms`.insert(formA_ES);
+
+    const taskDefinitionA = await createTestTaskDefinition(formA.id, user.id);
+    await createTestTaskAssignment(taskDefinitionA.id, team.id, {
+      MEMBER: true
+    });
+
+    const response = await graphqlTestCall(
+      OP,
+      { teamId: team.id },
+      { user: { id: user.id } }
+    );
+    debugResponse(response);
+    expect(response.data.summaryCountAllTeamTasks.length).toEqual(1);
+    expect(response.data.summaryCountAllTeamTasks[0]).toEqual({
+      languageVariations: [
+        {
+          title: "This is form title",
+          language: "EN"
+        },
+        {
+          title: "This is form title - ES",
+          language: "ES"
+        }
+      ],
+      countComplete: 0,
+      teamTargetsCount: 0
+    });
+  });
 });
