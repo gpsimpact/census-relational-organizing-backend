@@ -32,7 +32,7 @@ const configuration = {
   }
 };
 
-if (environment === "production") {
+if (environment === "production" || process.env.SSL_DB === true) {
   console.log("PRODUCTION, SSL TRUE");
   pg.defaults.ssl = true;
 }
