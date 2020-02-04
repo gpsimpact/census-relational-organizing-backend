@@ -84,6 +84,42 @@ describe("Teams", () => {
     expect(response1.data.teams.items.length).toBe(2);
   });
 
+  test("Happy Path - Sort by name", async () => {
+    await createTestTeam();
+    await createTestTeam();
+    const user = await createTestUser();
+    await createTestGlobalPerm(user.id, "ADMIN_TEAMS");
+
+    // no input
+    const responseASC = await graphqlTestCall(
+      GET_ALL_TEAMS_QUERY,
+      { input: { sort: { name: "ASC" } } },
+      { user: { id: user.id } }
+    );
+
+    // should return correct data
+    expect(responseASC.data.teams.hasMore).toBeFalsy();
+    expect(responseASC.data.teams.totalCount).toBe(2);
+    expect(responseASC.data.teams.items.length).toBe(2);
+    expect(
+      responseASC.data.teams.items[0].name <
+        responseASC.data.teams.items[1].name
+    ).toBe(true);
+
+    // no input
+    const responseDESC = await graphqlTestCall(
+      GET_ALL_TEAMS_QUERY,
+      { input: { sort: { name: "DESC" } } },
+      { user: { id: user.id } }
+    );
+
+    // should return correct data
+    expect(
+      responseDESC.data.teams.items[0].name >
+        responseDESC.data.teams.items[1].name
+    ).toBe(true);
+  });
+
   // test("Fails without ADMIN_TEAMS global perm", async () => {
   //   const user = await createTestUser();
   //   // no input
