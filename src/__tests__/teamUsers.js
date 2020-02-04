@@ -118,4 +118,33 @@ describe("Users", () => {
     expect(response.data.teamUsers.items.length).toBe(1);
     expect(response.data.teamUsers.items[0].email).toBe(user.email);
   });
+
+  test("Happy Path with includePermissions - one permission", async () => {
+    const user = await createTestUser();
+    const user2 = await createTestUser();
+    const team = await createTestTeam();
+    await createTestTeamPermission(user.id, team.id, "MEMBER");
+    await createTestTeamPermission(user2.id, team.id, "APPLICANT");
+    const adminUser = await createAdminUser();
+
+    // no input
+    const response = await graphqlTestCall(
+      GET_ALL_USERS_QUERY,
+      {
+        input: {
+          teamId: team.id,
+          includePermissions: ["MEMBER"]
+        }
+      },
+      {
+        user: { id: adminUser.id }
+      }
+    );
+    debugResponse(response);
+    // should return correct data
+    expect(response.data.teamUsers.hasMore).toBeFalsy();
+    expect(response.data.teamUsers.totalCount).toBe(1);
+    expect(response.data.teamUsers.items.length).toBe(1);
+    expect(response.data.teamUsers.items[0].email).toBe(user.email);
+  });
 });
