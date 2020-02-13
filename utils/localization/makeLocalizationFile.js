@@ -2,7 +2,7 @@ const csv = require("csvtojson");
 const _ = require("lodash");
 const fs = require("fs");
 
-const csvFilePath = "./translations_20190204.csv";
+const csvFilePath = "./translations_20200213.csv";
 
 async function main() {
   const data = await csv().fromFile(csvFilePath);
@@ -11,7 +11,7 @@ async function main() {
   const outFileTL = {};
   const outFileZH = {};
   _.forEach(data, row => {
-    const key = row.ENGLISH.replace(/\s/g, "_");
+    const key = row.ENGLISH.replace(/[,'"\n]/g, "");
     outFileES[key] = row.ES;
     outFileTL[key] = row.TL;
     outFileZH[key] = row.ZH;
