@@ -424,7 +424,10 @@ export default shield(
         isAuthenticated,
         or(has_TP_ADMIN_ROOT_TEAMID, has_GP_ADMIN)
       ),
-      summaryCountMyTeamTasks: isAuthenticated,
+      summaryCountMyTeamTasks: and(
+        isAuthenticated,
+        or(has_TP_ADMIN_ROOT_TEAMID, has_GP_ADMIN, isSelfRootUserId)
+      ),
       summaryCountAllTeamTasks: and(
         isAuthenticated,
         or(has_TP_ADMIN_ROOT_TEAMID, has_GP_ADMIN)
