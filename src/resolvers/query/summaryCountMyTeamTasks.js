@@ -60,7 +60,8 @@ export default async (root, { teamId, userId }, context) => {
   LEFT JOIN form_language_variations flv ON ata.form_id = flv.form_id
   LEFT JOIN user_team_target_counts uttc ON ata.team_id = uttc.team_id
   LEFT JOIN task_assignment_status tas ON ata.task_assignment_id = tas.task_assignment_id
-  WHERE ata.team_id = ${teamId};`;
+  WHERE ata.team_id = ${teamId}
+  ORDER BY ata.task_assignment_sort_value;`;
 
   return data;
 };
