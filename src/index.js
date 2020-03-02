@@ -98,7 +98,7 @@ if (
   process.env.NODE_ENV === "development" ||
   process.env.NODE_ENV === "staging"
 ) {
-  whitelist.push("http://localhost:3000");
+  whitelist.push(process.env.DEV_FRONTEND_HOST);
 }
 
 var corsOptions = {
