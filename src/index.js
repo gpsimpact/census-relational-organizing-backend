@@ -91,12 +91,28 @@ server.express.use(
   })
 );
 
-server.express.use(
-  cors({
-    credentials: true,
-    origin: process.env.FRONTEND_HOST
-  })
-);
+const whitelist = [process.env.FRONTEND_HOST];
+
+// allow localhost for staging env or local dev
+if (
+  process.env.NODE_ENV === "development" ||
+  process.env.NODE_ENV === "staging"
+) {
+  whitelist.push("http://localhost:3000");
+}
+
+var corsOptions = {
+  credentials: true,
+  origin: function(origin, callback) {
+    if (whitelist.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  }
+};
+
+server.express.use(cors(corsOptions));
 
 const options = {
   endpoint: "/graphql",
