@@ -38,7 +38,7 @@
     "ioredis": "^4.6.2",
     "knex": "^0.19.5",
     "knex-migrate": "^1.7.0",
-    "lodash": "^4.17.13",
+    "lodash": "^4.17.21",
     "merge-graphql-schemas": "^1.5.8",
     "nodemailer": "^5.1.1",
     "obj-flatten": "^2.0.4",
