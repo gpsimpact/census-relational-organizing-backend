@@ -40,7 +40,7 @@
     "knex-migrate": "^1.7.0",
     "lodash": "^4.17.13",
     "merge-graphql-schemas": "^1.5.8",
-    "nodemailer": "^5.1.1",
+    "nodemailer": "^6.4.16",
     "obj-flatten": "^2.0.4",
     "performance-now": "^2.1.0",
     "pg": "^7.8.0",
